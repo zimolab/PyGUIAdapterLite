@@ -1,0 +1,4 @@
+# PyGUIAdapterLite：PyGUIAdapter的轻量级版本
+
+实现PyGUIAdapter基本功能，尽可能提供类似PyGUIAdapter的接口，使用python内置的tkinter作为GUI库，不再依赖Qt。打包体积大幅减小，适合需要快速开发
+的工具类项目。
