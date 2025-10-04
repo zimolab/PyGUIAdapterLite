@@ -1,13 +1,17 @@
 import tkinter as tk
-from typing import Any, Callable
+from tkinter import Listbox, Widget
+
+from typing import Any, Callable, Optional, List, Union
 
 
-class ListView(tk.Listbox):
-    def __init__(self, master: tk.Widget, **kwargs: Any) -> None:
-        super().__init__(master, **kwargs)
-        self._click_handler: Callable[[ListView, int], None] | None = None
-        self._double_click_handler: Callable[[ListView, int], None] | None = None
-        self._right_click_handler: Callable[[ListView], None] | None = None
+class ListView(Listbox):
+    def __init__(
+        self, parent: Union[Widget, tk.Tk, tk.Toplevel], **kwargs: Any
+    ) -> None:
+        super().__init__(parent, **kwargs)
+        self._click_handler: Optional[Callable[[ListView, int], None]] = None
+        self._double_click_handler: Optional[Callable[[ListView, int], None]] = None
+        self._right_click_handler: Optional[Callable[[ListView], None]] = None
 
         self.bind("<Button-1>", self._on_click)
         self.bind("<Double-Button-1>", self._on_double_click)
@@ -48,7 +52,7 @@ class ListView(tk.Listbox):
         """在列表末尾添加一个元素"""
         self.insert(tk.END, item)
 
-    def extend(self, items: list[str]) -> None:
+    def extend(self, items: List[str]) -> None:
         """在列表末尾批量添加元素"""
         for item in items:
             self.append(item)
@@ -57,7 +61,7 @@ class ListView(tk.Listbox):
         """在列表开头添加一个元素"""
         self.insert(0, item)
 
-    def items(self) -> list[str]:
+    def items(self) -> List[str]:
         """返回当前列表中的所有元素"""
         return list(self.get(0, tk.END))
 
@@ -113,7 +117,7 @@ class ListView(tk.Listbox):
         self.delete(from_index)
         self.insert(to_index, from_item)
 
-    def selected_items(self) -> list[str]:
+    def selected_items(self) -> List[str]:
         """返回当前选中的元素"""
         return [self.get(i) for i in self.curselection()]
 
@@ -223,6 +227,7 @@ class ListView(tk.Listbox):
         self._double_click_handler(self, index)
 
     def _on_right_click(self, event: tk.Event) -> None:
+        _ = event
         if not self._right_click_handler:
             return
         self._right_click_handler(self)
