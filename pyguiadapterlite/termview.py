@@ -1,6 +1,18 @@
 import re
-import tkinter as tk
-from tkinter import filedialog, Frame, Scrollbar
+from tkinter import (
+    filedialog,
+    Frame,
+    Scrollbar,
+    Text,
+    Menu,
+    SEL_FIRST,
+    SEL_LAST,
+    TclError,
+    SEL,
+    END,
+    INSERT,
+    messagebox,
+)
 from typing import Optional
 
 from .utils import _warning
@@ -30,8 +42,6 @@ class TermView(Frame):
     def __init__(
         self,
         parent,
-        width: int = 80,
-        height: int = 24,
         background: str = "black",
         foreground: str = "white",
         select_background: str = "lightgray",
@@ -42,8 +52,6 @@ class TermView(Frame):
     ):
         super().__init__(parent, **kwargs)
 
-        self._width = width
-        self._height = height
         self._background = background
         self._foreground = foreground
         self._select_background = select_background
@@ -52,26 +60,24 @@ class TermView(Frame):
         self._colormap = colormap or self.colormap.copy()
 
         # 创建文本区域和滚动条
-        self._text_widget = tk.Text(
+        self._text_widget = Text(
             self,
-            width=width,
-            height=height,
             bg=background,
             fg=foreground,
             font=font,
             insertbackground=foreground,
             selectbackground=select_background,
-            wrap=tk.NONE,
+            wrap="none",
             tabs=("1c", "2c", "3c", "4c"),
         )
 
         v_scrollbar = Scrollbar(
-            self, orient=tk.VERTICAL, command=self._text_widget.yview
+            self, orient="vertical", command=self._text_widget.yview
         )
         self._text_widget.configure(yscrollcommand=v_scrollbar.set)
 
         h_scrollbar = Scrollbar(
-            self, orient=tk.HORIZONTAL, command=self._text_widget.xview
+            self, orient="horizontal", command=self._text_widget.xview
         )
         self._text_widget.configure(xscrollcommand=h_scrollbar.set)
 
@@ -109,7 +115,7 @@ class TermView(Frame):
 
     def _create_context_menu(self):
         """创建右键上下文菜单"""
-        self.context_menu = tk.Menu(self._text_widget, tearoff=0)
+        self.context_menu = Menu(self._text_widget, tearoff=0)
 
         # 添加菜单项
         self.context_menu.add_command(label="复制", command=self.copy_selected_text)
@@ -133,20 +139,20 @@ class TermView(Frame):
         """复制选中的文本"""
         try:
             # 获取选中的文本
-            selected_text = self._text_widget.get(tk.SEL_FIRST, tk.SEL_LAST)
+            selected_text = self._text_widget.get(SEL_FIRST, SEL_LAST)
             if selected_text and copy_to_clipboard:
                 self.clipboard_clear()
                 self.clipboard_append(selected_text)
             return selected_text
-        except tk.TclError:
-            _warning("No text selected")
+        except TclError:
+            _warning("no text selected")
             return None
 
     def select_all(self):
         """全选文本"""
-        self._text_widget.tag_add(tk.SEL, "1.0", tk.END)
-        self._text_widget.mark_set(tk.INSERT, "1.0")
-        self._text_widget.see(tk.INSERT)
+        self._text_widget.tag_add(SEL, "1.0", END)
+        self._text_widget.mark_set(INSERT, "1.0")
+        self._text_widget.see(INSERT)
 
     def scroll_to_top(self):
         """滚动到顶部"""
@@ -154,7 +160,7 @@ class TermView(Frame):
 
     def scroll_to_bottom(self):
         """滚动到底部"""
-        self._text_widget.see(tk.END)
+        self._text_widget.see(END)
 
     def save_to_file(self):
         """保存控制台内容到文件"""
@@ -174,11 +180,11 @@ class TermView(Frame):
                 with open(file_path, "w", encoding="utf-8") as file:
                     file.write(text_content)
             except Exception as e:
-                tk.messagebox.showerror("错误", f"保存文件时出错: {str(e)}")
+                messagebox.showerror("错误", f"保存文件时出错: {str(e)}")
 
     def _get_plain_text(self):
         """获取纯文本内容（去除ANSI转义序列）"""
-        text_content = self._text_widget.get("1.0", tk.END)
+        text_content = self._text_widget.get("1.0", END)
         # 移除ANSI转义序列
         clean_text = re.sub(r"\x1b\[[\d;]*m", "", text_content)
         return clean_text
@@ -222,8 +228,8 @@ class TermView(Frame):
 
         # 如果没有ANSI序列，直接输出
         if len(parts) == 1:
-            self._text_widget.insert(tk.END, text)
-            self._text_widget.see(tk.END)
+            self._text_widget.insert(END, text)
+            self._text_widget.see(END)
             return
 
         # 处理包含ANSI序列的文本
@@ -238,7 +244,7 @@ class TermView(Frame):
                 self._handle_ansi_sequence(parts[i])
             i += 1
 
-        self._text_widget.see(tk.END)
+        self._text_widget.see(END)
 
     def _insert_with_current_style(self, text):
         """使用当前样式插入文本"""
@@ -263,9 +269,9 @@ class TermView(Frame):
 
         # 插入文本
         if tags:
-            self._text_widget.insert(tk.END, text, tags)
+            self._text_widget.insert(END, text, tags)
         else:
-            self._text_widget.insert(tk.END, text)
+            self._text_widget.insert(END, text)
 
     def _handle_ansi_sequence(self, sequence):
         """处理ANSI转义序列"""
@@ -354,7 +360,7 @@ class TermView(Frame):
 
     def clear(self):
         """清空控制台"""
-        self._text_widget.delete(1.0, tk.END)
+        self._text_widget.delete(1.0, END)
 
     def write(self, text):
         """向控制台输出文本，处理ANSI转义序列"""
@@ -366,7 +372,7 @@ class TermView(Frame):
 
     def get_text(self):
         """获取控制台中的所有文本"""
-        return self._text_widget.get(1.0, tk.END)
+        return self._text_widget.get(1.0, END)
 
     def set_text(self, text):
         """设置控制台文本"""

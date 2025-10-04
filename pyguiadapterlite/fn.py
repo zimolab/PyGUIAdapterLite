@@ -2,6 +2,8 @@ import dataclasses
 from abc import abstractmethod
 from typing import Callable, Any, Type, Dict, Optional, List
 
+from .valuewidget import BaseParameterWidgetConfig
+
 
 class ExecuteStateListener(object):
     def before_execute(self, fn_info: "FnInfo", arguments: Dict[str, Any]) -> None:
@@ -70,7 +72,9 @@ class FnInfo(object):
     document: Optional[str] = ""
     icon: Optional[str] = None
     parameters: Dict[str, ParameterInfo] = dataclasses.field(default_factory=dict)
-    parameter_configs: Dict[str, Dict] = dataclasses.field(default_factory=dict)
+    parameter_configs: Dict[str, BaseParameterWidgetConfig] = dataclasses.field(
+        default_factory=dict
+    )
     cancelable: bool = False
     executor: Optional[Type[BaseFunctionExecutor]] = None
     capture_system_exit_exception: bool = True

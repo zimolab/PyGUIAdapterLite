@@ -56,11 +56,11 @@ class FunctionListWindow(BasicWindow):
     def config(self) -> FunctionListWindowConfig:
         return cast(FunctionListWindowConfig, super().config)
 
-    def create_main_area(self, **kwargs) -> Any:
+    def create_main_area(self) -> Any:
         self._main_pane = PanedWindow(self._parent, orient="horizontal")
         self._main_pane.pack(fill="both", expand=True)
 
-    def create_left_area(self, **kwargs) -> Any:
+    def create_left_area(self) -> Any:
         # 创建左侧框架 - 列表区域
         self._left_frame = Frame(self._main_pane)
         self._main_pane.add(self._left_frame, weight=1)
@@ -105,20 +105,20 @@ class FunctionListWindow(BasicWindow):
         )
         select_button.pack(fill="x")
 
-    def _setup_search_entry(self):
-        """设置搜索功能"""
-        # search_frame = Frame(self._left_frame)
-        # search_frame.pack(fill="x", pady=(5, 5))
-        #
-        # search_label = Label(search_frame, text=self.config.search_entry_title)
-        # search_label.pack(side="left", padx=(0, 5))
-        #
-        # self._search_entry = Entry(search_frame, textvariable=self._search_var)
-        # self._search_entry.pack(side="left", fill="x", expand=True)
-        # 绑定搜索事件
-        # self._search_var.trace("w", self._on_search)
+    # def _setup_search_entry(self):
+    #     """设置搜索功能"""
+    #     search_frame = Frame(self._left_frame)
+    #     search_frame.pack(fill="x", pady=(5, 5))
+    #
+    #     search_label = Label(search_frame, text=self.config.search_entry_title)
+    #     search_label.pack(side="left", padx=(0, 5))
+    #
+    #     self._search_entry = Entry(search_frame, textvariable=self._search_var)
+    #     self._search_entry.pack(side="left", fill="x", expand=True)
+    #     # 绑定搜索事件
+    #     self._search_var.trace("w", self._on_search)
 
-    def create_right_area(self, **kwargs) -> Any:
+    def create_right_area(self) -> Any:
         self._right_frame = Frame(self._main_pane)
         self._main_pane.add(self._right_frame, weight=2)
         self._setup_right_panel()
@@ -210,11 +210,11 @@ class FunctionListWindow(BasicWindow):
         else:
             self._doc_view.set_text(fn_info.document)
 
-    def create_main_menu(self, **kwargs) -> Any:
+    def create_main_menu(self) -> Any:
         pass
 
-    def create_bottom_area(self, **kwargs) -> Any:
+    def create_bottom_area(self) -> Any:
         pass
 
-    def create_status_bar(self, **kwargs):
+    def create_status_bar(self):
         pass

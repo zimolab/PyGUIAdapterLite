@@ -1,6 +1,6 @@
-import tkinter as tk
-from tkinter import Widget, ttk
+from tkinter import Widget, Toplevel, Tk, TclError, Menu
 from tkinter.scrolledtext import ScrolledText
+from tkinter.ttk import Frame, Label, Button
 from typing import Union
 
 from .utils import _error, _exception
@@ -9,7 +9,7 @@ from .utils import _error, _exception
 class TextView(object):
     def __init__(
         self,
-        parent: Union[Widget, tk.Toplevel, tk.Tk],
+        parent: Union[Widget, Toplevel, Tk],
         font: tuple = ("Arial", 14),
         wrap: str = "word",
         background: str = None,
@@ -159,7 +159,7 @@ class TextView(object):
         _ = event
         try:
             self._text_widget.event_generate("<<Copy>>")
-        except tk.TclError as e:
+        except TclError as e:
             _exception(e, "unable to generate copy event")
         return "break"
 
@@ -198,7 +198,7 @@ class TextView(object):
 
     def create_default_menu(self):
         """创建右键菜单"""
-        self._context_menu = tk.Menu(self._text_widget, tearoff=0)
+        self._context_menu = Menu(self._text_widget, tearoff=0)
         self._context_menu.add_command(label="复制", command=self.copy)
         self._context_menu.add_separator()
         self._context_menu.add_command(label="全选", command=self.select_all)
@@ -217,7 +217,7 @@ class TextView(object):
         """复制选中的文本"""
         try:
             self._text_widget.event_generate("<<Copy>>")
-        except tk.TclError as e:
+        except TclError as e:
             _exception(e, "unable to generate copy event")
 
     def select_all(self):
@@ -250,7 +250,7 @@ class TextView(object):
         self._text_widget.see("end")
 
 
-class SimpleTextViewer(tk.Toplevel):
+class SimpleTextViewer(Toplevel):
     def __init__(
         self,
         parent=None,
@@ -303,42 +303,42 @@ class SimpleTextViewer(tk.Toplevel):
 
     def _create_control_panel(self):
         """创建控制面板"""
-        control_frame = tk.Frame(self)
+        control_frame = Frame(self)
         control_frame.pack(fill="x", padx=10, pady=5)
 
         # 缩放控制
-        tk.Label(control_frame, text="缩放:").pack(side="left", padx=5)
+        Label(control_frame, text="缩放:").pack(side="left", padx=5)
 
-        zoom_in_btn = ttk.Button(
+        zoom_in_btn = Button(
             control_frame, text="放大 (+)", command=self._text_view.zoom_in
         )
         zoom_in_btn.pack(side="left", padx=2)
 
-        zoom_out_btn = ttk.Button(
+        zoom_out_btn = Button(
             control_frame, text="缩小 (-)", command=self._text_view.zoom_out
         )
         zoom_out_btn.pack(side="left", padx=2)
 
-        zoom_reset_btn = ttk.Button(
+        zoom_reset_btn = Button(
             control_frame, text="重置缩放", command=self._text_view.zoom_reset
         )
         zoom_reset_btn.pack(side="left", padx=2)
 
         # 导航控制
-        tk.Label(control_frame, text="导航:").pack(side="left", padx=(20, 5))
+        Label(control_frame, text="导航:").pack(side="left", padx=(20, 5))
 
-        top_btn = ttk.Button(
+        top_btn = Button(
             control_frame, text="顶部", command=self._text_view.scroll_to_top
         )
         top_btn.pack(side="left", padx=2)
 
-        bottom_btn = ttk.Button(
+        bottom_btn = Button(
             control_frame, text="底部", command=self._text_view.scroll_to_bottom
         )
         bottom_btn.pack(side="left", padx=2)
 
         # 状态信息
-        self.status_label = tk.Label(
+        self.status_label = Label(
             control_frame,
             text="使用↑ ↓ ← →、PageUp/PageDown、Home/End进行导航",
         )
@@ -360,6 +360,14 @@ class SimpleTextViewer(tk.Toplevel):
     def get_text(self) -> str:
         """获取文本内容"""
         return self._text_view.get_text()
+
+    def destroy(self):
+        """销毁窗口"""
+        super().destroy()
+        self._parent = None
+        self._text_view = None
+        self._control_panel = None
+        print("Text viewer closed")
 
     def show(self):
         """显示窗口（非模态）"""

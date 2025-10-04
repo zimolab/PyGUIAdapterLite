@@ -3,7 +3,6 @@ from abc import abstractmethod
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union
 
-from .fn import ParameterInfo
 from .utils import _warning
 
 
@@ -156,15 +155,6 @@ class BaseParameterWidget(Frame):
 
     def on_clear_parameter_error(self, parameter_name: str) -> None:
         pass
-
-    @classmethod
-    def on_post_process_config(
-        cls,
-        config: _T,
-        parameter_name: str,
-        parameter_info: ParameterInfo,
-    ) -> BaseParameterWidgetConfig:
-        return config
 
     @classmethod
     def new(
