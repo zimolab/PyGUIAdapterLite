@@ -9,6 +9,8 @@ readme = "README.md"
 python = ">=3.8"
 
 
+tomlkit = "^0.13.3"
+docstring-parser = "^0.17.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

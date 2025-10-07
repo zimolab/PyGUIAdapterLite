@@ -1,13 +1,9 @@
-import tkinter as tk
-from tkinter import Listbox, Widget
-
+from tkinter import Listbox, Widget, Tk, Toplevel, END, Event
 from typing import Any, Callable, Optional, List, Union
 
 
 class ListView(Listbox):
-    def __init__(
-        self, parent: Union[Widget, tk.Tk, tk.Toplevel], **kwargs: Any
-    ) -> None:
+    def __init__(self, parent: Union[Widget, Tk, Toplevel], **kwargs: Any) -> None:
         super().__init__(parent, **kwargs)
         self._click_handler: Optional[Callable[[ListView, int], None]] = None
         self._double_click_handler: Optional[Callable[[ListView, int], None]] = None
@@ -50,7 +46,7 @@ class ListView(Listbox):
 
     def append(self, item: str) -> None:
         """在列表末尾添加一个元素"""
-        self.insert(tk.END, item)
+        self.insert(END, item)
 
     def extend(self, items: List[str]) -> None:
         """在列表末尾批量添加元素"""
@@ -63,7 +59,7 @@ class ListView(Listbox):
 
     def items(self) -> List[str]:
         """返回当前列表中的所有元素"""
-        return list(self.get(0, tk.END))
+        return list(self.get(0, END))
 
     def index_of(self, item: str) -> int:
         """返回指定元素的索引"""
@@ -85,8 +81,8 @@ class ListView(Listbox):
         if index >= self.size():
             raise IndexError("index out of range")
         if index == -1:
-            item = self.get(tk.END)
-            self.delete(tk.END)
+            item = self.get(END)
+            self.delete(END)
         else:
             item = self.get(index)
             self.delete(index)
@@ -94,7 +90,7 @@ class ListView(Listbox):
 
     def clear(self) -> None:
         """清除当前列表中的所有元素"""
-        self.delete(0, tk.END)
+        self.delete(0, END)
 
     def sort(self, key=None, reverse=False):
         items = self.items()
@@ -135,11 +131,11 @@ class ListView(Listbox):
 
     def select_none(self) -> None:
         """清除当前选中的元素"""
-        self.selection_clear(0, tk.END)
+        self.selection_clear(0, END)
 
     def select_all(self) -> None:
         """选中所有元素"""
-        self.selection_set(0, tk.END)
+        self.selection_set(0, END)
 
     def set_selection_mode(self, mode: str):
         self.config(selectmode=mode)
@@ -172,7 +168,7 @@ class ListView(Listbox):
 
         # 重新选择移动后的项目
         new_selection = [i - 1 for i in selected_indices]
-        self.selection_clear(0, tk.END)
+        self.selection_clear(0, END)
         for i in new_selection:
             self.selection_set(i)
 
@@ -201,7 +197,7 @@ class ListView(Listbox):
 
         # 重新选择移动后的项目
         new_selection = [i + 1 for i in selected_indices]
-        self.selection_clear(0, tk.END)
+        self.selection_clear(0, END)
         for i in new_selection:
             self.selection_set(i)
 
@@ -214,19 +210,19 @@ class ListView(Listbox):
             return False
         return True
 
-    def _on_click(self, event: tk.Event) -> None:
+    def _on_click(self, event: Event) -> None:
         if not self._click_handler:
             return
         index = self.nearest(event.y)
         self._click_handler(self, index)
 
-    def _on_double_click(self, event: tk.Event) -> None:
+    def _on_double_click(self, event: Event) -> None:
         if not self._double_click_handler:
             return
         index = self.nearest(event.y)
         self._double_click_handler(self, index)
 
-    def _on_right_click(self, event: tk.Event) -> None:
+    def _on_right_click(self, event: Event) -> None:
         _ = event
         if not self._right_click_handler:
             return

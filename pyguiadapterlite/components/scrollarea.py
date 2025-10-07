@@ -1,9 +1,11 @@
 import dataclasses
-from tkinter import Frame, Widget, Canvas, Scrollbar, Label, N, S, E, W
+from tkinter import Widget, Canvas, Scrollbar, Label, N, S, E, W
+from tkinter.ttk import Frame
 from typing import Optional, Tuple, List, Dict, Any, Union
 
-from pyguiadapterlite.tooltip import ToolTip
-from pyguiadapterlite.valuewidget import (
+from pyguiadapterlite.i18n import tr_
+from pyguiadapterlite.components.tooltip import ToolTip
+from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
     InvalidValue,
@@ -118,9 +120,9 @@ class NColumnScrollableArea(Frame):
 
     def add_row(self, widgets: Tuple[Widget, ...], **kwargs):
         """添加一行"""
-        if len(widgets) != self._n_columns:
+        if len(widgets) > self._n_columns:
             raise ValueError(
-                f"Number of widgets ({len(widgets)}) must match number of columns ({self._n_columns})"
+                f"too many widgets for a row({len(widgets) > self._n_columns})"
             )
 
         row_index = len(self._rows)
@@ -279,10 +281,11 @@ class ParameterWidgetArea(NColumnScrollableArea):
     ):
         super().__init__(
             parent,
-            n_columns=2,
+            n_columns=3,
             column_configs=(
                 ColumnConfig(anchor=label_anchor, weight=0),
                 ColumnConfig(anchor=parameter_anchor, weight=1),
+                ColumnConfig(anchor=E + W, weight=0),
             ),
             **kwargs,
         )
@@ -290,20 +293,28 @@ class ParameterWidgetArea(NColumnScrollableArea):
 
     def _create_parameter_widgets(
         self, parameter_name: str, config: BaseParameterWidgetConfig
-    ) -> Tuple[Label, BaseParameterWidget]:
+    ) -> Tuple[Label, BaseParameterWidget, Label]:
         cls = config.target_widget_class()
-        widget = cls.new(
+        input_widget = cls.new(
             parent=self._inner_frame, parameter_name=parameter_name, config=config
         )
-        label = Label(self._inner_frame)
-        if widget.description:
-            label.config(text=f"{parameter_name}ℹ:")
-            tooltip = ToolTip(label, widget.description)
-            self._tooltips[parameter_name] = tooltip
-        else:
-            label.config(text=parameter_name)
+        param_name_label = Label(self._inner_frame, text=input_widget.label)
+        description_label = Label(self._inner_frame)
+        if config.description:
+            description_label.config(text=tr_("Desc"))
+            description_label.config(
+                cursor="question_arrow",
+                borderwidth=1,
+                relief="groove",
+                takefocus=False,
+                # bg="lightblue",
+                fg="blue",
+            )
 
-        return label, widget
+            tooltip = ToolTip(description_label, input_widget.description)
+            self._tooltips[parameter_name] = tooltip
+
+        return param_name_label, input_widget, description_label
 
     def has_parameter(self, parameter_name: str) -> bool:
         for w in self.select_column(1):
@@ -318,12 +329,15 @@ class ParameterWidgetArea(NColumnScrollableArea):
 
         if self.has_parameter(parameter_name):
             raise ParameterAlreadyExists(f"parameter {parameter_name} already exists")
-        label, widget = self._create_parameter_widgets(parameter_name, config)
-        self.add_row((label, widget))
+        param_name_label, input_widget, description_label = (
+            self._create_parameter_widgets(parameter_name, config)
+        )
+        self.add_row((param_name_label, input_widget, description_label))
 
     def remove_parameter(self, parameter_name: str):
         for index in range(self.row_count()):
-            widget: BaseParameterWidget = self.get_row(index)[1]
+            widget = self.get_row(index)[1]
+            assert isinstance(widget, BaseParameterWidget)
             if widget.parameter_name == parameter_name:
                 if widget.parameter_name in self._tooltips:
                     self._tooltips[widget.parameter_name].destroy()

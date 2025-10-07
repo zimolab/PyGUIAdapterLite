@@ -1,6 +1,5 @@
-import tkinter as tk
-from tkinter import Widget
-from typing import Tuple, Optional, List
+from tkinter import Widget, Toplevel, Frame, Label
+from typing import Tuple, Optional, List, Literal
 
 
 class ToolTip(object):
@@ -9,11 +8,11 @@ class ToolTip(object):
         target_widget: Widget,
         text: str = "",
         delay: int = 500,
-        x_offset: int = 10,
+        x_offset: int = 15,
         y_offset: int = 10,
         background: str = "#ffffe0",
         foreground: str = "black",
-        relief: str = "solid",
+        relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
         font: tuple = ("Arial", 10),
         wrap_length: Optional[int] = None,
     ):
@@ -76,7 +75,7 @@ class ToolTip(object):
 
         if self._tooltip_window or (not self._text.strip()):
             return
-        wind = tk.Toplevel(self._target_widget)
+        wind = Toplevel(self._target_widget)
         # 设置无边框
         wind.wm_overrideredirect(True)
         # 根据目标控件的位置设置提示框位置
@@ -85,12 +84,12 @@ class ToolTip(object):
         wind.geometry(f"+{x}+{y}")
         # 设置样式
         wind.configure(background=self._background, relief=self._relief, borderwidth=1)
-
+        wind.wm_attributes("-topmost", True)
         if not self._wrap_length:
-            label = tk.Label(
+            label = Label(
                 wind,
                 text=self._text,
-                justify=tk.LEFT,
+                justify="left",
                 background=self._background,
                 foreground=self._foreground,
                 relief=self._relief,
@@ -98,10 +97,10 @@ class ToolTip(object):
                 font=self._font,
             )
         else:
-            label = tk.Label(
+            label = Label(
                 wind,
                 text=self._text,
-                justify=tk.LEFT,
+                justify="left",
                 background=self._background,
                 foreground=self._foreground,
                 relief=self._relief,
@@ -124,10 +123,8 @@ class ToolTip(object):
     def destroy(self):
         if self._destroyed:
             raise RuntimeError("ToolTip has already been destroyed")
-
         self.unschedule()
         self.hide()
-
         self._target_widget.unbind("<Enter>")
         self._target_widget.unbind("<Leave>")
         self._target_widget.unbind("<Motion>")
@@ -176,7 +173,7 @@ class SimpleHtmlToolTip(ToolTip):
         delay: int = 500,
         x_offset: int = 20,
         y_offset: int = 10,
-        relief: str = "solid",
+        relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
         font: tuple = ("Arial", 10),
         wrap_length: Optional[int] = None,
     ):
@@ -226,7 +223,7 @@ class SimpleHtmlToolTip(ToolTip):
     def show(self):
         if self._tooltip_window or (not self._text.strip()):
             return
-        wind = tk.Toplevel(self._target_widget)
+        wind = Toplevel(self._target_widget)
         # 设置无边框
         wind.wm_overrideredirect(True)
         # 根据目标控件的位置设置提示框位置
@@ -235,67 +232,67 @@ class SimpleHtmlToolTip(ToolTip):
         wind.geometry(f"+{x}+{y}")
         # 设置样式
         wind.configure(background="#ffffff", relief="solid", borderwidth=1)
-        main_frame = tk.Frame(wind, bg="#ffffff", padx=10, pady=8)
+        main_frame = Frame(wind, bg="#ffffff", padx=10, pady=8)
         main_frame.pack()
         formatted_content = self.parse_html(self._text)
         for style, content in formatted_content:
             if style == "separator":
                 # 分隔线
-                separator = tk.Frame(main_frame, height=1, bg="#cccccc")
-                separator.pack(fill=tk.X, pady=3)
+                separator = Frame(main_frame, height=1, bg="#cccccc")
+                separator.pack(fill="x", pady=3)
             elif style == "title":
                 # 标题
-                label = tk.Label(
+                label = Label(
                     main_frame,
                     text=content,
                     bg="#ffffff",
                     fg="#2c3e50",
                     font=("Arial", 11, "bold"),
-                    justify=tk.LEFT,
+                    justify="left",
                 )
-                label.pack(anchor=tk.W)
+                label.pack(anchor="w")
             elif style == "bold":
                 # 粗体
-                label = tk.Label(
+                label = Label(
                     main_frame,
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
                     font=("Arial", 10, "bold"),
-                    justify=tk.LEFT,
+                    justify="left",
                 )
-                label.pack(anchor=tk.W)
+                label.pack(anchor="w")
             elif style == "italic":
                 # 斜体
-                label = tk.Label(
+                label = Label(
                     main_frame,
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
                     font=("Arial", 10, "italic"),
-                    justify=tk.LEFT,
+                    justify="left",
                 )
-                label.pack(anchor=tk.W)
+                label.pack(anchor="w")
             elif style == "underline":
                 # 下划线
-                label = tk.Label(
+                label = Label(
                     main_frame,
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
                     font=("Arial", 10, "underline"),
-                    justify=tk.LEFT,
+                    justify="left",
                 )
-                label.pack(anchor=tk.W)
+                label.pack(anchor="w")
             else:
                 # 普通文本
-                label = tk.Label(
+                label = Label(
                     main_frame,
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
                     font=("Arial", 10),
-                    justify=tk.LEFT,
+                    justify="left",
                 )
-                label.pack(anchor=tk.W)
+                label.pack(anchor="w")
         self._tooltip_window = wind

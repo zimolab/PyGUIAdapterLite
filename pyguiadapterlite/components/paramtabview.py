@@ -1,10 +1,16 @@
 from tkinter import Widget, Tk, Toplevel
 from typing import Union, Generator, Tuple, Optional, Any, Dict
 
-from .scrollarea import ParameterWidgetArea, ParameterNotFound
-from .tabview import TabView, TabIdNotFoundError
-from .utils import _warning
-from .valuewidget import InvalidValue, BaseParameterWidgetConfig
+from pyguiadapterlite.components.scrollarea import (
+    ParameterWidgetArea,
+    ParameterNotFound,
+)
+from pyguiadapterlite.components.tabview import TabView, TabIdNotFoundError
+from pyguiadapterlite.components.utils import _warning
+from pyguiadapterlite.components.valuewidget import (
+    InvalidValue,
+    BaseParameterWidgetConfig,
+)
 
 DEFAULT_GROUP_NAME = "Main"
 
@@ -21,7 +27,7 @@ class ParameterGroupTabView(TabView):
 
     def _create_parameter_group(self, group_name: str) -> ParameterWidgetArea:
         if not self.has_tab(group_name):
-            group_tab = ParameterWidgetArea(None)
+            group_tab = ParameterWidgetArea(self._notebook)
             self.add_tab(group_name, group_name, group_tab)
             return group_tab
         tab = self.get_tab(group_name)

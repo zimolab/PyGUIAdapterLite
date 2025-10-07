@@ -1,5 +1,4 @@
-import tkinter as tk
-from tkinter import Widget
+from tkinter import Widget, Toplevel, Label
 
 
 class Toast:
@@ -20,7 +19,7 @@ class Toast:
     ):
         """显示Toast消息"""
         # 创建顶层窗口
-        toast_window = tk.Toplevel(self.parent)
+        toast_window = Toplevel(self.parent)
         toast_window.overrideredirect(True)  # 无边框
         toast_window.attributes("-alpha", alpha)  # 初始透明
         toast_window.attributes("-topmost", True)  # 置顶
@@ -29,7 +28,7 @@ class Toast:
         toast_window.configure(background=background)
 
         # 创建消息标签
-        label = tk.Label(
+        label = Label(
             toast_window,
             text=message,
             fg=foreground,
@@ -45,7 +44,7 @@ class Toast:
         # 淡入动画
         self._fade_in(toast_window, duration)
 
-    def _set_position(self, window: tk.Toplevel, position: str):
+    def _set_position(self, window: Toplevel, position: str):
         """设置Toast位置"""
         position = position.lower().strip()
 

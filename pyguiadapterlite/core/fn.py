@@ -2,7 +2,8 @@ import dataclasses
 from abc import abstractmethod
 from typing import Callable, Any, Type, Dict, Optional, List
 
-from .valuewidget import BaseParameterWidgetConfig
+from pyguiadapterlite.windows.basewindow import BaseWindowConfig
+from pyguiadapterlite.components.valuewidget import BaseParameterWidgetConfig
 
 
 class ExecuteStateListener(object):
@@ -12,16 +13,12 @@ class ExecuteStateListener(object):
     def on_execute_start(self, fn_info: "FnInfo", arguments: Dict[str, Any]) -> None:
         pass
 
-    def on_execute_finish(self, fn_info: "FnInfo", arguments: Dict[str, Any]) -> None:
-        pass
-
-    def on_execute_result(
-        self, fn_info: "FnInfo", arguments: Dict[str, Any], result: Any
-    ) -> None:
-        pass
-
-    def on_execute_error(
-        self, fn_info: "FnInfo", arguments: Dict[str, Any], exception: BaseException
+    def on_execute_finish(
+        self,
+        fn_info: "FnInfo",
+        arguments: Dict[str, Any],
+        return_value: Any,
+        exception: Optional[BaseException],
     ) -> None:
         pass
 
@@ -37,7 +34,7 @@ class BaseFunctionExecutor(object):
         return self._listener
 
     @abstractmethod
-    def execute(self, fn_info: "FnInfo", arguments: Dict[str, Any]):
+    def execute(self, fn_info: "FnInfo", arguments: Optional[Dict[str, Any]] = None):
         pass
 
     @property
@@ -67,14 +64,22 @@ class ParameterInfo(object):
 @dataclasses.dataclass
 class FnInfo(object):
     fn: Callable
-    fn_name: str
+    fn_name: Optional[str] = None
     display_name: Optional[str] = None
     document: Optional[str] = ""
     icon: Optional[str] = None
-    parameters: Dict[str, ParameterInfo] = dataclasses.field(default_factory=dict)
     parameter_configs: Dict[str, BaseParameterWidgetConfig] = dataclasses.field(
         default_factory=dict
     )
     cancelable: bool = False
     executor: Optional[Type[BaseFunctionExecutor]] = None
     capture_system_exit_exception: bool = True
+    window_config: Optional[BaseWindowConfig] = None
+    parameters_validator: Optional[
+        Callable[[str, Dict[str, object]], Optional[Dict[str, str]]]
+    ] = None
+
+    def get_function_name(self) -> str:
+        if self.fn_name:
+            return self.fn_name
+        return self.fn.__name__

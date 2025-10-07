@@ -15,7 +15,15 @@ from tkinter import (
 )
 from typing import Optional
 
-from .utils import _warning
+from pyguiadapterlite._messages import (
+    MSG_COPY,
+    MSG_SELECT_ALL,
+    MSG_CLEAR_OUTPUT,
+    MSG_SCROLL_TO_TOP,
+    MSG_SCROLL_TO_BOTTOM,
+    MSG_SAVE_TO_FILE,
+)
+from pyguiadapterlite.components.utils import _warning
 
 
 class TermView(Frame):
@@ -118,15 +126,19 @@ class TermView(Frame):
         self.context_menu = Menu(self._text_widget, tearoff=0)
 
         # 添加菜单项
-        self.context_menu.add_command(label="复制", command=self.copy_selected_text)
-        self.context_menu.add_command(label="全选", command=self.select_all)
+        self.context_menu.add_command(label=MSG_COPY, command=self.copy_selected_text)
+        self.context_menu.add_command(label=MSG_SELECT_ALL, command=self.select_all)
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="清空控制台", command=self.clear)
+        self.context_menu.add_command(label=MSG_CLEAR_OUTPUT, command=self.clear)
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="滚动到顶部", command=self.scroll_to_top)
-        self.context_menu.add_command(label="滚动到底部", command=self.scroll_to_bottom)
+        self.context_menu.add_command(
+            label=MSG_SCROLL_TO_TOP, command=self.scroll_to_top
+        )
+        self.context_menu.add_command(
+            label=MSG_SCROLL_TO_BOTTOM, command=self.scroll_to_bottom
+        )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="保存到文件", command=self.save_to_file)
+        self.context_menu.add_command(label=MSG_SAVE_TO_FILE, command=self.save_to_file)
 
     def _show_context_menu(self, event):
         """显示右键菜单"""
@@ -172,7 +184,7 @@ class TermView(Frame):
         file_path = filedialog.asksaveasfilename(
             defaultextension=".txt",
             filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
-            title="保存控制台内容",
+            title=MSG_SAVE_TO_FILE,
         )
 
         if file_path:
@@ -364,17 +376,30 @@ class TermView(Frame):
 
     def write(self, text):
         """向控制台输出文本，处理ANSI转义序列"""
-        self.after(0, self._process_text, text)
+        self._process_text(text)
 
     def write_line(self, text):
         """输出一行文本"""
         self.write(text + "\n")
 
-    def get_text(self):
-        """获取控制台中的所有文本"""
-        return self._text_widget.get(1.0, END)
-
     def set_text(self, text):
         """设置控制台文本"""
         self.clear()
         self.write(text)
+
+    def write_after(self, text):
+        """向控制台输出文本，处理ANSI转义序列"""
+        self.after(0, self._process_text, text)
+
+    def write_line_after(self, text):
+        """输出一行文本"""
+        self.write_after(text + "\n")
+
+    def get_text(self):
+        """获取控制台中的所有文本"""
+        return self._text_widget.get(1.0, END)
+
+    def set_text_after(self, text):
+        """设置控制台文本"""
+        self.clear()
+        self.write_after(text)

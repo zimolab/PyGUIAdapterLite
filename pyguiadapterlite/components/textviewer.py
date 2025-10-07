@@ -1,9 +1,27 @@
 from tkinter import Widget, Toplevel, Tk, TclError, Menu
 from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Frame, Label, Button
-from typing import Union
+from typing import Union, Literal
 
-from .utils import _error, _exception
+from pyguiadapterlite._messages import (
+    MSG_COPY,
+    MSG_SELECT_ALL,
+    MSG_ZOOM_IN,
+    MSG_ZOOM_OUT,
+    MSG_ZOOMING,
+    MSG_ZOOM_RESET,
+    MSG_NAVIGATION,
+    MSG_NAV_TOP,
+    MSG_NAV_BOTTOM,
+    MSG_NAV_HINT,
+    MSG_NAV_PAGE_UP,
+    MSG_NAV_PAGE_DOWN,
+)
+from pyguiadapterlite.components.utils import _exception
+
+NAV_KEYS = ("Up", "Down", "Left", "Right", "Prior", "Next", "Home", "End")
+
+ZOOM_KEYS = ("plus", "equal", "minus", "0")
 
 
 class TextView(object):
@@ -11,7 +29,7 @@ class TextView(object):
         self,
         parent: Union[Widget, Toplevel, Tk],
         font: tuple = ("Arial", 14),
-        wrap: str = "word",
+        wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,
         default_menu: bool = True,
@@ -78,21 +96,12 @@ class TextView(object):
     def _block_editing_keys(self, event):
         """阻止文本编辑的按键"""
         # 允许导航键
-        if event.keysym in [
-            "Up",
-            "Down",
-            "Left",
-            "Right",
-            "Prior",
-            "Next",
-            "Home",
-            "End",
-        ]:
+        if event.keysym in NAV_KEYS:
             return ""
 
         # 允许 Ctrl 组合键（用于缩放等）
         if event.state & 0x4:  # Ctrl 键被按下
-            if event.keysym in ("plus", "equal", "minus", "0"):  # 缩放相关
+            if event.keysym in ZOOM_KEYS:  # 缩放相关
                 return ""
             if event.keysym in ("a", "A"):  # Ctrl+A 全选
                 return self._on_ctrl_a(event)
@@ -106,13 +115,13 @@ class TextView(object):
         # 允许默认的滚动行为
         return
 
-    def _on_page_up(self, event):
+    def _on_page_up(self, event=None):
         _ = event
         """PageUp - 向上翻页"""
         self._text_widget.yview_scroll(-1, "pages")
         return "break"
 
-    def _on_page_down(self, event):
+    def _on_page_down(self, event=None):
         """PageDown - 向下翻页"""
         _ = event
         self._text_widget.yview_scroll(1, "pages")
@@ -186,12 +195,8 @@ class TextView(object):
         if color:
             self._text_widget.config(fg=color)
 
-    def set_wrap(self, wrap: str):
-        valid_wraps = ["none", "char", "word"]
-        if wrap in valid_wraps:
-            self._text_widget.config(wrap=wrap)
-        else:
-            _error(f"invalid wrap value: {wrap}. Valid values are: {valid_wraps}")
+    def set_wrap(self, wrap: Literal["none", "char", "word"]):
+        self._text_widget.config(wrap=wrap)
 
     def clear(self):
         self._text_widget.delete("1.0", "end")
@@ -199,9 +204,22 @@ class TextView(object):
     def create_default_menu(self):
         """创建右键菜单"""
         self._context_menu = Menu(self._text_widget, tearoff=0)
-        self._context_menu.add_command(label="复制", command=self.copy)
+        self._context_menu.add_command(label=MSG_COPY, command=self.copy)
         self._context_menu.add_separator()
-        self._context_menu.add_command(label="全选", command=self.select_all)
+        self._context_menu.add_command(label=MSG_SELECT_ALL, command=self.select_all)
+        self._context_menu.add_separator()
+        self._context_menu.add_command(label=MSG_ZOOM_IN, command=self.zoom_in)
+        self._context_menu.add_command(label=MSG_ZOOM_OUT, command=self.zoom_out)
+        self._context_menu.add_command(label=MSG_ZOOM_RESET, command=self.zoom_reset)
+        self._context_menu.add_separator()
+        self._context_menu.add_command(label=MSG_NAV_TOP, command=self.scroll_to_top)
+        self._context_menu.add_command(
+            label=MSG_NAV_BOTTOM, command=self.scroll_to_bottom
+        )
+        self._context_menu.add_command(label=MSG_NAV_PAGE_UP, command=self._on_page_up)
+        self._context_menu.add_command(
+            label=MSG_NAV_PAGE_DOWN, command=self._on_page_down
+        )
 
         # 绑定右键事件
         self._text_widget.bind("<Button-3>", self.show_context_menu)  # 右键点击
@@ -255,10 +273,10 @@ class SimpleTextViewer(Toplevel):
         self,
         parent=None,
         title="文本查看器",
-        width=800,
+        width=850,
         height=600,
         font: tuple = ("Arial", 14),
-        wrap: str = "word",
+        wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,
         default_menu: bool = True,
@@ -307,41 +325,38 @@ class SimpleTextViewer(Toplevel):
         control_frame.pack(fill="x", padx=10, pady=5)
 
         # 缩放控制
-        Label(control_frame, text="缩放:").pack(side="left", padx=5)
+        Label(control_frame, text=MSG_ZOOMING).pack(side="left", padx=5)
 
         zoom_in_btn = Button(
-            control_frame, text="放大 (+)", command=self._text_view.zoom_in
+            control_frame, text=MSG_ZOOM_IN, command=self._text_view.zoom_in
         )
         zoom_in_btn.pack(side="left", padx=2)
 
         zoom_out_btn = Button(
-            control_frame, text="缩小 (-)", command=self._text_view.zoom_out
+            control_frame, text=MSG_ZOOM_OUT, command=self._text_view.zoom_out
         )
         zoom_out_btn.pack(side="left", padx=2)
 
         zoom_reset_btn = Button(
-            control_frame, text="重置缩放", command=self._text_view.zoom_reset
+            control_frame, text=MSG_ZOOM_RESET, command=self._text_view.zoom_reset
         )
         zoom_reset_btn.pack(side="left", padx=2)
 
         # 导航控制
-        Label(control_frame, text="导航:").pack(side="left", padx=(20, 5))
+        Label(control_frame, text=MSG_NAVIGATION).pack(side="left", padx=(20, 5))
 
         top_btn = Button(
-            control_frame, text="顶部", command=self._text_view.scroll_to_top
+            control_frame, text=MSG_NAV_TOP, command=self._text_view.scroll_to_top
         )
         top_btn.pack(side="left", padx=2)
 
         bottom_btn = Button(
-            control_frame, text="底部", command=self._text_view.scroll_to_bottom
+            control_frame, text=MSG_NAV_BOTTOM, command=self._text_view.scroll_to_bottom
         )
         bottom_btn.pack(side="left", padx=2)
 
         # 状态信息
-        self.status_label = Label(
-            control_frame,
-            text="使用↑ ↓ ← →、PageUp/PageDown、Home/End进行导航",
-        )
+        self.status_label = Label(control_frame, text=MSG_NAV_HINT)
         self.status_label.pack(side="right", padx=10)
         self._control_panel = control_frame
 

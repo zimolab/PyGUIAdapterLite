@@ -4,8 +4,8 @@ import tkinter as tk
 from tkinter import Widget, Entry
 from typing import Type, Any, Optional, Union
 
-from .utils import _error
-from .valuewidget import (
+from pyguiadapterlite.components.utils import _error
+from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
     GetValueError,

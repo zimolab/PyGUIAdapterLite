@@ -1,9 +1,10 @@
 import dataclasses
 from abc import abstractmethod
+from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union
 
-from .utils import _warning
+from pyguiadapterlite.components.utils import _warning
 
 
 class SetValueError(Exception):
@@ -75,9 +76,9 @@ class BaseParameterWidgetConfig(object):
     """值控件配置基类"""
 
     default_value: Any = None
-    label: Optional[str] = None
-    description: Optional[str] = None
-    group: Optional[str] = None
+    label: str = ""
+    description: str = ""
+    group: str = ""
 
     # noinspection PyAbstractClass
     @classmethod
@@ -95,6 +96,8 @@ _T = TypeVar("_T", bound=BaseParameterWidgetConfig)
 
 class BaseParameterWidget(Frame):
     """所有参数控件（输入控件）类的基类"""
+
+    ConfigClass: Type[BaseParameterWidgetConfig] = NotImplemented
 
     def __init__(self, parent: Widget, parameter_name: str, config: _T):
         super().__init__(parent)
@@ -167,3 +170,7 @@ class BaseParameterWidget(Frame):
 
     def start_invalid_value_effect(self):
         self._invalid_value_effect.start()
+
+
+def is_parameter_widget_class(o: Any) -> bool:
+    return o is not None and isclass(o) and issubclass(o, BaseParameterWidget)

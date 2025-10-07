@@ -1,10 +1,10 @@
 import dataclasses
-import tkinter as tk
 from abc import abstractmethod, ABCMeta
 from pathlib import Path
+from tkinter import Tk, Toplevel
 from typing import Tuple, Optional, Any, Union
 
-from .utils import _warning
+from pyguiadapterlite.components.utils import _warning
 
 
 class ParameterGroupNameNotAvailableError(Exception):
@@ -12,15 +12,16 @@ class ParameterGroupNameNotAvailableError(Exception):
 
 
 @dataclasses.dataclass(frozen=True)
-class BasicWindowConfig(object):
-    title: str = "BasicWindow"
+class BaseWindowConfig(object):
+    title: str = ""
     icon: Optional[str] = None
     size: Tuple[int, int] = (800, 600)
     position: Tuple[Optional[int], Optional[int]] = (None, None)
+    always_on_top: bool = False
 
 
-class BasicWindow(object, metaclass=ABCMeta):
-    def __init__(self, parent: Union[tk.Tk, tk.Toplevel], config: BasicWindowConfig):
+class BaseWindow(object, metaclass=ABCMeta):
+    def __init__(self, parent: Union[Tk, Toplevel], config: BaseWindowConfig):
         self._parent = parent
         self._config = config
 
@@ -49,12 +50,15 @@ class BasicWindow(object, metaclass=ABCMeta):
         self.create_main_menu()
         self.create_status_bar()
 
+        self._parent.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.set_always_on_top(config.always_on_top)
+
     @property
-    def parent(self) -> Union[tk.Tk, tk.Toplevel]:
+    def parent(self) -> Union[Tk, Toplevel]:
         return self._parent
 
     @property
-    def config(self) -> BasicWindowConfig:
+    def config(self) -> BaseWindowConfig:
         return self._config
 
     @abstractmethod
@@ -85,6 +89,7 @@ class BasicWindow(object, metaclass=ABCMeta):
         """
         将窗口居中显示（自动获取窗口尺寸）
         """
+        self.hide()
         # 更新窗口以确保获取正确的尺寸
         self._parent.update()
 
@@ -102,3 +107,18 @@ class BasicWindow(object, metaclass=ABCMeta):
 
         # 设置位置
         self._parent.geometry(f"+{x}+{y}")
+        self.show()
+
+    def hide(self):
+        self._parent.withdraw()
+
+    def show(self):
+        self._parent.deiconify()
+
+    def set_always_on_top(self, on: bool):
+        self._parent.wm_attributes("-topmost", on)
+
+    def on_close(self):
+        if self._parent:
+            self._parent.destroy()
+            self._parent = None

@@ -1,8 +1,8 @@
-from tkinter import Widget, Frame, END
+from tkinter import Widget
 from tkinter.ttk import Notebook
 from typing import Dict, Optional, List, Callable
 
-from .utils import _exception
+from pyguiadapterlite.components.utils import _exception
 
 
 class TabIdAlreadyExistsError(Exception):
@@ -26,6 +26,8 @@ class TabView(object):
         if tab_id in self._tabs:
             raise TabIdAlreadyExistsError(f"tab id `{tab_id}` already exists")
         content.master = self._notebook
+        # if content.master is None:
+        #     content.configure(master=self._notebook)
         self._notebook.add(content, text=tab_name, **kwargs)
         self._tabs[tab_id] = content
 
