@@ -72,18 +72,6 @@ class ParameterValidationWindow(BaseWindow):
         self._doc_view = TextView(self._bottom_frame, font=self.config.font)
         self._doc_view.pack(fill="both", expand=True, padx=5, pady=5)
 
-    def create_left_area(self) -> Any:
-        pass
-
-    def create_right_area(self) -> Any:
-        pass
-
-    def create_main_menu(self) -> Any:
-        pass
-
-    def create_status_bar(self):
-        pass
-
     def set_item_clicked_handler(self, handler: Callable[[str], None]):
         self._item_click_handler = handler
 

@@ -12,12 +12,12 @@ from pyguiadapterlite._messages import (
     MSG_SEL_FUNC_FIRST,
     MSG_CURRENT_FUNC_STATUS,
 )
-from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
-from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
-from pyguiadapterlite.core.fn import FnInfo
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textviewer import TextView
 from pyguiadapterlite.components.utils import show_warning, _info, _exception
+from pyguiadapterlite.core.fn import FnInfo
+from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
+from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
 
 
 @dataclasses.dataclass(frozen=True)
@@ -246,12 +246,3 @@ class FnSelectWindow(BaseWindow):
             self._doc_view.set_text(self.config.no_document_text)
         else:
             self._doc_view.set_text(fn_info.document)
-
-    def create_main_menu(self) -> Any:
-        pass
-
-    def create_bottom_area(self) -> Any:
-        pass
-
-    def create_status_bar(self):
-        pass

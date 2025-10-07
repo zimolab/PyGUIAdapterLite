@@ -264,22 +264,10 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._main_area = MainArea(self)
         self._main_area.pack(side="top", fill="both", padx=5, pady=5, expand=True)
 
-    def create_left_area(self) -> Any:
-        pass
-
     def create_bottom_area(self) -> Any:
         bottom_area = BottomArea(self)
         bottom_area.pack(side="bottom", fill="x", padx=5, pady=(5, 2), expand=False)
         self._bottom_area = bottom_area
-
-    def create_right_area(self) -> Any:
-        pass
-
-    def create_main_menu(self) -> Any:
-        pass
-
-    def create_status_bar(self):
-        pass
 
     def _build_parameter_groups(self):
         parameter_configs = self._fn_info.parameter_configs
