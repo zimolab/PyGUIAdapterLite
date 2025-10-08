@@ -20,10 +20,12 @@ class GetValueError(Exception):
 
 
 class InvalidValue(object):
-    def __init__(self, raw_value: Any, msg: Optional[str] = None, data: Any = None):
+    def __init__(
+        self, raw_value: Any, msg: Optional[str] = None, exception: Any = None
+    ):
         self.raw_value = raw_value
         self.msg = msg
-        self.data = data
+        self.exception = exception
 
 
 class ColorFlashEffect(object):

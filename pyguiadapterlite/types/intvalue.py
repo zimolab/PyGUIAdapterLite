@@ -94,7 +94,7 @@ class IntValueWidget(BaseParameterWidget):
             return self._input_entry.value
         except GetValueError as e:
             self.on_parameter_error(self._parameter_name, e)
-            return InvalidValue(raw_value=e.raw_value, data=e)
+            return InvalidValue(raw_value=e.raw_value, exception=e)
 
     def set_value(self, value: Any) -> Union[int, InvalidValue]:
         if not self._input_entry:
@@ -104,7 +104,7 @@ class IntValueWidget(BaseParameterWidget):
             return value
         except SetValueError as e:
             self.on_parameter_error(self._parameter_name, e)
-            return InvalidValue(raw_value=e.raw_value, data=e)
+            return InvalidValue(raw_value=e.raw_value, exception=e)
 
     def build(self) -> "IntValueWidget":
         if self._build_flag:
