@@ -16,6 +16,10 @@ from pyguiadapterlite._messages import (
     MSG_NAV_HINT,
     MSG_NAV_PAGE_UP,
     MSG_NAV_PAGE_DOWN,
+    MSG_PASTE,
+    MSG_CUT,
+    MSG_UNDO,
+    MSG_REDO,
 )
 from pyguiadapterlite.utils import _exception
 
@@ -33,6 +37,7 @@ class TextView(object):
         background: str = None,
         foreground: str = None,
         default_menu: bool = True,
+        editable: bool = False,
         **kwargs,
     ):
         self._context_menu = None
@@ -41,6 +46,8 @@ class TextView(object):
         self._original_font = font
         self._current_font = font
         self._zoom_level = 0  # 缩放级别
+
+        self._editable = editable
 
         self._text_widget = ScrolledText(self._parent, font=font, wrap=wrap, **kwargs)
 
@@ -91,7 +98,17 @@ class TextView(object):
         self._text_widget.bind("<Control-End>", self._on_ctrl_end)
 
         # 阻止文本编辑的键盘事件
-        self._text_widget.bind("<Key>", self._block_editing_keys)
+        if not self._editable:
+            self._text_widget.bind("<Key>", self._block_editing_keys)
+        else:
+            # 在可编辑模式下还要绑定一些快捷键
+            self._text_widget.config(undo=True)
+            self._text_widget.bind("<Control-c>", self._on_ctrl_c)
+            self._text_widget.bind("<Control-v>", self._on_ctrl_v)
+            self._text_widget.bind("<Control-x>", self._on_ctrl_x)
+            self._text_widget.bind("<Control-z>", self._on_ctrl_z)
+            self._text_widget.bind("<Control-y>", self._on_ctrl_y)
+            self._text_widget.bind("<Control-a>", self._on_ctrl_a)
 
     def _block_editing_keys(self, event):
         """阻止文本编辑的按键"""
@@ -172,6 +189,42 @@ class TextView(object):
             _exception(e, "unable to generate copy event")
         return "break"
 
+    def _on_ctrl_v(self, event):
+        """Ctrl+V - 粘贴"""
+        _ = event
+        try:
+            self._text_widget.event_generate("<<Paste>>")
+        except TclError as e:
+            _exception(e, "unable to generate paste event")
+        return "break"
+
+    def _on_ctrl_x(self, event):
+        """Ctrl+X - 剪切"""
+        _ = event
+        try:
+            self._text_widget.event_generate("<<Cut>>")
+        except TclError as e:
+            _exception(e, "unable to generate cut event")
+        return "break"
+
+    def _on_ctrl_z(self, event):
+        """Ctrl+Z - 撤销"""
+        _ = event
+        try:
+            self._text_widget.edit_undo()
+        except TclError as e:
+            _exception(e, "cannot undo")
+        return "break"
+
+    def _on_ctrl_y(self, event):
+        """Ctrl+Y - 重做"""
+        _ = event
+        try:
+            self._text_widget.edit_redo()
+        except TclError as e:
+            _exception(e, "cannot redo")
+        return "break"
+
     def set_text(self, text: str):
         self._text_widget.delete("1.0", "end")
         self._text_widget.insert("1.0", text)
@@ -205,6 +258,21 @@ class TextView(object):
         """创建右键菜单"""
         self._context_menu = Menu(self._text_widget, tearoff=0)
         self._context_menu.add_command(label=MSG_COPY, command=self.copy)
+        if self._editable:
+            self._context_menu.add_command(
+                label=MSG_CUT, command=lambda e=None: self._on_ctrl_x(e)
+            )
+            self._context_menu.add_command(
+                label=MSG_PASTE, command=lambda e=None: self._on_ctrl_v(e)
+            )
+            self._context_menu.add_separator()
+            self._context_menu.add_command(
+                label=MSG_UNDO, command=lambda e=None: self._on_ctrl_z(e)
+            )
+            self._context_menu.add_command(
+                label=MSG_REDO, command=lambda e=None: self._on_ctrl_y(e)
+            )
+
         self._context_menu.add_separator()
         self._context_menu.add_command(label=MSG_SELECT_ALL, command=self.select_all)
         self._context_menu.add_separator()

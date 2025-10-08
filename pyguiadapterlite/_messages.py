@@ -11,7 +11,13 @@ MSG_ERROR_TITLE = tr_("Error")
 MSG_INFO_TITLE = tr_("Information")
 MSG_QUESTION_TITLE = tr_("Question")
 MSG_NO_FUNC_DOC = tr_("No function documentation available.")
+
 MSG_COPY = tr_("Copy")
+MSG_CUT = tr_("Cut")
+MSG_PASTE = tr_("Paste")
+MSG_UNDO = tr_("Undo")
+MSG_REDO = tr_("Redo")
+
 MSG_SELECT_ALL = tr_("Select All")
 MSG_CLEAR_OUTPUT = tr_("Clear Output")
 MSG_SCROLL_TO_TOP = tr_("Scroll to Top")
