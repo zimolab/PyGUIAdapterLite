@@ -12,13 +12,13 @@ from pyguiadapterlite.components.valuewidget import (
 )
 from pyguiadapterlite.utils import _error
 
-MIN_VALUE = 0
-MAX_VALUE = 100
+MAX_VALUE = 2**31 - 1
+MIN_VALUE = -MAX_VALUE
 
 
 @dataclasses.dataclass(frozen=True)
 class RangedIntValue(BaseParameterWidgetConfig):
-    default_value: int = MIN_VALUE
+    default_value: int = 0
     min_value: int = MIN_VALUE
     max_value: int = MAX_VALUE
     step: int = 1
@@ -38,41 +38,23 @@ class IntSpinbox(Spinbox):
             increment=parent.config.step,
             wrap=parent.config.wrap,
         )
-
-        # self._validate_command = self.register(self.validate_input)
-        # self.configure(
-        #     validate="key",
-        #     validatecommand=(self._validate_command, "%P"),
-        # )
-        # self.bind("<FocusOut>", self.on_focus_out)
-
-    # @staticmethod
-    # def validate_input(value: str) -> bool:
-    #     value = value.strip()
-    #     if value == "" or value == "-":
-    #         return True
-    #     try:
-    #         int(value)
-    #         return True
-    #     except ValueError:
-    #         return False
-
-    # def on_focus_out(self, event):
-    #     _ = event
-    #     value = self.get().strip()
-    #     if value == "" or value == "-":
-    #         self.delete(0, END)
-    #         self.insert(END, str(self.fallback_value))
+        self._parent = parent
 
     @property
     def value(self) -> Union[int, InvalidValue]:
         current_value = self.get().strip()
         try:
-            return int(self.get().strip())
+            val = int(self.get().strip())
         except ValueError as e:
             raise GetValueError(
-                raw_value=current_value, msg=f"invalid int value `{current_value}`"
+                raw_value=current_value, msg=f"cannot convert to int"
             ) from e
+        if val < self._parent.config.min_value or val > self._parent.config.max_value:
+            raise GetValueError(
+                raw_value=current_value,
+                msg=f"out of range [{self._parent.config.min_value}, {self._parent.config.max_value}]",
+            )
+        return val
 
     @value.setter
     def value(self, value: int) -> Optional[InvalidValue]:
@@ -81,8 +63,16 @@ class IntSpinbox(Spinbox):
             value = int(raw_value)
         except ValueError as e:
             raise SetValueError(
-                raw_value=raw_value, msg=f"invalid int value `{value}`"
+                raw_value=raw_value, msg=f"cannot convert to int"
             ) from e
+        if (
+            value < self._parent.config.min_value
+            or value > self._parent.config.max_value
+        ):
+            raise SetValueError(
+                raw_value=raw_value,
+                msg=f"out of range [{self._parent.config.min_value}, {self._parent.config.max_value}]",
+            )
         self.set(str(value))
 
 
