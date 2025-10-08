@@ -13,7 +13,7 @@ class text_t(str):
 
 
 # noinspection PyPep8Naming
-class int_t(int):
+class int_r(int):
     pass
 
 

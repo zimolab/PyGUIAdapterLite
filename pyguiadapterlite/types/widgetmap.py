@@ -2,6 +2,7 @@ from datetime import datetime, date, time
 from typing import Union
 
 from pyguiadapterlite.types.intvalue import IntValueWidget
+from pyguiadapterlite.types.rangedint import RangedIntValueWidget
 
 from pyguiadapterlite.types.typenames import (
     TYPE_INT,
@@ -9,7 +10,7 @@ from pyguiadapterlite.types.typenames import (
 
 from pyguiadapterlite.types.extendtypes import (
     text_t,
-    int_t,
+    int_r,
     float_t,
     directory_t,
     file_t,
@@ -39,7 +40,7 @@ PyLiteralType = Union[bool, int, float, bytes, str, list, tuple, dict, set, type
 
 
 TYPE_TEXT = text_t.__name__
-TYPE_INT_T = int_t.__name__
+TYPE_INT_R = int_r.__name__
 TYPE_FLOAT_T = float_t.__name__
 TYPE_DIR_T = directory_t.__name__
 TYPE_FILE_T = file_t.__name__
@@ -75,7 +76,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_TEXT: TextEdit,
     TYPE_INT: IntValueWidget,
     # TYPE_BOOL: BoolBox,
-    # TYPE_INT_T: IntLineEdit,
+    TYPE_INT_R: RangedIntValueWidget,
     # TYPE_FLOAT: FloatSpinBox,
     # TYPE_FLOAT_T: FloatLineEdit,
     # TYPE_DIR_T: DirSelect,
