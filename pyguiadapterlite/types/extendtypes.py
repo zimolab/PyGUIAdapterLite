@@ -17,6 +17,10 @@ class int_r(int):
     pass
 
 
+class int_s(int):
+    pass
+
+
 # noinspection PyPep8Naming
 class float_t(float):
     pass
