@@ -1,8 +1,8 @@
 from datetime import datetime, date, time
 from typing import Union
 
-from pyguiadapterlite.types.intvalue import IntValueWidget
-from pyguiadapterlite.types.rangedint import RangedIntValueWidget
+from pyguiadapterlite.types.inttypes.intvalue import IntValueWidget
+from pyguiadapterlite.types.inttypes.rangedint import RangedIntValueWidget
 
 from pyguiadapterlite.types.typenames import (
     TYPE_INT,
