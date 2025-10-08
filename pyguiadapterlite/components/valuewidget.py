@@ -106,7 +106,7 @@ class BaseParameterWidget(Frame):
         self._label = self._config.label or self._parameter_name
         self._description = self._config.description or ""
 
-        self._invalid_value_effect = ColorFlashEffect(self, "#ffcccc", 800, 3)
+        self._invalid_value_effect = ColorFlashEffect(self, "red", 800, 3)
 
     @property
     def parameter_name(self) -> str:

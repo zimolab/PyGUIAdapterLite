@@ -1,6 +1,7 @@
 import dataclasses
 
-from tkinter import Widget, Entry, END
+from tkinter import Widget, END
+from tkinter.ttk import Entry
 from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.utils import _error
@@ -110,9 +111,9 @@ class IntValueWidget(BaseParameterWidget):
             return self
         self._build_flag = True
         self._input_entry = IntEntry(self, fallback_value=self._config.fallback_value)
-        self.invalid_value_effect.set_target(self._input_entry)
+        self.invalid_value_effect.set_target(self)
         # noinspection PyTypeChecker
-        self._input_entry.pack(side="left", fill="x", expand=True)
+        self._input_entry.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._input_entry.value = self._config.default_value
 
         return self
