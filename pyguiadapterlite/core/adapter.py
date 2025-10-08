@@ -2,8 +2,9 @@ import dataclasses
 import platform
 from collections import OrderedDict
 from tkinter import Tk
-from typing import Callable, Optional, Dict, Union, Tuple, Type
+from typing import Callable, Optional, Dict, Union, Tuple, Type, List
 
+from pyguiadapterlite.components.menus import Menu, Separator
 from pyguiadapterlite.core.fn import FnInfo, ParameterInfo, BaseFunctionExecutor
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindowConfig, FnExecuteWindow
 from pyguiadapterlite.core.fnparser import FnParser
@@ -45,6 +46,7 @@ class GUIAdapter(object):
             Dict[str, Union[BaseParameterWidgetConfig, dict]]
         ] = None,
         window_config: Optional[FnExecuteWindowConfig] = None,
+        window_menus: Optional[List[Union[Menu, Separator]]] = None,
         parameters_validator: Optional[
             Callable[[str, Dict[str, object]], Optional[Dict[str, str]]]
         ] = None,
@@ -53,6 +55,13 @@ class GUIAdapter(object):
         ignore_self_parameter: bool = True,
     ) -> None:
         doc, params = self._fn_parser.parse(fn, ignore_self_param=ignore_self_parameter)
+
+        if window_config is None:
+            window_config = FnExecuteWindowConfig(menus=window_menus)
+        else:
+            if window_menus is not None:
+                window_config = dataclasses.replace(window_config, menus=window_menus)
+
         fn_info = FnInfo(
             fn=fn,
             fn_name=fn.__name__,
@@ -91,6 +100,7 @@ class GUIAdapter(object):
         *,
         show_select_window: bool = False,
         select_window_config: Optional[FnSelectWindowConfig] = None,
+        select_window_menus: Optional[List[Union[Menu, Separator]]] = None,
     ) -> None:
         if len(self._functions) == 0:
             raise SystemExit("A least one function must be added before running.")
@@ -110,6 +120,13 @@ class GUIAdapter(object):
                 _warning("high-DPI mode is not supported on this platform.")
         UContext.app_started(root)
         if show_select_window:
+            if select_window_config is None:
+                select_window_config = FnSelectWindowConfig(menus=select_window_menus)
+            else:
+                if select_window_menus is not None:
+                    select_window_config = dataclasses.replace(
+                        select_window_config, menus=select_window_menus
+                    )
             self._show_select_window(select_window_config)
         else:
             self._show_execute_window(list(self._functions.values())[0])
