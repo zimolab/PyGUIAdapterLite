@@ -24,10 +24,10 @@ class IntValue(BaseParameterWidgetConfig):
 
 
 class IntEntry(Entry):
-    def __init__(self, master: Widget, invalid_fallback_value: int = 0, **kwargs):
+    def __init__(self, master: Widget, fallback_value: int = 0, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.invalid_fallback_value = invalid_fallback_value
+        self.fallback_value = fallback_value
 
         self._validate_command = self.register(self.validate_input)
         self.configure(
@@ -52,7 +52,7 @@ class IntEntry(Entry):
         value = self.get().strip()
         if value == "" or value == "-":
             self.delete(0, END)
-            self.insert(END, str(self.invalid_fallback_value))
+            self.insert(END, str(self.fallback_value))
 
     @property
     def value(self) -> Union[int, InvalidValue]:
@@ -109,14 +109,10 @@ class IntValueWidget(BaseParameterWidget):
         if self._build_flag:
             return self
         self._build_flag = True
-        self._input_entry = IntEntry(
-            self,
-            invalid_fallback_value=self._config.invalid_fallback_value,
-            **(self._config.entry_configs or {}),
-        )
+        self._input_entry = IntEntry(self, fallback_value=self._config.fallback_value)
         self.invalid_value_effect.set_target(self._input_entry)
         # noinspection PyTypeChecker
-        self._input_entry.pack(side="left", fill="y", expand=True)
+        self._input_entry.pack(side="left", fill="x", expand=True)
         self._input_entry.value = self._config.default_value
 
         return self
