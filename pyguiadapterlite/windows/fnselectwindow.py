@@ -13,7 +13,7 @@ from pyguiadapterlite._messages import (
     MSG_CURRENT_FUNC_STATUS,
 )
 from pyguiadapterlite.components.listview import ListView
-from pyguiadapterlite.components.textviewer import TextView
+from pyguiadapterlite.components.textview import TextView
 from pyguiadapterlite.utils import show_warning, _info, _exception
 from pyguiadapterlite.core.fn import FnInfo
 from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig

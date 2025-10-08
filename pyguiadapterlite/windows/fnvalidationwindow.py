@@ -12,7 +12,7 @@ from pyguiadapterlite._messages import (
 )
 from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
 from pyguiadapterlite.components.listview import ListView
-from pyguiadapterlite.components.textviewer import TextView
+from pyguiadapterlite.components.textview import TextView
 
 
 @dataclasses.dataclass(frozen=True)
