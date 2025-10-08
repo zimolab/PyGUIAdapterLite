@@ -1,7 +1,6 @@
 import dataclasses
-import tkinter as tk
 
-from tkinter import Widget, Entry
+from tkinter import Widget, Entry, END
 from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.components.utils import _error
@@ -17,9 +16,7 @@ from pyguiadapterlite.components.valuewidget import (
 @dataclasses.dataclass(frozen=True)
 class IntValue(BaseParameterWidgetConfig):
     default_value: int = 0
-    invalid_fallback_value: int = 0
-
-    entry_configs: Optional[dict] = None
+    fallback_value: int = 0
 
     @classmethod
     def target_widget_class(cls) -> Type["IntValueWidget"]:
@@ -54,8 +51,8 @@ class IntEntry(Entry):
         _ = event
         value = self.get().strip()
         if value == "" or value == "-":
-            self.delete(0, tk.END)
-            self.insert(tk.END, str(self.invalid_fallback_value))
+            self.delete(0, END)
+            self.insert(END, str(self.invalid_fallback_value))
 
     @property
     def value(self) -> Union[int, InvalidValue]:
@@ -76,8 +73,8 @@ class IntEntry(Entry):
             raise SetValueError(
                 raw_value=raw_value, msg=f"invalid int value `{value}`"
             ) from e
-        self.delete(0, tk.END)
-        self.insert(tk.END, str(value))
+        self.delete(0, END)
+        self.insert(END, str(value))
 
 
 class IntValueWidget(BaseParameterWidget):
@@ -119,7 +116,7 @@ class IntValueWidget(BaseParameterWidget):
         )
         self.invalid_value_effect.set_target(self._input_entry)
         # noinspection PyTypeChecker
-        self._input_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        self._input_entry.pack(side="left", fill="y", expand=True)
         self._input_entry.value = self._config.default_value
 
         return self
