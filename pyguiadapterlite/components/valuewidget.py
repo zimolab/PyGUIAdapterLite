@@ -153,12 +153,6 @@ class BaseParameterWidget(Frame):
     def build(self) -> "BaseParameterWidget":
         pass
 
-    def on_parameter_error(self, parameter_name: str, error: Any) -> None:
-        pass
-
-    def on_clear_parameter_error(self, parameter_name: str) -> None:
-        pass
-
     @classmethod
     def new(
         cls,
