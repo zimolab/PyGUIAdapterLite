@@ -374,8 +374,9 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         validation_errors = {}
         for param_name, value in param_values.items():
             if isinstance(value, InvalidValue):
+                invalid_msg = value.msg or value.exception
                 label = self._get_label_for_parameter(param_name)
-                validation_errors[param_name] = (label, value.msg)
+                validation_errors[param_name] = (label, str(invalid_msg))
 
         if self._fn_info.parameters_validator:
             result = self._fn_info.parameters_validator(
