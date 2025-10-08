@@ -36,7 +36,7 @@ from pyguiadapterlite.components.termview import TermView
 from pyguiadapterlite.components.textviewer import TextView, SimpleTextViewer
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
-from pyguiadapterlite.components.utils import (
+from pyguiadapterlite.utils import (
     _warning,
     show_warning,
     print_traceback,

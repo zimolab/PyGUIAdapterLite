@@ -17,7 +17,7 @@ from pyguiadapterlite._messages import (
     MSG_NAV_PAGE_UP,
     MSG_NAV_PAGE_DOWN,
 )
-from pyguiadapterlite.components.utils import _exception
+from pyguiadapterlite.utils import _exception
 
 NAV_KEYS = ("Up", "Down", "Left", "Right", "Prior", "Next", "Home", "End")
 

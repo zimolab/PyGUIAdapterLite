@@ -12,7 +12,7 @@ from pyguiadapterlite.windows.fnselectwindow import FnSelectWindowConfig, FnSele
 from pyguiadapterlite.core.registry import ParameterWidgetFactory
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
-from pyguiadapterlite.components.utils import (
+from pyguiadapterlite.utils import (
     _error,
     enable_dpi_awareness,
     _warning,

@@ -5,7 +5,7 @@ from tkinter import Tk, Toplevel
 from typing import Tuple, Optional, Any, Union, List, Dict
 
 from pyguiadapterlite.components.menus import Menu, Separator, Action
-from pyguiadapterlite.components.utils import _warning, _exception, _error
+from pyguiadapterlite.utils import _warning, _exception, _error
 
 
 class ParameterGroupNameNotAvailableError(Exception):

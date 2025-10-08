@@ -2,7 +2,7 @@ import threading
 from tkinter import Tk, TclError
 from typing import Optional
 
-from pyguiadapterlite.components.utils import _exception
+from pyguiadapterlite.utils import _exception
 
 
 class UContext(object):

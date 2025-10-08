@@ -7,7 +7,7 @@ from typing import Union, Any, Type, Dict, List, Tuple, Set, Callable, Optional
 import docstring_parser
 import tomlkit
 
-from pyguiadapterlite.components import utils
+from pyguiadapterlite import utils
 from pyguiadapterlite.core.fn import FnInfo, ParameterInfo
 from pyguiadapterlite.types.typenames import get_typename, get_type_args
 

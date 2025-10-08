@@ -23,7 +23,7 @@ from pyguiadapterlite._messages import (
     MSG_SCROLL_TO_BOTTOM,
     MSG_SAVE_TO_FILE,
 )
-from pyguiadapterlite.components.utils import _warning
+from pyguiadapterlite.utils import _warning
 
 
 class TermView(Frame):

@@ -2,7 +2,7 @@ import dataclasses
 from tkinter import BooleanVar
 from typing import List, Union, Optional, Callable, ForwardRef
 
-from pyguiadapterlite.components.utils import _error
+from pyguiadapterlite.utils import _error
 
 BaseWindow_ = ForwardRef("BaseWindow")
 Action_ = ForwardRef("Action")

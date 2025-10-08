@@ -3,7 +3,7 @@ import dataclasses
 from tkinter import Widget, Entry, END
 from typing import Type, Any, Optional, Union
 
-from pyguiadapterlite.components.utils import _error
+from pyguiadapterlite.utils import _error
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,

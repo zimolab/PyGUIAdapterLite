@@ -2,7 +2,7 @@ from tkinter import Widget
 from tkinter.ttk import Notebook
 from typing import Dict, Optional, List, Callable
 
-from pyguiadapterlite.components.utils import _exception
+from pyguiadapterlite.utils import _exception
 
 
 class TabIdAlreadyExistsError(Exception):

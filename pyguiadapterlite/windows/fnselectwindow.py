@@ -14,7 +14,7 @@ from pyguiadapterlite._messages import (
 )
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textviewer import TextView
-from pyguiadapterlite.components.utils import show_warning, _info, _exception
+from pyguiadapterlite.utils import show_warning, _info, _exception
 from pyguiadapterlite.core.fn import FnInfo
 from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow

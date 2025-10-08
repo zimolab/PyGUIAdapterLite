@@ -2,7 +2,7 @@ import re
 import typing
 from collections.abc import Mapping, MutableMapping, MutableSet, Set
 
-from pyguiadapterlite.components import utils
+from pyguiadapterlite import utils
 
 TYPE_INT = "int"
 TYPE_FLOAT = "float"

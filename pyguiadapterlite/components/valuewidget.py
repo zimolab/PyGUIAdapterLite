@@ -4,7 +4,7 @@ from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union
 
-from pyguiadapterlite.components.utils import _warning
+from pyguiadapterlite.utils import _warning
 
 
 class SetValueError(Exception):

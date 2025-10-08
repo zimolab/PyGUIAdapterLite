@@ -6,7 +6,7 @@ from pyguiadapterlite.components.scrollarea import (
     ParameterNotFound,
 )
 from pyguiadapterlite.components.tabview import TabView, TabIdNotFoundError
-from pyguiadapterlite.components.utils import _warning
+from pyguiadapterlite.utils import _warning
 from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     BaseParameterWidgetConfig,
