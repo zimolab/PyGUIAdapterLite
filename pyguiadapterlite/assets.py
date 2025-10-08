@@ -4,6 +4,7 @@ from typing import Union
 _PACKAGE_NAME = "pyguiadapterlite"
 _LOCALES_DIR_NAME = "locales"
 _TOOLS_DIR_NAME = "tools"
+_IMAGES_DIR_NAME = "images"
 
 # try:
 #     from importlib.resources import as_file, files
@@ -37,3 +38,11 @@ def tools_dir() -> Path:
 
 def locales_dir() -> Path:
     return assets_dir(_LOCALES_DIR_NAME)
+
+
+def images_dir() -> Path:
+    return assets_dir(_IMAGES_DIR_NAME)
+
+
+def image_file(filename: str) -> Path:
+    return images_dir().joinpath(filename)
