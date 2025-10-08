@@ -44,7 +44,7 @@ class IntSpinbox(Spinbox):
     def value(self) -> Union[int, InvalidValue]:
         current_value = self.get().strip()
         try:
-            val = int(self.get().strip())
+            val = int(current_value)
         except ValueError as e:
             raise GetValueError(
                 raw_value=current_value, msg=f"cannot convert to int"
@@ -91,7 +91,7 @@ class RangedIntValueWidget(BaseParameterWidget):
 
     def get_value(self) -> Union[int, InvalidValue]:
         if not self._input_entry:
-            raise RuntimeError("input entry not created yet")
+            raise RuntimeError("input widget not created yet")
         try:
             return self._input_entry.value
         except GetValueError as e:
@@ -100,7 +100,7 @@ class RangedIntValueWidget(BaseParameterWidget):
 
     def set_value(self, value: Any) -> Union[int, InvalidValue]:
         if not self._input_entry:
-            raise RuntimeError("input entry not created yet")
+            raise RuntimeError("input widget not created yet")
         try:
             self._input_entry.value = value
             return value
