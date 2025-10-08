@@ -21,9 +21,8 @@ class ScaleIntValue(BaseParameterWidgetConfig):
     default_value: int = 0
     min_value: int = MIN_VALUE
     max_value: int = MAX_VALUE
-    step: int = 1
     show_value: bool = True
-    tick_interval: int = 0
+    cursor: str = "hand2"
 
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget"]:
@@ -37,6 +36,7 @@ class IntScale(Scale):
             from_=value_widget.config.min_value,
             to=value_widget.config.max_value,
             orient="horizontal",
+            cursor=value_widget.config.cursor,
         )
         self._parent = parent
         self._value_widget = value_widget
