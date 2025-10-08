@@ -1,15 +1,18 @@
 import dataclasses
-from tkinter import Widget, Canvas, Scrollbar, Label, N, S, E, W
+from tkinter import Widget, Canvas, Scrollbar, Label, N, S, E, W, PhotoImage
 from tkinter.ttk import Frame
 from typing import Optional, Tuple, List, Dict, Any, Union
 
-from pyguiadapterlite.i18n import tr_
+from pyguiadapterlite.assets import image_file
 from pyguiadapterlite.components.tooltip import ToolTip
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
     InvalidValue,
 )
+
+_DESCRIPTION_ICON_FILE = image_file("desc.png")
+_DESCRIPTION_ICON = None
 
 STICKY_MAP = {
     "center": "",  # 居中，不填充
@@ -272,6 +275,7 @@ class ParameterNotFound(Exception):
 
 
 class ParameterWidgetArea(NColumnScrollableArea):
+
     def __init__(
         self,
         parent: Optional[Widget],
@@ -299,20 +303,22 @@ class ParameterWidgetArea(NColumnScrollableArea):
             parent=self._inner_frame, parameter_name=parameter_name, config=config
         )
         param_name_label = Label(self._inner_frame, text=input_widget.label)
-        description_label = Label(self._inner_frame)
         if config.description:
-            description_label.config(text=tr_("Desc"))
-            description_label.config(
-                cursor="question_arrow",
-                borderwidth=1,
-                relief="groove",
+            global _DESCRIPTION_ICON
+            if _DESCRIPTION_ICON is None:
+                _DESCRIPTION_ICON = PhotoImage(file=_DESCRIPTION_ICON_FILE)
+            description_label = Label(
+                self._inner_frame,
+                # borderwidth=1,
+                relief="flat",
                 takefocus=False,
-                # bg="lightblue",
-                fg="blue",
+                # bg="lightyellow",
+                image=_DESCRIPTION_ICON,
             )
-
             tooltip = ToolTip(description_label, input_widget.description)
             self._tooltips[parameter_name] = tooltip
+        else:
+            description_label = Label(self._inner_frame)
 
         return param_name_label, input_widget, description_label
 
