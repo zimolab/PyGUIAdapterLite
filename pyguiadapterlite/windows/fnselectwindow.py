@@ -214,7 +214,6 @@ class FnSelectWindow(BaseWindow):
     #         self._status_bar.config(text=self.config.no_match_status_text)
 
     def _on_select_button_clicked(self):
-        print("选择按钮被点击了", self._listview.curselection())
         selection = self._listview.curselection()
         if not selection:
             show_warning(MSG_SEL_FUNC_FIRST, parent=self._parent)
