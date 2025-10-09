@@ -7,7 +7,7 @@ from pyguiadapterlite.types import (
     FloatValueWidget,
     RangedFloatValueWidget,
     ScaleFloatValueWidget,
-    ScaleIntValueWidget_tk,
+    ScaleIntValueWidget2,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -87,7 +87,7 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_INT: IntValueWidget,
     # TYPE_BOOL: BoolBox,
     TYPE_INT_R: RangedIntValueWidget,
-    TYPE_INT_S: ScaleIntValueWidget_tk,
+    TYPE_INT_S: ScaleIntValueWidget2,
     TYPE_INT_SS: ScaleIntValueWidget,
     TYPE_FLOAT: FloatValueWidget,
     TYPE_FLOAT_R: RangedFloatValueWidget,

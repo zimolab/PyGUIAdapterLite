@@ -3,8 +3,8 @@ from pyguiadapterlite.types.ints.ranged import RangedIntValue, RangedIntValueWid
 from pyguiadapterlite.types.ints.scale import (
     ScaleIntValue,
     ScaleIntValueWidget,
-    ScaleIntValue_tk,
-    ScaleIntValueWidget_tk,
+    ScaleIntValue2,
+    ScaleIntValueWidget2,
 )
 from pyguiadapterlite.types.strs.line import StringValue, StringValueWidget
 from pyguiadapterlite.types.strs.text import TextValue, TextValueWidget
