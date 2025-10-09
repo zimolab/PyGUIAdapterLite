@@ -16,7 +16,7 @@ MAX_VALUE = 100.0
 DEFAULT_STEP = 0.5
 DEFAULT_VALUE = 0.0
 DEFAULT_DIGITS = 0
-DEFAULT_TICK_INTERVAL = 0
+DEFAULT_TICK_INTERVAL = 10
 
 
 @dataclasses.dataclass(frozen=True)
@@ -131,7 +131,7 @@ class ScaleFloatValueWidget(BaseParameterWidget):
 
         # 创建滑块
         self._scale = FloatScale(self)
-        self._scale.pack(fill="x", expand=True)
+        self._scale.pack(fill="x", expand=True, padx=5, pady=5)
         # 设置初始值
         self._scale.value = self._config.default_value
         # 设置无效值效果目标
