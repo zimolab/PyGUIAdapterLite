@@ -1,6 +1,7 @@
 import dataclasses
-from tkinter import Widget
-from tkinter.ttk import Scale, Label, Frame
+from tkinter import Widget, Scale
+from tkinter import ttk
+from tkinter.ttk import Label, Frame
 from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.components.valuewidget import (
@@ -12,8 +13,12 @@ from pyguiadapterlite.components.valuewidget import (
 )
 from pyguiadapterlite.utils import _error
 
-MAX_VALUE = 100
 MIN_VALUE = 0
+MAX_VALUE = 100
+DEFAULT_STEP = 1
+DEFAULT_VALUE = 0
+DEFAULT_DIGITS = 0
+DEFAULT_TICK_INTERVAL = 10
 
 
 @dataclasses.dataclass(frozen=True)
@@ -24,12 +29,20 @@ class ScaleIntValue(BaseParameterWidgetConfig):
     show_value: bool = True
     cursor: str = "hand2"
 
+    def __post_init__(self):
+        # 验证参数合理性
+        if self.min_value >= self.max_value:
+            raise ValueError("min_value must be less than max_value")
+
+        if not (self.min_value <= self.default_value <= self.max_value):
+            raise ValueError("default_value must be between min_value and max_value")
+
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget"]:
         return ScaleIntValueWidget
 
 
-class IntScale(Scale):
+class IntScale(ttk.Scale):
     def __init__(self, parent: Widget, value_widget: "ScaleIntValueWidget", **kwargs):
         super().__init__(parent, **kwargs)
         self.config(
@@ -78,6 +91,129 @@ class IntScale(Scale):
                 msg=f"out of range [{self._value_widget.config.min_value}, {self._value_widget.config.max_value}]",
             )
         self.set(value)
+
+
+@dataclasses.dataclass(frozen=True)
+class ScaleIntValue_tk(ScaleIntValue):
+    step: int = DEFAULT_STEP
+    digits: int = DEFAULT_DIGITS
+    tick_interval: int = DEFAULT_TICK_INTERVAL
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.step <= 0:
+            raise ValueError("step must be positive")
+        if self.digits < 0:
+            raise ValueError("digits must be positive")
+
+    @classmethod
+    def target_widget_class(cls) -> Type["ScaleIntValueWidget_tk"]:
+        return ScaleIntValueWidget_tk
+
+
+class IntScale_tk(Scale):
+    def __init__(self, parent: "ScaleIntValueWidget_tk", **kwargs):
+        self._parent = parent
+        config = parent.config
+
+        # 设置Scale的范围和分辨率
+        super().__init__(
+            parent,
+            from_=config.min_value,
+            to=config.max_value,
+            resolution=config.step,
+            orient="horizontal",
+            digits=config.digits,
+            showvalue=config.show_value,
+            tickinterval=config.tick_interval,
+            **kwargs,
+        )
+
+        # 初始值
+        self.set(config.default_value)
+
+    @property
+    def value(self) -> Union[int, InvalidValue]:
+        try:
+            return int(self.get())
+        except (ValueError, TypeError) as e:
+            current_value = self.get()
+            raise GetValueError(
+                raw_value=current_value, msg=f"invalid int value `{current_value}`"
+            ) from e
+
+    @value.setter
+    def value(self, value: int) -> None:
+        config = self._parent.config
+        try:
+            int_value = int(value)
+            # 检查是否在范围内
+            if not (config.min_value <= int_value <= config.max_value):
+                raise SetValueError(
+                    raw_value=value,
+                    msg=f"out of range [{config.min_value}, {config.max_value}]",
+                )
+            self.set(int_value)
+        except (ValueError, TypeError) as e:
+            raise SetValueError(
+                raw_value=value, msg=f"invalid int value `{value}`"
+            ) from e
+
+
+class ScaleIntValueWidget_tk(BaseParameterWidget):
+    ConfigClass = ScaleIntValue_tk
+
+    def __init__(self, parent: Widget, parameter_name: str, config: ScaleIntValue_tk):
+        super().__init__(parent, parameter_name, config)
+
+        self._build_flag = False
+        self._scale: Optional[IntScale_tk] = None
+
+    @property
+    def config(self) -> ScaleIntValue_tk:
+        return super().config
+
+    def get_value(self) -> Union[int, InvalidValue]:
+        if not self._scale:
+            raise RuntimeError("scale not created yet")
+        try:
+            return self._scale.value
+        except GetValueError as e:
+            self.on_parameter_error(self._parameter_name, e)
+            return InvalidValue(raw_value=e.raw_value, exception=e)
+
+    def set_value(self, value: Any) -> Union[int, InvalidValue]:
+        if not self._scale:
+            raise RuntimeError("scale not created yet")
+        try:
+            self._scale.value = value
+            return value
+        except SetValueError as e:
+            self.on_parameter_error(self._parameter_name, e)
+            return InvalidValue(raw_value=e.raw_value, exception=e)
+
+    def build(self) -> "ScaleIntValueWidget_tk":
+        if self._build_flag:
+            return self
+
+        # 创建滑块
+        self._scale = IntScale_tk(self)
+        self._scale.pack(fill="x", expand=True, padx=1, pady=1)
+        # 设置初始值
+        self._scale.value = self._config.default_value
+        # 设置无效值效果目标
+        self.color_flash_effect.set_target(self)
+        self._build_flag = True
+        return self
+
+    def on_parameter_error(self, parameter_name: str, error: Any) -> None:
+        if parameter_name == self._parameter_name:
+            if isinstance(error, GetValueError):
+                _error(
+                    f"failed to get value from widget of parameter `{parameter_name}`: {error}"
+                )
+                self.start_invalid_value_effect()
+                return
 
 
 class ScaleIntValueWidget(BaseParameterWidget):
