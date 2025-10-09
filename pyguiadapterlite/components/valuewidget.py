@@ -31,46 +31,56 @@ class InvalidValue(object):
 class ColorFlashEffect(object):
     def __init__(
         self,
-        target_widget: Optional[Widget],
-        flash_color="red",
-        duration=1000,
-        flashes=3,
+        target_widget: Optional[Frame],
+        default_flash_color="red",
+        default_duration=1000,
+        default_flash_count=3,
     ):
-        self.flash_color = flash_color
-        self.duration = duration
-        self.flashes = flashes
+        self._target: Optional[Frame] = None
+        self._default_flash_color = default_flash_color
+        self._default_duration = default_duration
+        self._default_flash_count = default_flash_count
 
-        self._widget: Optional[Widget] = None
         self._original_bg: Optional[str] = None
         self._flash_count = 0
 
         self.set_target(target_widget)
 
-    def set_target(self, widget: Optional[Widget]):
-        self._widget = widget
-        if not self._widget:
+    def set_target(self, target: Optional[Widget]):
+        self._target = target
+        if not self._target:
             self._original_bg = None
             return
-        self._original_bg = widget.cget("background")
+        self._original_bg = target.cget("background")
 
-    def start(self):
-        if not self._widget:
+    def start(
+        self,
+        color: Optional[str] = None,
+        duration: Optional[int] = None,
+        count: Optional[int] = None,
+    ):
+        if not self._target:
             _warning("target widget is not set, this effect will not take effect")
             return
+        color = color or self._default_flash_color
+        duration = duration or self._default_duration
+        count = count or self._default_flash_count
         self._flash_count = 0
-        self._flash()
+        self._flash(color, duration, count)
 
-    def _flash(self):
-        if self._flash_count < self.flashes * 2:
+    def _flash(self, color: str, duration: int, count: int):
+        if self._flash_count < count * 2:
             if self._flash_count % 2 == 0:
-                self._widget.configure(background=self.flash_color)
+                self._target.configure(background=color)
             else:
-                self._widget.configure(background=self._original_bg)
+                self._target.configure(background=self._original_bg)
 
             self._flash_count += 1
-            self._widget.after(self.duration // (self.flashes * 2), self._flash)
+            self._target.after(
+                duration // (count * 2), self._flash, color, duration, count
+            )
         else:
-            self._widget.configure(background=self._original_bg)
+            self._target.configure(background=self._original_bg)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -108,7 +118,7 @@ class BaseParameterWidget(Frame):
         self._label = self._config.label or self._parameter_name
         self._description = self._config.description or ""
 
-        self._invalid_value_effect = ColorFlashEffect(self, "red", 800, 3)
+        self._color_flash_effect = ColorFlashEffect(self, "red", 800, 3)
 
     @property
     def parameter_name(self) -> str:
@@ -135,8 +145,8 @@ class BaseParameterWidget(Frame):
         self._description = value
 
     @property
-    def invalid_value_effect(self) -> ColorFlashEffect:
-        return self._invalid_value_effect
+    def color_flash_effect(self) -> ColorFlashEffect:
+        return self._color_flash_effect
 
     # noinspection PyAbstractClass
     @abstractmethod
@@ -165,7 +175,7 @@ class BaseParameterWidget(Frame):
         return cls(parent, parameter_name, config).build()
 
     def start_invalid_value_effect(self):
-        self._invalid_value_effect.start()
+        self._color_flash_effect.start()
 
 
 def is_parameter_widget_class(o: Any) -> bool:

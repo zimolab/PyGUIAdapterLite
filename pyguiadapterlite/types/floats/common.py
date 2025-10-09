@@ -123,7 +123,7 @@ class FloatValueWidget(BaseParameterWidget):
             return self
         self._build_flag = True
         self._input_entry = FloatEntry(self)
-        self.invalid_value_effect.set_target(self)
+        self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
         self._input_entry.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._input_entry.value = self._config.default_value

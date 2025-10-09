@@ -83,7 +83,7 @@ class TextValueWidget(BaseParameterWidget):
         if self._build_flag:
             return self
         self._input_widget = TextEdit(self)
-        self.invalid_value_effect.set_target(self)
+        self.color_flash_effect.set_target(self)
         self._input_widget.pack(side="left", fill="x", expand=True, padx=1, pady=1)
         self._input_widget.value = self._config.default_value
         self._build_flag = True

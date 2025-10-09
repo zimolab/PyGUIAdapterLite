@@ -128,7 +128,7 @@ class ScaleIntValueWidget(BaseParameterWidget):
             self._value_label = Label(self._frame, justify="center", anchor="center")
             self._value_label.pack(side="right", fill="x", expand=False)
             self.on_value_changed(None)
-        self.invalid_value_effect.set_target(self)
+        self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
 
         self._build_flag = True
