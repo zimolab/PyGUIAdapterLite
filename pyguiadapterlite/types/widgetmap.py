@@ -2,9 +2,9 @@ from datetime import datetime, date, time
 from typing import Union
 
 from pyguiadapterlite.types import StringValueWidget, TextValueWidget
-from pyguiadapterlite.types.inttypes.commonint import IntValueWidget
-from pyguiadapterlite.types.inttypes.rangedint import RangedIntValueWidget
-from pyguiadapterlite.types.inttypes.scaleint import ScaleIntValueWidget
+from pyguiadapterlite.types.ints.common import IntValueWidget
+from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
+from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
 
 from pyguiadapterlite.types.typenames import (
     TYPE_INT,
