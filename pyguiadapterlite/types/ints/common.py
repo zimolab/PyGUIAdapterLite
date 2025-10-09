@@ -34,6 +34,7 @@ class IntEntry(Entry):
             validatecommand=(self._validate_command, "%P"),
         )
         self.bind("<FocusOut>", self.on_focus_out)
+        self.bind("<Return>", self.on_focus_out)
 
     @staticmethod
     def validate_input(value: str) -> bool:

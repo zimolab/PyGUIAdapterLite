@@ -1,11 +1,8 @@
 import dataclasses
-import re
-
 from tkinter import Widget, END
 from tkinter.ttk import Entry
 from typing import Type, Any, Optional, Union
 
-from pyguiadapterlite.utils import _error
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
@@ -13,6 +10,7 @@ from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     SetValueError,
 )
+from pyguiadapterlite.utils import _error
 
 
 @dataclasses.dataclass(frozen=True)
@@ -35,22 +33,18 @@ class FloatEntry(Entry):
             validatecommand=(self._validate_command, "%P"),
         )
         self.bind("<FocusOut>", self.on_focus_out)
+        self.bind("<Return>", self.on_focus_out)
 
     @staticmethod
     def validate_input(value: str) -> bool:
         value = value.strip()
         if value == "" or value == "-" or value == "." or value == "-.":
             return True
-
-        # 检查是否符合浮点数格式（允许科学计数法）
-        float_pattern = r"^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$"
-        if re.match(float_pattern, value):
-            try:
-                float(value)
-                return True
-            except ValueError:
-                return False
-        return False
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
 
     def on_focus_out(self, event):
         _ = event
