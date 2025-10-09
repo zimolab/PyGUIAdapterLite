@@ -13,4 +13,8 @@ from pyguiadapterlite.types.floats.ranged import (
     RangedFloatValue,
     RangedFloatValueWidget,
 )
-from pyguiadapterlite.types.floats.scale import ScaleFloatValue, ScaleFloatValueWidget
+from pyguiadapterlite.types.floats.scale import ScaleFloatValue2, ScaleFloatValueWidget2
+from pyguiadapterlite.types.floats.ttkscale import (
+    ScaleFloatValue,
+    ScaleFloatValueWidget,
+)

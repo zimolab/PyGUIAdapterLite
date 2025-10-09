@@ -34,6 +34,10 @@ class float_s(float):
     pass
 
 
+class float_ss(float):
+    pass
+
+
 # noinspection PyPep8Naming
 class file_t(str):
     pass

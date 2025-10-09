@@ -6,8 +6,9 @@ from pyguiadapterlite.types import (
     TextValueWidget,
     FloatValueWidget,
     RangedFloatValueWidget,
-    ScaleFloatValueWidget,
+    ScaleFloatValueWidget2,
     ScaleIntValueWidget2,
+    ScaleFloatValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -38,6 +39,7 @@ from pyguiadapterlite.types.extendtypes import (
     paths_t,
     float_s,
     int_ss,
+    float_ss,
 )
 from pyguiadapterlite.types.ints.common import IntValueWidget
 from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
@@ -53,6 +55,7 @@ TYPE_INT_S = int_s.__name__
 TYPE_INT_SS = int_ss.__name__
 TYPE_FLOAT_R = float_r.__name__
 TYPE_FLOAT_S = float_s.__name__
+TYPE_FLOAT_SS = float_ss.__name__
 TYPE_DIR_T = directory_t.__name__
 TYPE_FILE_T = file_t.__name__
 TYPE_FILES_T = files_t.__name__
@@ -91,7 +94,8 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_INT_SS: ScaleIntValueWidget,
     TYPE_FLOAT: FloatValueWidget,
     TYPE_FLOAT_R: RangedFloatValueWidget,
-    TYPE_FLOAT_S: ScaleFloatValueWidget,
+    TYPE_FLOAT_S: ScaleFloatValueWidget2,
+    TYPE_FLOAT_SS: ScaleFloatValueWidget,
     # TYPE_DIR_T: DirSelect,
     # TYPE_FILE_T: FileSelect,
     # TYPE_FILES_T: MultiFileSelect,
