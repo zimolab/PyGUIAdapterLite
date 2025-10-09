@@ -22,7 +22,7 @@ MAX_DECIMALS = 10
 
 @dataclasses.dataclass(frozen=True)
 class RangedFloatValue(BaseParameterWidgetConfig):
-    default_value: float = MIN_VALUE
+    default_value: float = DEFAULT_VALUE
     min_value: float = MIN_VALUE
     max_value: float = MAX_VALUE
     step: float = DEFAULT_STEP
