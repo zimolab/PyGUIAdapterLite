@@ -93,7 +93,7 @@ class ScaleFloatValueWidget2(BaseParameterWidget):
 
         # 创建滑块
         self._input_widget = FloatScale2(self)
-        self._input_widget.pack(fill="x", expand=True, padx=5, pady=5)
+        self._input_widget.pack(fill="x", expand=True, padx=1, pady=1)
         # 设置初始值
         self._input_widget.value = self._config.default_value
         # 设置无效值效果目标
