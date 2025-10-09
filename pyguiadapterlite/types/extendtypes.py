@@ -22,7 +22,11 @@ class int_s(int):
 
 
 # noinspection PyPep8Naming
-class float_t(float):
+class float_r(float):
+    pass
+
+
+class float_s(float):
     pass
 
 

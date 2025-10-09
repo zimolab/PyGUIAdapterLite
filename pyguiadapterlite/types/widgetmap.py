@@ -1,18 +1,18 @@
 from datetime import datetime, date, time
 from typing import Union
 
-from pyguiadapterlite.types import StringValueWidget, TextValueWidget, FloatValueWidget
-from pyguiadapterlite.types.ints.common import IntValueWidget
-from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
-from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
-
-from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR
-
+from pyguiadapterlite.types import (
+    StringValueWidget,
+    TextValueWidget,
+    FloatValueWidget,
+    RangedFloatValueWidget,
+    ScaleFloatValueWidget,
+)
 from pyguiadapterlite.types.extendtypes import (
     text_t,
     int_r,
     int_s,
-    float_t,
+    float_r,
     directory_t,
     file_t,
     files_t,
@@ -35,7 +35,12 @@ from pyguiadapterlite.types.extendtypes import (
     float_quantity_t,
     string_dict_t,
     paths_t,
+    float_s,
 )
+from pyguiadapterlite.types.ints.common import IntValueWidget
+from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
+from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
+from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR
 
 PyLiteralType = Union[bool, int, float, bytes, str, list, tuple, dict, set, type(None)]
 
@@ -43,7 +48,8 @@ PyLiteralType = Union[bool, int, float, bytes, str, list, tuple, dict, set, type
 TYPE_TEXT = text_t.__name__
 TYPE_INT_R = int_r.__name__
 TYPE_INT_S = int_s.__name__
-TYPE_FLOAT_T = float_t.__name__
+TYPE_FLOAT_R = float_r.__name__
+TYPE_FLOAT_S = float_s.__name__
 TYPE_DIR_T = directory_t.__name__
 TYPE_FILE_T = file_t.__name__
 TYPE_FILES_T = files_t.__name__
@@ -80,7 +86,8 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_INT_R: RangedIntValueWidget,
     TYPE_INT_S: ScaleIntValueWidget,
     TYPE_FLOAT: FloatValueWidget,
-    # TYPE_FLOAT_T: FloatLineEdit,
+    TYPE_FLOAT_R: RangedFloatValueWidget,
+    TYPE_FLOAT_S: ScaleFloatValueWidget,
     # TYPE_DIR_T: DirSelect,
     # TYPE_FILE_T: FileSelect,
     # TYPE_FILES_T: MultiFileSelect,
