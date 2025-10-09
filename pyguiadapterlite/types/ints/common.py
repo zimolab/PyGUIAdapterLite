@@ -17,7 +17,7 @@ from pyguiadapterlite.components.valuewidget import (
 @dataclasses.dataclass(frozen=True)
 class IntValue(BaseParameterWidgetConfig):
     default_value: int = 0
-    fallback_value: int = 0
+    auto_correct: bool = True
 
     @classmethod
     def target_widget_class(cls) -> Type["IntValueWidget"]:
@@ -25,11 +25,9 @@ class IntValue(BaseParameterWidgetConfig):
 
 
 class IntEntry(Entry):
-    def __init__(self, master: Widget, fallback_value: int = 0, **kwargs):
-        super().__init__(master, **kwargs)
-
-        self.fallback_value = fallback_value
-
+    def __init__(self, parent: "IntValueWidget", **kwargs):
+        super().__init__(parent, **kwargs)
+        self._parent = parent
         self._validate_command = self.register(self.validate_input)
         self.configure(
             validate="key",
@@ -50,10 +48,13 @@ class IntEntry(Entry):
 
     def on_focus_out(self, event):
         _ = event
-        value = self.get().strip()
-        if value == "" or value == "-":
-            self.delete(0, END)
-            self.insert(END, str(self.fallback_value))
+        try:
+            int(self.get().strip())
+        except ValueError:
+            self._parent.start_invalid_value_effect()
+            if self._parent.config.auto_correct:
+                self.delete(0, END)
+                self.insert(END, str(self._parent.config.default_value))
 
     @property
     def value(self) -> Union[int, InvalidValue]:
@@ -87,6 +88,10 @@ class IntValueWidget(BaseParameterWidget):
         self._build_flag = False
         self._input_entry: Optional[IntEntry] = None
 
+    @property
+    def config(self) -> IntValue:
+        return super().config
+
     def get_value(self) -> Union[int, InvalidValue]:
         if not self._input_entry:
             raise RuntimeError("input entry not created yet")
@@ -110,7 +115,7 @@ class IntValueWidget(BaseParameterWidget):
         if self._build_flag:
             return self
         self._build_flag = True
-        self._input_entry = IntEntry(self, fallback_value=self._config.fallback_value)
+        self._input_entry = IntEntry(self)
         self.invalid_value_effect.set_target(self)
         # noinspection PyTypeChecker
         self._input_entry.pack(side="left", fill="both", expand=True, padx=1, pady=1)
