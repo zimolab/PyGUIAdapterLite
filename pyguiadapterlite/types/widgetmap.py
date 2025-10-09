@@ -9,6 +9,7 @@ from pyguiadapterlite.types import (
     ScaleFloatValueWidget2,
     ScaleIntValueWidget2,
     ScaleFloatValueWidget,
+    BoolValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -44,7 +45,7 @@ from pyguiadapterlite.types.extendtypes import (
 from pyguiadapterlite.types.ints.common import IntValueWidget
 from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
 from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
-from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR
+from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR, TYPE_BOOL
 
 PyLiteralType = Union[bool, int, float, bytes, str, list, tuple, dict, set, type(None)]
 
@@ -88,7 +89,7 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_STR: StringValueWidget,
     TYPE_TEXT: TextValueWidget,
     TYPE_INT: IntValueWidget,
-    # TYPE_BOOL: BoolBox,
+    TYPE_BOOL: BoolValueWidget,
     TYPE_INT_R: RangedIntValueWidget,
     TYPE_INT_S: ScaleIntValueWidget2,
     TYPE_INT_SS: ScaleIntValueWidget,
