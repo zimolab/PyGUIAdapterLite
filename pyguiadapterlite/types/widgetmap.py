@@ -1,14 +1,12 @@
 from datetime import datetime, date, time
 from typing import Union
 
-from pyguiadapterlite.types import StringValueWidget, TextValueWidget
+from pyguiadapterlite.types import StringValueWidget, TextValueWidget, FloatValueWidget
 from pyguiadapterlite.types.ints.common import IntValueWidget
 from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
 from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
 
-from pyguiadapterlite.types.typenames import (
-    TYPE_INT,
-)
+from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR
 
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -73,7 +71,6 @@ TYPE_INT_QUANTITY = int_quantity_t.__name__
 TYPE_FLOAT_QUANTITY = float_quantity_t.__name__
 TYPE_STRING_DICT_T = string_dict_t.__name__
 TYPE_PATHS_T = paths_t.__name__
-TYPE_STR = str.__name__
 
 BUILTIN_WIDGETS_MAP = {
     TYPE_STR: StringValueWidget,
@@ -82,7 +79,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_BOOL: BoolBox,
     TYPE_INT_R: RangedIntValueWidget,
     TYPE_INT_S: ScaleIntValueWidget,
-    # TYPE_FLOAT: FloatSpinBox,
+    TYPE_FLOAT: FloatValueWidget,
     # TYPE_FLOAT_T: FloatLineEdit,
     # TYPE_DIR_T: DirSelect,
     # TYPE_FILE_T: FileSelect,
