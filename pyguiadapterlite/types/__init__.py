@@ -20,4 +20,4 @@ from pyguiadapterlite.types.floats.ttkscale import (
 )
 from pyguiadapterlite.types.booleans.common import BoolValue, BoolValueWidget
 from pyguiadapterlite.types.booleans.boolcheck import BoolValue2, BoolValueWidget2
-from pyguiadapterlite.types.paths.fileedit import FileValue, FileValueWidget
+from pyguiadapterlite.types.paths.fileselect import FileValue, FileValueWidget
