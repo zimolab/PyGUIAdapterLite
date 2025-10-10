@@ -18,6 +18,13 @@ MSG_PASTE = tr_("Paste")
 MSG_UNDO = tr_("Undo")
 MSG_REDO = tr_("Redo")
 
+MSG_BROWSE_BUTTON_TEXT = tr_("Browse")
+
+MSG_OPEN_FILE_DIALOG_TITLE = tr_("Select File")
+MSG_SAVE_FILE_DIALOG_TITLE = tr_("Save File")
+MSG_SELECT_DIR_DIALOG_TITLE = tr_("Select Directory")
+MSG_FILE_FILTER_ALL = tr_("All Files")
+
 MSG_SELECT_ALL = tr_("Select All")
 MSG_CLEAR_OUTPUT = tr_("Clear Output")
 MSG_SCROLL_TO_TOP = tr_("Scroll to Top")
