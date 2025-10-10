@@ -10,6 +10,7 @@ from pyguiadapterlite.types import (
     ScaleIntValueWidget2,
     ScaleFloatValueWidget,
     BoolValueWidget,
+    FileValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -98,7 +99,7 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_FLOAT_S: ScaleFloatValueWidget2,
     TYPE_FLOAT_SS: ScaleFloatValueWidget,
     # TYPE_DIR_T: DirSelect,
-    # TYPE_FILE_T: FileSelect,
+    TYPE_FILE_T: FileValueWidget,
     # TYPE_FILES_T: MultiFileSelect,
     # TYPE_JSON_OBJ_T: JsonEdit,
     # TYPE_ANY: PyLiteralEdit,

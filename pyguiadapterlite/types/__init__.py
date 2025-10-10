@@ -19,3 +19,4 @@ from pyguiadapterlite.types.floats.ttkscale import (
     ScaleFloatValueWidget,
 )
 from pyguiadapterlite.types.booleans.common import BoolValue, BoolValueWidget
+from pyguiadapterlite.types.paths.fileedit import FileValue, FileValueWidget
