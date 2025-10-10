@@ -92,6 +92,13 @@ class ListView(Listbox):
         """清除当前列表中的所有元素"""
         self.delete(0, END)
 
+    def set(self, index: int, new_item: str):
+        """设置指定索引处的元素"""
+        if not self._is_valid_index(index):
+            raise IndexError(f"invalid index: {index}")
+        self.delete(index)
+        self.insert(index, new_item)
+
     def sort(self, key=None, reverse=False):
         items = self.items()
         items.sort(key=key, reverse=reverse)
