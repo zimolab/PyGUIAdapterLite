@@ -12,6 +12,7 @@ from pyguiadapterlite.types import (
     BoolValueWidget,
     FileValueWidget,
     BoolValueWidget2,
+    DirectoryValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -102,7 +103,7 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_FLOAT_R: RangedFloatValueWidget,
     TYPE_FLOAT_S: ScaleFloatValueWidget2,
     TYPE_FLOAT_SS: ScaleFloatValueWidget,
-    # TYPE_DIR_T: DirSelect,
+    TYPE_DIR_T: DirectoryValueWidget,
     TYPE_FILE_T: FileValueWidget,
     # TYPE_FILES_T: MultiFileSelect,
     # TYPE_JSON_OBJ_T: JsonEdit,
