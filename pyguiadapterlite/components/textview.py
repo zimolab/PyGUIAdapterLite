@@ -315,7 +315,6 @@ class TextView(object):
         font_name = self._current_font[0]
         font_size = self._original_font[1] + self._zoom_level
         self.set_font((font_name, font_size))
-        print("font size:", font_size)
 
     def zoom_out(self):
         self._zoom_level -= 1
@@ -450,7 +449,6 @@ class SimpleTextViewer(Toplevel):
         self._parent = None
         self._text_view = None
         self._control_panel = None
-        print("Text viewer closed")
 
     def show(self):
         """显示窗口（非模态）"""
