@@ -91,6 +91,7 @@ class BaseParameterWidgetConfig(object):
     label: str = ""
     description: str = ""
     group: str = ""
+    hide_label: bool = False
 
     # noinspection PyAbstractClass
     @classmethod

@@ -339,6 +339,8 @@ class ParameterWidgetArea(NColumnScrollableArea):
             self._create_parameter_widgets(parameter_name, config)
         )
         self.add_row((param_name_label, input_widget, description_label))
+        if config.hide_label:
+            param_name_label.grid_remove()
 
     def remove_parameter(self, parameter_name: str):
         for index in range(self.row_count()):
