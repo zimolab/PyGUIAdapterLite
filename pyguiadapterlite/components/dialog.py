@@ -22,6 +22,7 @@ class BaseDialog(object):
         self._size = size
 
         self._dialog = Toplevel(self._parent)
+        self._dialog.withdraw()
         self._dialog.title(self._title)
         self._dialog.geometry(f"{self._size[0]}x{self._size[1]}")
         self._dialog.resizable(resizable, resizable)
@@ -37,6 +38,22 @@ class BaseDialog(object):
         if isinstance(parent, Widget):
             parent_window = parent.winfo_toplevel()
 
+        # 将dialog移动到当前鼠标附近
+        # x = parent_window.winfo_pointerx() - self._dialog.winfo_reqwidth() // 2
+        # y = parent_window.winfo_pointery() - self._dialog.winfo_reqheight() // 2
+        # dialog移动到父窗口中央
+        x = (
+            parent_window.winfo_rootx()
+            + parent_window.winfo_width() // 2
+            - self._dialog.winfo_reqwidth() // 2
+        )
+        y = (
+            parent_window.winfo_rooty()
+            + parent_window.winfo_height() // 2
+            - self._dialog.winfo_reqheight() // 2
+        )
+        self._dialog.geometry(f"+{x}+{y}")
+        self._dialog.deiconify()
         self._dialog.transient(parent_window)
         self._dialog.grab_set()
         self._dialog.wait_window()
@@ -137,7 +154,7 @@ class StringInputDialog(BaseSimpleDialog):
         self._input_entry.insert(0, self._initial_value)
 
 
-tk = Tk()
-dialog = StringInputDialog(tk, "Test Dialog", initial_value="Hello, World!")
-print(dialog.result)
-tk.mainloop()
+# tk = Tk()
+# dialog = StringInputDialog(tk, "Test Dialog", initial_value="Hello, World!")
+# print(dialog.result)
+# tk.mainloop()
