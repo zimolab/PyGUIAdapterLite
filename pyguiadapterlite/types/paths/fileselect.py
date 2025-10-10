@@ -29,6 +29,7 @@ class FileValue(BaseParameterWidgetConfig):
     select_button_text: str = MSG_BROWSE_BUTTON_TEXT
     normalize_path: bool = False
     absolutize_path: bool = False
+    editable: bool = True
 
     def __post_init__(self):
         # 设置默认文件类型
@@ -151,6 +152,7 @@ class FileValueWidget(BaseParameterWidget):
         # 创建输入控件
         self._input_widget = FileSelectBox(self)
         self._input_widget.pack(fill="both", expand=True, padx=1, pady=1)
+        self._input_widget.value = self.config.default_value
         # 设置无效值效果目标
         self.color_flash_effect.set_target(self)
         self._build_flag = True
