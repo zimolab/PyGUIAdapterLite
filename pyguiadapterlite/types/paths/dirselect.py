@@ -15,6 +15,7 @@ from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     SetValueError,
 )
+from pyguiadapterlite.types.paths._common import block_keys
 from pyguiadapterlite.utils import _error
 
 
@@ -26,7 +27,8 @@ class DirectoryValue(BaseParameterWidgetConfig):
     select_button_text: str = MSG_BROWSE_BUTTON_TEXT
     normalize_path: bool = False
     absolutize_path: bool = False
-    editable: bool = True
+    readonly: bool = False
+    allow_backspace: bool = False
 
     def __post_init__(self):
         pass
@@ -43,7 +45,6 @@ class FileSelectBox(Frame):
 
         # 创建文件路径输入框
         self._entry = Entry(self)
-
         # 创建浏览按钮
         self._browse_button = Button(
             self, text=self._parent.config.select_button_text, command=self._browse_dir
@@ -52,6 +53,15 @@ class FileSelectBox(Frame):
         # 布局组件
         self._entry.pack(side="left", fill="x", expand=True, padx=(0, 5))
         self._browse_button.pack(side="right")
+
+        if self._parent.config.readonly:
+            self.set_readonly()
+
+    def set_readonly(self):
+        self._entry.bind("<Key>", self._on_key)
+
+    def _on_key(self, event):
+        return block_keys(self._entry, self._parent.config.allow_backspace, event)
 
     def _browse_dir(self):
         config = self._parent.config
