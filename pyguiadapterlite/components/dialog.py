@@ -118,15 +118,15 @@ class BaseSimpleDialog(BaseDialog):
     def on_create_buttons(self, dialog: Toplevel):
         self._buttons_area = Frame(dialog)
         self._buttons_area.pack(side="bottom", fill="x")
-        self._ok_button = Button(
-            self._buttons_area, text=self._ok_text, command=self.on_ok
-        )
-        self._ok_button.pack(side="right", padx=5, pady=5)
-
         self._cancel_button = Button(
             self._buttons_area, text=self._cancel_text, command=self.on_cancel
         )
         self._cancel_button.pack(side="right", padx=5, pady=5)
+
+        self._ok_button = Button(
+            self._buttons_area, text=self._ok_text, command=self.on_ok
+        )
+        self._ok_button.pack(side="right", padx=5, pady=5)
 
 
 class StringInputDialog(BaseSimpleDialog):
