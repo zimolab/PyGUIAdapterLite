@@ -10,7 +10,7 @@ from pyguiadapterlite._messages import (
     MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
     MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
     MSG_FILE_FILTER_ALL,
-    MSG_OPEN_FILE_DIALOG_TITLE,
+    MSG_SELECT_FILE_DIALOG_TITLE,
     MSG_SELECT_DIR_DIALOG_TITLE,
 )
 
@@ -170,7 +170,7 @@ class PathInputDialog(BaseSimpleDialog):
         resizable: bool = False,
         file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
         file_types: List[Tuple[str, str]] = None,
-        file_dialog_title: str = MSG_OPEN_FILE_DIALOG_TITLE,
+        file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
         file_dialog_action: Literal["open", "save"] = "open",
         dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
         dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
