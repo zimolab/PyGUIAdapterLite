@@ -95,7 +95,7 @@ class FileSelectBox(Frame):
         except Exception as e:
             _error(f"error in file dialog: {e}")
 
-    def _norm(self, path: str):
+    def _normpath(self, path: str):
         path = path.strip()
         if not path:
             return ""
@@ -107,12 +107,12 @@ class FileSelectBox(Frame):
 
     @property
     def value(self) -> str:
-        return self._norm(self._entry.get())
+        return self._normpath(self._entry.get())
 
     @value.setter
     def value(self, value: Any):
         try:
-            file_path = self._norm(str(value))
+            file_path = self._normpath(str(value))
             self._entry.delete(0, "end")
             self._entry.insert(0, file_path)
         except Exception as e:
