@@ -3,6 +3,16 @@ from tkinter import Widget
 from tkinter.ttk import Button
 from typing import Type, Optional, Literal, List
 
+from pyguiadapterlite._messages import (
+    MSG_ADD_ITEM_DIALOG_TITLE,
+    MSG_EDIT_ITEM_DIALOG_TITLE,
+    MSG_ADD_ITEM_DIALOG_LABEL_TEXT,
+    MSG_EDIT_ITEM_DIALOG_LABEL_TEXT,
+    MSG_DUPLICATE_ITEMS_WARNING,
+    MSG_EMPTY_STRING_WARNING,
+    MSG_MULTIPLE_SELECTION_WARNING,
+    MSG_ADD_BUTTON_TEXT,
+)
 from pyguiadapterlite.components.dialog import StringInputDialog
 from pyguiadapterlite.types.lists._common import (
     BaseStringListValue,
@@ -16,18 +26,23 @@ from pyguiadapterlite.utils import show_warning
 class StringListValue(BaseStringListValue):
 
     add_button: bool = True
-    add_button_text: str = "Add"
+    add_button_text: str = MSG_ADD_BUTTON_TEXT
     add_method: Literal["append", "prepend"] = "append"
 
     strip: bool = False
 
     accept_empty: bool = True
-    empty_string_message: str = "Empty string is not allowed"
+    empty_string_message: str = MSG_EMPTY_STRING_WARNING
 
     accept_duplicates: bool = True
-    duplicate_message: str = "String already exists in the list"
+    duplicate_message: str = MSG_DUPLICATE_ITEMS_WARNING
 
-    multi_selection_message: str = "Please select only one item to be edited"
+    multi_selection_message: str = MSG_MULTIPLE_SELECTION_WARNING
+
+    add_item_dialog_title: str = MSG_ADD_ITEM_DIALOG_TITLE
+    add_item_dialog_label_text: str = MSG_ADD_ITEM_DIALOG_LABEL_TEXT
+    edit_item_dialog_title: str = MSG_EDIT_ITEM_DIALOG_TITLE
+    edit_item_dialog_label_text: str = MSG_EDIT_ITEM_DIALOG_LABEL_TEXT
 
     @classmethod
     def target_widget_class(cls) -> Type["StringListValueWidget"]:
@@ -52,13 +67,15 @@ class StringListBox(BaseStringListBox):
         current_value = self._listview.real.get(index)
         dialog = StringInputDialog(
             self,
-            title="Edit",
-            label_text="Edit",
+            title=self._config.edit_item_dialog_title,
+            label_text=self._config.edit_item_dialog_label_text,
             initial_value=str(current_value),
         )
         if dialog.is_cancelled():
             return
         new_value = dialog.result
+        if new_value == current_value:
+            return
         new_value = self._process_input(new_value)
         if new_value is None:
             return
@@ -80,7 +97,11 @@ class StringListBox(BaseStringListBox):
         return value
 
     def _on_add_item(self):
-        input_dialog = StringInputDialog(self, "Add Item")
+        input_dialog = StringInputDialog(
+            self,
+            title=self._config.add_item_dialog_title,
+            label_text=self._config.add_item_dialog_label_text,
+        )
         if input_dialog.is_cancelled():
             return
         value = input_dialog.result

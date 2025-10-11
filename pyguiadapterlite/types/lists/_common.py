@@ -3,6 +3,17 @@ from tkinter import Widget, Frame
 from tkinter.ttk import LabelFrame, Scrollbar, Frame, Button
 from typing import Type, Any, Optional, Union, List, Literal, TypeVar
 
+from pyguiadapterlite._messages import (
+    MSG_MOVE_UP_BUTTON_TEXT,
+    MSG_MOVE_DOWN_BUTTON_TEXT,
+    MSG_REMOVE_ALL_BUTTON_TEXT,
+    MSG_REMOVE_BUTTON_TEXT,
+    MSG_EDIT_BUTTON_TEXT,
+    MSG_REMOVE_CONFIRMATION,
+    MSG_REMOVE_ALL_CONFIRMATION,
+    MSG_NO_ITEMS_WARNING,
+    MSG_NO_SELECTION_WARNING,
+)
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
@@ -25,24 +36,24 @@ class BaseStringListValue(BaseParameterWidgetConfig):
     double_click_to_edit: bool = True
 
     move_buttons: bool = True
-    move_up_button_text: str = "↑"
-    move_down_button_text: str = "↓"
+    move_up_button_text: str = MSG_MOVE_UP_BUTTON_TEXT
+    move_down_button_text: str = MSG_MOVE_DOWN_BUTTON_TEXT
 
     clear_button: bool = True
-    cleat_button_text: str = "Clear"
+    cleat_button_text: str = MSG_REMOVE_ALL_BUTTON_TEXT
 
     remove_button: bool = True
-    remove_button_text: str = "Remove"
+    remove_button_text: str = MSG_REMOVE_BUTTON_TEXT
 
     edit_button: bool = True
-    edit_button_text: str = "Edit"
+    edit_button_text: str = MSG_EDIT_BUTTON_TEXT
 
     confirm_clear: bool = True
-    clear_confirm_message: str = "Are you sure to clear all items?"
+    clear_confirm_message: str = MSG_REMOVE_CONFIRMATION
     confirm_remove: bool = True
-    remove_confirm_message: str = "Are you sure to remove selected items?"
-    no_selection_message: str = "No item selected"
-    no_item_message: str = "No item added yet"
+    remove_confirm_message: str = MSG_REMOVE_ALL_CONFIRMATION
+    no_selection_message: str = MSG_NO_SELECTION_WARNING
+    no_item_message: str = MSG_NO_ITEMS_WARNING
 
     @classmethod
     def target_widget_class(cls) -> Type["BaseStringListValueWidget"]:
