@@ -75,6 +75,9 @@ MSG_DIALOG_BUTTON_OK = tr_("OK")
 MSG_DIALOG_BUTTON_CANCEL = tr_("Cancel")
 MSG_DIALOG_INPUT_PROMPT = tr_("Input:")
 
+MSG_PATH_DIALOG_FILE_BUTTON_TEXT = tr_("File")
+MSG_PATH_DIALOG_DIR_BUTTON_TEXT = tr_("Folder")
+
 MSG_ADD_ITEM_DIALOG_TITLE = tr_("Add Item")
 MSG_ADD_ITEM_DIALOG_LABEL_TEXT = tr_("Enter new item:")
 MSG_EDIT_ITEM_DIALOG_TITLE = tr_("Edit Item")
@@ -93,3 +96,6 @@ MSG_REMOVE_CONFIRMATION = tr_("Are you sure to remove selected item(s)?")
 MSG_REMOVE_ALL_CONFIRMATION = tr_("Are you sure to clear all items?")
 MSG_NO_ITEMS_WARNING = tr_("There are no items in the list!")
 MSG_NO_SELECTION_WARNING = tr_("No item is selected!")
+
+MSG_ADD_FILE_BUTTON_TEXT = tr_("File")
+MSG_ADD_DIR_BUTTON_TEXT = tr_("Folder")
