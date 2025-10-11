@@ -49,9 +49,9 @@ class BaseStringListValue(BaseParameterWidgetConfig):
     edit_button_text: str = MSG_EDIT_BUTTON_TEXT
 
     confirm_clear: bool = True
-    clear_confirm_message: str = MSG_REMOVE_CONFIRMATION
+    clear_confirm_message: str = MSG_REMOVE_ALL_CONFIRMATION
     confirm_remove: bool = True
-    remove_confirm_message: str = MSG_REMOVE_ALL_CONFIRMATION
+    remove_confirm_message: str = MSG_REMOVE_CONFIRMATION
     no_selection_message: str = MSG_NO_SELECTION_WARNING
     no_item_message: str = MSG_NO_ITEMS_WARNING
 
