@@ -6,7 +6,7 @@ from typing import Type, Any, Optional, Union, List, Tuple
 
 from pyguiadapterlite._messages import (
     MSG_BROWSE_BUTTON_TEXT,
-    MSG_OPEN_FILE_DIALOG_TITLE,
+    MSG_SELECT_FILE_DIALOG_TITLE,
     MSG_FILE_FILTER_ALL,
 )
 from pyguiadapterlite.components.valuewidget import (
@@ -25,7 +25,7 @@ class FileValue(BaseParameterWidgetConfig):
     default_value: str = ""
     filters: List[Tuple[str, str]] = None
     start_dir: str = ""
-    dialog_title: str = MSG_OPEN_FILE_DIALOG_TITLE
+    dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE
     save_file: bool = False
     select_button_text: str = MSG_BROWSE_BUTTON_TEXT
     normalize_path: bool = False
