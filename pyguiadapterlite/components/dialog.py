@@ -1,11 +1,17 @@
-from tkinter import Toplevel, Tk, Widget, Frame
-from tkinter.ttk import Button, Entry, Label
-from typing import Union, Any, Optional
+import os
+from tkinter import Toplevel, Tk, Widget, Frame, filedialog
+from tkinter.ttk import Button, Entry, Label, Separator
+from typing import Union, Any, Optional, List, Tuple, Literal
 
 from pyguiadapterlite._messages import (
     MSG_DIALOG_BUTTON_OK,
     MSG_DIALOG_BUTTON_CANCEL,
     MSG_DIALOG_INPUT_PROMPT,
+    MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
+    MSG_FILE_FILTER_ALL,
+    MSG_OPEN_FILE_DIALOG_TITLE,
+    MSG_SELECT_DIR_DIALOG_TITLE,
 )
 
 
@@ -20,6 +26,7 @@ class BaseDialog(object):
         self._parent = parent
         self._title = title
         self._size = size
+        self._parent.update()
 
         self._dialog = Toplevel(self._parent)
         self._dialog.withdraw()
@@ -152,3 +159,150 @@ class StringInputDialog(BaseSimpleDialog):
         self._input_entry = Entry(self._content_area)
         self._input_entry.pack(side="bottom", fill="x", expand=True, padx=5, pady=2)
         self._input_entry.insert(0, self._initial_value)
+
+
+class PathInputDialog(BaseSimpleDialog):
+    def __init__(
+        self,
+        parent: Union[Toplevel, Tk, Widget],
+        title: str,
+        size: tuple = (420, 130),
+        resizable: bool = False,
+        file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+        file_types: List[Tuple[str, str]] = None,
+        file_dialog_title: str = MSG_OPEN_FILE_DIALOG_TITLE,
+        file_dialog_action: Literal["open", "save"] = "open",
+        dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
+        dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+        start_dir: str = "",
+        ok_text: str = MSG_DIALOG_BUTTON_OK,
+        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+        label_text: str = MSG_DIALOG_INPUT_PROMPT,
+        initial_value: str = "",
+    ):
+        self._label_text = label_text
+        self._initial_value = initial_value
+
+        self._file_button_text = file_button_text or ""
+        self._file_types = file_types or [(MSG_FILE_FILTER_ALL, "*")]
+        self._file_dialog_title = file_dialog_title
+        self._file_dialog_action = file_dialog_action
+        self._dir_button_text = dir_button_text or ""
+        self._dir_dialog_title = dir_dialog_title
+        self._start_dir = start_dir
+
+        self._input_label: Optional[Label] = None
+        self._input_entry: Optional[Entry] = None
+        self._file_button: Optional[Button] = None
+        self._dir_button: Optional[Button] = None
+
+        if not self._file_button_text and not self._dir_button_text:
+            raise ValueError(
+                "At least one of file_button_text and dir_button_text should be provided."
+            )
+
+        super().__init__(parent, title, size, resizable, ok_text, cancel_text)
+
+    def on_get_result(self) -> str:
+        return self._input_entry.get()
+
+    def on_create_content_area(self, dialog: Toplevel):
+        super().on_create_content_area(dialog)
+        if self._label_text:
+            self._input_label = Label(self._content_area, text=self._label_text)
+            self._input_label.pack(side="top", fill="x", padx=5, pady=(5, 0))
+
+        self._input_entry = Entry(self._content_area)
+        self._input_entry.pack(side="left", fill="x", expand=True, padx=5, pady=2)
+        self._input_entry.insert(0, self._initial_value)
+
+    def on_create_buttons(self, dialog: Toplevel):
+        super().on_create_buttons(dialog)
+
+        if self._file_button_text:
+            self._file_button = Button(
+                self._buttons_area,
+                text=self._file_button_text,
+                command=self._select_file,
+            )
+            self._file_button.pack(side="left", padx=5, pady=5)
+
+        if self._dir_button_text:
+            self._dir_button = Button(
+                self._buttons_area,
+                text=self._dir_button_text,
+                command=self._select_dir,
+            )
+            self._dir_button.pack(side="left", padx=5, pady=5)
+
+        separator = Separator(self._buttons_area, orient="vertical")
+        separator.pack(side="right", fill="y", padx=5, pady=5)
+
+    def _select_file(self):
+        """打开文件选择对话框并将选择的文件路径设置到输入框中"""
+        # 确定初始目录
+        initial_dir = self._start_dir
+        if not initial_dir and self._input_entry.get():
+            # 如果已有路径，使用其所在目录
+            entry_path = self._input_entry.get()
+            if os.path.exists(entry_path):
+                if os.path.isfile(entry_path):
+                    initial_dir = os.path.dirname(entry_path)
+                else:
+                    initial_dir = entry_path
+
+        # 根据对话框动作选择不同的文件对话框
+        if self._file_dialog_action == "open":
+            file_path = filedialog.askopenfilename(
+                parent=self._dialog,
+                title=self._file_dialog_title,
+                initialdir=initial_dir,
+                filetypes=self._file_types,
+            )
+        else:  # "save"
+            file_path = filedialog.asksaveasfilename(
+                parent=self._dialog,
+                title=self._file_dialog_title,
+                initialdir=initial_dir,
+                filetypes=self._file_types,
+                defaultextension=self._get_default_extension(),
+            )
+
+        # 如果用户选择了文件（没有取消）
+        if file_path:
+            # 清空输入框并插入新路径
+            self._input_entry.delete(0, "end")
+            self._input_entry.insert(0, file_path)
+
+    def _select_dir(self):
+        """打开目录选择对话框并将选择的目录路径设置到输入框中"""
+        # 确定初始目录
+        initial_dir = self._start_dir
+        if not initial_dir and self._input_entry.get():
+            # 如果已有路径，使用其所在目录
+            entry_path = self._input_entry.get()
+            if os.path.exists(entry_path):
+                if os.path.isfile(entry_path):
+                    initial_dir = os.path.dirname(entry_path)
+                else:
+                    initial_dir = entry_path
+        # 打开目录选择对话框
+        dir_path = filedialog.askdirectory(
+            parent=self._dialog, title=self._dir_dialog_title, initialdir=initial_dir
+        )
+        # 如果用户选择了目录（没有取消）
+        if dir_path:
+            # 清空输入框并插入新路径
+            self._input_entry.delete(0, "end")
+            self._input_entry.insert(0, dir_path)
+
+    def _get_default_extension(self) -> str:
+        """获取默认的文件扩展名"""
+        if self._file_types and len(self._file_types) > 0:
+            # 获取第一个文件类型的模式
+            first_pattern = self._file_types[0][1]
+            if first_pattern != "*":
+                # 从模式中提取扩展名，如 "*.txt" -> ".txt"
+                if "*." in first_pattern:
+                    return first_pattern.split("*.")[-1]
+        return ""
