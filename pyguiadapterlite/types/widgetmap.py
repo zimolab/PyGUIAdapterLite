@@ -13,6 +13,7 @@ from pyguiadapterlite.types import (
     FileValueWidget,
     BoolValueWidget2,
     DirectoryValueWidget,
+    StringListValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -137,7 +138,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_QCOLOR: ColorPicker,
     # TYPE_COLOR_T: ColorPicker,
     # TYPE_KEY_SEQUENCE_T: KeySequenceEdit,
-    # TYPE_STRING_LIST_T: StringListEdit,
+    TYPE_STRING_LIST_T: StringListValueWidget,
     # TYPE_PLAIN_DICT_T: PlainDictEdit,
     # TYPE_PATH_LIST_T: PathListEdit,
     # TYPE_FILE_LIST_T: FileListEdit,
