@@ -148,13 +148,7 @@ class StringInputDialog(BaseSimpleDialog):
         super().on_create_content_area(dialog)
         if self._label_text:
             self._input_label = Label(self._content_area, text=self._label_text)
-            self._input_label.pack(side="top", fill="x")
+            self._input_label.pack(side="top", fill="x", padx=5, pady=(5, 0))
         self._input_entry = Entry(self._content_area)
-        self._input_entry.pack(side="bottom", fill="x", expand=True, padx=5, pady=5)
+        self._input_entry.pack(side="bottom", fill="x", expand=True, padx=5, pady=2)
         self._input_entry.insert(0, self._initial_value)
-
-
-# tk = Tk()
-# dialog = StringInputDialog(tk, "Test Dialog", initial_value="Hello, World!")
-# print(dialog.result)
-# tk.mainloop()
