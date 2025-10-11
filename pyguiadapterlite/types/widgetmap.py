@@ -14,6 +14,9 @@ from pyguiadapterlite.types import (
     BoolValueWidget2,
     DirectoryValueWidget,
     StringListValueWidget,
+    FileListValueWidget,
+    DirectoryListValueWidget,
+    PathListValueWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -22,7 +25,6 @@ from pyguiadapterlite.types.extendtypes import (
     float_r,
     directory_t,
     file_t,
-    files_t,
     json_obj_t,
     choice_t,
     choices_t,
@@ -65,7 +67,6 @@ TYPE_FLOAT_S = float_s.__name__
 TYPE_FLOAT_SS = float_ss.__name__
 TYPE_DIR_T = directory_t.__name__
 TYPE_FILE_T = file_t.__name__
-TYPE_FILES_T = files_t.__name__
 TYPE_JSON_OBJ_T = json_obj_t.__name__
 TYPE_PY_LITERAL = str(PyLiteralType)
 TYPE_CHOICE_T = choice_t.__name__
@@ -106,7 +107,6 @@ BUILTIN_WIDGETS_MAP = {
     TYPE_FLOAT_SS: ScaleFloatValueWidget,
     TYPE_DIR_T: DirectoryValueWidget,
     TYPE_FILE_T: FileValueWidget,
-    # TYPE_FILES_T: MultiFileSelect,
     # TYPE_JSON_OBJ_T: JsonEdit,
     # TYPE_ANY: PyLiteralEdit,
     # TYPING_ANY: PyLiteralEdit,
@@ -140,9 +140,9 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_KEY_SEQUENCE_T: KeySequenceEdit,
     TYPE_STRING_LIST_T: StringListValueWidget,
     # TYPE_PLAIN_DICT_T: PlainDictEdit,
-    # TYPE_PATH_LIST_T: PathListEdit,
-    # TYPE_FILE_LIST_T: FileListEdit,
-    # TYPE_DIR_LIST_T: DirectoryListEdit,
+    TYPE_PATH_LIST_T: PathListValueWidget,
+    TYPE_FILE_LIST_T: FileListValueWidget,
+    TYPE_DIR_LIST_T: DirectoryListValueWidget,
     # TYPE_FONT_T: FontSelect,
     # TYPE_INT_QUANTITY: IntQuantityBox,
     # TYPE_FLOAT_QUANTITY: FloatQuantityBox,

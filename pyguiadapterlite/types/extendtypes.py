@@ -34,10 +34,6 @@ class file_t(str):
     pass
 
 
-class files_t(list):
-    pass
-
-
 class directory_t(str):
     pass
 
@@ -85,23 +81,35 @@ str_list = string_list_t
 string_list = string_list_t
 
 
-class plain_dict_t(dict):
-    pass
-
-
-class json_obj_t(object):
-    pass
-
-
 class path_list_t(list):
     pass
+
+
+path_list = path_list_t
+paths_t = path_list_t
+
+
+class dir_list_t(list):
+    pass
+
+
+dir_list = dir_list_t
+dirs_t = dir_list_t
 
 
 class file_list_t(list):
     pass
 
 
-class dir_list_t(list):
+files_t = file_list_t
+files_list = file_list_t
+
+
+class plain_dict_t(dict):
+    pass
+
+
+class json_obj_t(object):
     pass
 
 
@@ -118,8 +126,4 @@ class float_quantity_t(tuple):
 
 
 class string_dict_t(dict):
-    pass
-
-
-class paths_t(list):
     pass

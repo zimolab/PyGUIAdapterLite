@@ -23,3 +23,13 @@ from pyguiadapterlite.types.booleans.boolcheck import BoolValue2, BoolValueWidge
 from pyguiadapterlite.types.paths.fileselect import FileValue, FileValueWidget
 from pyguiadapterlite.types.paths.dirselect import DirectoryValue, DirectoryValueWidget
 from pyguiadapterlite.types.lists.strlist import StringListValue, StringListValueWidget
+from pyguiadapterlite.types.lists.pathlist import (
+    PathListValue,
+    PathListValueWidget,
+    FileListValue,
+    FileListValue,
+    FileListValueWidget,
+    DirectoryListValue,
+    DirectoryListValueWidget,
+    DirectoryListValueWidget,
+)
