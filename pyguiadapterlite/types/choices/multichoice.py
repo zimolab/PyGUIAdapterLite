@@ -67,13 +67,14 @@ class MultiChoiceValueWidget(BaseParameterWidget):
             raise ValueError("no choices provided")
 
         self._frame = LabelFrame(self, text=self._config.content_title or self.label)
-        self._frame.pack(fill="both", expand=True, padx=5, pady=5)
+        self._frame.pack(fill="both", expand=True, padx=1, pady=1)
 
         self._value_widget = MultipleChoiceBox(
             self._frame, columns=self.config.columns, choices=self.config.choices
         )
         self._value_widget.select(self.config.default_value)
         self._value_widget.pack(fill="both", expand=True)
+        self.color_flash_effect.set_target(self)
         self._is_built = True
         return self
 

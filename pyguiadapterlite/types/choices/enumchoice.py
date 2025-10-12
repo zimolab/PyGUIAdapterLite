@@ -84,7 +84,7 @@ class EnumValuedWidget(BaseParameterWidget):
             raise ValueError("enum class has no members")
 
         self._frame = LabelFrame(self, text=self._config.content_title or self.label)
-        self._frame.pack(fill="both", expand=True, padx=5, pady=5)
+        self._frame.pack(fill="both", expand=True, padx=1, pady=1)
 
         choices = {str(name): value for name, value in all_enums.items()}
         self._choices = choices
@@ -93,7 +93,8 @@ class EnumValuedWidget(BaseParameterWidget):
             self._frame, columns=self.config.columns, choices=choices
         )
 
-        self._value_widget.pack(fill="both", expand=True)
+        self._value_widget.pack(fill="both", expand=True, padx=1, pady=1)
+        self.color_flash_effect.set_target(self)
         self._is_built = True
         self.set_value(self.config.default_value)
         return self

@@ -67,7 +67,8 @@ class LooseChoiceValueWidget(BaseParameterWidget):
             justify=self.config.justify,
             add_user_input=self.config.add_user_input,
         )
-        self._value_widget.pack(fill="x", expand=False, padx=5, pady=5)
+        self._value_widget.pack(fill="x", expand=False, padx=1, pady=1)
+        self.color_flash_effect.set_target(self)
         self._is_built = True
         self.set_value(self.config.default_value)
         return self
