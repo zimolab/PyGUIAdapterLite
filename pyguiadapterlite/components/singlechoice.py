@@ -63,7 +63,7 @@ class SingleChoiceBox(Frame):
         row = 0
         col = 0
         for label, value in self._choices_dict.items():
-            rb = Radiobutton(self, text=label, variable=self._var, value=value)
+            rb = Radiobutton(self, text=label, variable=self._var, value=label)
             rb.grid(row=row, column=col, sticky="w")
             rb.grid(row=row, column=col, sticky="w", padx=5, pady=2)
             self._radiobuttons[label] = rb
@@ -77,7 +77,8 @@ class SingleChoiceBox(Frame):
     def current(self) -> Any:
         for rb in self._radiobuttons.values():
             if rb.instate(["selected"]):
-                return rb.cget("value")
+                label = rb.cget("text")
+                return self._choices_dict.get(label, None)
         return None
 
     @property
@@ -93,15 +94,20 @@ class SingleChoiceBox(Frame):
         elif value is LAST_CHOICE:
             return self.select_by_label(list(self._choices_dict.keys())[-1])
         else:
-            for rb in self._radiobuttons.values():
-                if rb.cget("value") == value:
-                    rb.invoke()
-                    return True
-            return False
+            return self.select_by_label(self._find_label_by_value(value))
 
     def select_by_label(self, label: str):
+        if label is None:
+            return False
         rb = self._radiobuttons.get(label, None)
         if not rb:
             return False
-        rb.invoke()
+        if not rb.instate(["selected"]):
+            rb.invoke()
         return True
+
+    def _find_label_by_value(self, value: Any) -> Optional[str]:
+        for label, val in self._choices_dict.items():
+            if val == value:
+                return label
+        return None
