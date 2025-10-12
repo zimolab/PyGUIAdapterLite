@@ -26,7 +26,7 @@ class I18N:
 
         # 确保目录存在
         if not os.path.exists(localedir):
-            os.makedirs(localedir, exist_ok=True)
+            os.makedirs(os.path.abspath(localedir), exist_ok=True)
 
     def set_locale_dir(self, localedir: str) -> None:
         if not os.path.exists(localedir):
@@ -80,7 +80,7 @@ class I18NManager:
         self._domains: Dict[str, I18N] = {}
         self._default_domain = _DEFAULT_DOMAIN
 
-    def add_domain(self, domain: str, localedir: str = _DEFAULT_DOMAIN) -> I18N:
+    def add_domain(self, domain: str, localedir: str = _DEFAULT_LOCALE_DIR) -> I18N:
         i18n = I18N(domain, localedir)
         self._domains[domain] = i18n
         return i18n
