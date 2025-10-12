@@ -93,7 +93,7 @@ class EnumValuedWidget(BaseParameterWidget):
             self._frame, columns=self.config.columns, choices=choices
         )
 
-        self._value_widget.pack(fill="both", expand=True, padx=1, pady=1)
+        self._value_widget.pack(fill="both", expand=True)
         self.color_flash_effect.set_target(self)
         self._is_built = True
         self.set_value(self.config.default_value)
