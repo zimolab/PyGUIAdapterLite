@@ -10,6 +10,7 @@ from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidgetConfig,
     InvalidValue,
 )
+from pyguiadapterlite.core.fn import ParameterInfo
 
 _DESCRIPTION_ICON_FILE = image_file("desc.png")
 _DESCRIPTION_ICON = None
@@ -281,8 +282,12 @@ class ParameterWidgetArea(NColumnScrollableArea):
         parent: Optional[Widget],
         label_anchor: str = E + W,
         parameter_anchor: str = E + W,
+        parameter_infos: Optional[Dict[str, ParameterInfo]] = None,
         **kwargs,
     ):
+        self._tooltips: Dict[str, ToolTip] = {}
+        self._parameter_infos = parameter_infos or {}
+
         super().__init__(
             parent,
             n_columns=3,
@@ -293,12 +298,21 @@ class ParameterWidgetArea(NColumnScrollableArea):
             ),
             **kwargs,
         )
-        self._tooltips: Dict[str, ToolTip] = {}
 
     def _create_parameter_widgets(
         self, parameter_name: str, config: BaseParameterWidgetConfig
     ) -> Tuple[Label, BaseParameterWidget, Label]:
         cls = config.target_widget_class()
+
+        # 某些类的些控件可能需在实例化前对config进行一些处理
+        # 因此需调用on_post_process_config()类方法
+        parameter_info = self._parameter_infos.get(parameter_name, None)
+        config = cls.on_post_process_config(
+            config,
+            parameter_name,
+            parameter_info,
+        )
+
         input_widget = cls.new(
             parent=self._inner_frame, parameter_name=parameter_name, config=config
         )
@@ -335,6 +349,7 @@ class ParameterWidgetArea(NColumnScrollableArea):
 
         if self.has_parameter(parameter_name):
             raise ParameterAlreadyExists(f"parameter {parameter_name} already exists")
+
         param_name_label, input_widget, description_label = (
             self._create_parameter_widgets(parameter_name, config)
         )

@@ -78,6 +78,7 @@ class FnInfo(object):
     parameters_validator: Optional[
         Callable[[str, Dict[str, object]], Optional[Dict[str, str]]]
     ] = None
+    parameter_infos: Dict[str, ParameterInfo] = dataclasses.field(default_factory=dict)
 
     def get_function_name(self) -> str:
         if self.fn_name:

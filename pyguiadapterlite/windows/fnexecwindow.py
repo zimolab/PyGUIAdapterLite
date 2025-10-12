@@ -21,6 +21,7 @@ from pyguiadapterlite._messages import (
     MSG_EXCEPTION_DURING_EXEC,
     MSG_FUNC_RET_MSG,
 )
+from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
 from pyguiadapterlite.windows.basewindow import BaseWindowConfig, BaseWindow
 from pyguiadapterlite.core.context import ParameterError
 from pyguiadapterlite.core.fn import FnInfo, BaseFunctionExecutor, ExecuteStateListener
@@ -115,6 +116,11 @@ class MainArea(ParameterGroupTabView):
     @property
     def output_view(self) -> Optional[TermView]:
         return self._output_view
+
+    def create_parameter_tab(self) -> ParameterWidgetArea:
+        return ParameterWidgetArea(
+            self._notebook, parameter_infos=self._fn_info.parameter_infos
+        )
 
     def _add_function_parameters(self):
         for name, parameter_config in self._fn_info.parameter_configs.items():

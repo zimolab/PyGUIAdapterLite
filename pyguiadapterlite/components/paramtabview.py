@@ -22,12 +22,12 @@ class ParameterGroupTabView(TabView):
         default_group_name: str = DEFAULT_GROUP_NAME,
         **kwargs,
     ):
-        super().__init__(parent, **kwargs)
         self._default_group_name = default_group_name
+        super().__init__(parent, **kwargs)
 
     def _create_parameter_group(self, group_name: str) -> ParameterWidgetArea:
         if not self.has_tab(group_name):
-            group_tab = ParameterWidgetArea(self._notebook)
+            group_tab = self.create_parameter_tab()
             self.add_tab(group_name, group_name, group_tab)
             return group_tab
         tab = self.get_tab(group_name)
@@ -139,3 +139,6 @@ class ParameterGroupTabView(TabView):
     def clear_parameters(self):
         for group_name, group in self.parameter_groups:
             group.clear_parameters()
+
+    def create_parameter_tab(self) -> ParameterWidgetArea:
+        return ParameterWidgetArea(self._notebook)

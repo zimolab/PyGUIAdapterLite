@@ -73,6 +73,7 @@ class GUIAdapter(object):
             window_config=window_config,
             executor=function_executor_class,
             parameters_validator=parameters_validator,
+            parameter_infos=params,
         )
         user_widget_configs = widget_configs or {}
         parsed_widget_configs = self._fn_parser.parse_widget_configs(fn_info, params)

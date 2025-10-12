@@ -178,6 +178,16 @@ class BaseParameterWidget(Frame):
     def start_invalid_value_effect(self):
         self._color_flash_effect.start()
 
+    @classmethod
+    def on_post_process_config(
+        cls,
+        config: BaseParameterWidgetConfig,
+        parameter_name: str,
+        parameter_info: "ParameterInfo",
+    ) -> BaseParameterWidgetConfig:
+        _ = parameter_name, parameter_info  # unused
+        return config
+
 
 def is_parameter_widget_class(o: Any) -> bool:
     return o is not None and isclass(o) and issubclass(o, BaseParameterWidget)
