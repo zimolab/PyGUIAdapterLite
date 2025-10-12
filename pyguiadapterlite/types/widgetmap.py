@@ -17,6 +17,7 @@ from pyguiadapterlite.types import (
     FileListValueWidget,
     DirectoryListValueWidget,
     PathListValueWidget,
+    SingleChoiceValuedWidget,
 )
 from pyguiadapterlite.types.extendtypes import (
     text_t,
@@ -52,7 +53,13 @@ from pyguiadapterlite.types.extendtypes import (
 from pyguiadapterlite.types.ints.common import IntValueWidget
 from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
 from pyguiadapterlite.types.ints.scale import ScaleIntValueWidget
-from pyguiadapterlite.types.typenames import TYPE_INT, TYPE_FLOAT, TYPE_STR, TYPE_BOOL
+from pyguiadapterlite.types.typenames import (
+    TYPE_INT,
+    TYPE_FLOAT,
+    TYPE_STR,
+    TYPE_BOOL,
+    TYPING_LITERAL,
+)
 
 PyLiteralType = Union[bool, int, float, bytes, str, list, tuple, dict, set, type(None)]
 
@@ -125,7 +132,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_SET: SetEdit,
     # TYPING_SET: SetEdit,
     # TYPE_MUTABLE_SET: SetEdit,
-    # TYPING_LITERAL: ExclusiveChoiceBox,
+    TYPING_LITERAL: SingleChoiceValuedWidget,
     # TYPE_CHOICE_T: ChoiceBox,
     # TYPE_CHOICES_T: MultiChoiceBox,
     # TYPE_SLIDER_INT_T: Slider,

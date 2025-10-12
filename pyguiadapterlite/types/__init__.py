@@ -33,3 +33,7 @@ from pyguiadapterlite.types.lists.pathlist import (
     DirectoryListValueWidget,
     DirectoryListValueWidget,
 )
+from pyguiadapterlite.types.choices.singlechoice import (
+    SingleChoiceValue,
+    SingleChoiceValuedWidget,
+)
