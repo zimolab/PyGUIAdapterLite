@@ -80,7 +80,7 @@ class HexColorValueWidget(BaseParameterWidget):
         )
         self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
-        self._value_widget.pack(side="left", fill="both", expand=True, padx=5, pady=5)
+        self._value_widget.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._value_widget.current_color = self._config.default_value
         return self
 
