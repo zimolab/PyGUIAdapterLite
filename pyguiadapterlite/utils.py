@@ -232,3 +232,14 @@ def is_subclass_of(cls: Any, base_cls: Any):
     if not inspect.isclass(cls) or not inspect.isclass(base_cls):
         return False
     return issubclass(cls, base_cls)
+
+
+def get_contrast_color(hex_color: str) -> str:
+    """根据背景色返回对比度较高的文字颜色"""
+    hex_color = hex_color.lstrip("#")
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+
+    luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+    return "#000000" if luminance > 0.5 else "#FFFFFF"
