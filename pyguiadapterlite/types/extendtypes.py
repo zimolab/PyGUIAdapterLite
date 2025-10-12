@@ -34,26 +34,21 @@ class file_t(str):
     pass
 
 
-class directory_t(str):
+class dir_t(str):
     pass
 
 
-dir_t = directory_t
+directory_t = dir_t
 
 
 class choice_t(object):
     pass
 
 
+loose_choices_t = choice_t
+
+
 class choices_t(list):
-    pass
-
-
-class int_slider_t(int):
-    pass
-
-
-class int_dial_t(int):
     pass
 
 
@@ -89,20 +84,18 @@ path_list = path_list_t
 paths_t = path_list_t
 
 
-class dir_list_t(list):
+class dirs_t(list):
     pass
 
 
-dir_list = dir_list_t
-dirs_t = dir_list_t
+dir_list_t = dirs_t
 
 
-class file_list_t(list):
+class files_t(list):
     pass
 
 
-files_t = file_list_t
-files_list = file_list_t
+file_list_t = files_t
 
 
 class plain_dict_t(dict):

@@ -18,6 +18,7 @@ from pyguiadapterlite.types import (
     DirectoryListValueWidget,
     PathListValueWidget,
     SingleChoiceValuedWidget,
+    LooseChoiceValueWidget,
 )
 from pyguiadapterlite.types.choices.enumchoice import EnumValuedWidget
 from pyguiadapterlite.types.extendtypes import (
@@ -30,8 +31,6 @@ from pyguiadapterlite.types.extendtypes import (
     json_obj_t,
     choice_t,
     choices_t,
-    int_slider_t,
-    int_dial_t,
     color_tuple_t,
     color_hex_t,
     key_sequence_t,
@@ -79,8 +78,6 @@ TYPE_JSON_OBJ_T = json_obj_t.__name__
 TYPE_PY_LITERAL = str(PyLiteralType)
 TYPE_CHOICE_T = choice_t.__name__
 TYPE_CHOICES_T = choices_t.__name__
-TYPE_SLIDER_INT_T = int_slider_t.__name__
-TYPE_DIAL_INT_T = int_dial_t.__name__
 TYPE_DATETIME = datetime.__name__
 TYPE_DATE = date.__name__
 TYPE_TIME = time.__name__
@@ -134,7 +131,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPING_SET: SetEdit,
     # TYPE_MUTABLE_SET: SetEdit,
     TYPING_LITERAL: SingleChoiceValuedWidget,
-    # TYPE_CHOICE_T: ChoiceBox,
+    TYPE_CHOICE_T: LooseChoiceValueWidget,
     # TYPE_CHOICES_T: MultiChoiceBox,
     # TYPE_SLIDER_INT_T: Slider,
     # TYPE_DIAL_INT_T: Dial,

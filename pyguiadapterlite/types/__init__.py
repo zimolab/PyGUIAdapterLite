@@ -37,3 +37,7 @@ from pyguiadapterlite.types.choices.singlechoice import (
     SingleChoiceValue,
     SingleChoiceValuedWidget,
 )
+from pyguiadapterlite.types.choices.loosechoice import (
+    LooseChoiceValue,
+    LooseChoiceValueWidget,
+)
