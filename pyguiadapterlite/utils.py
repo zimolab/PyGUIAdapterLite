@@ -1,4 +1,5 @@
 import ast
+import inspect
 import logging
 import re
 import sys
@@ -225,3 +226,9 @@ def hashable(obj: Any) -> bool:
         return True
     except TypeError:
         return False
+
+
+def is_subclass_of(cls: Any, base_cls: Any):
+    if not inspect.isclass(cls) or not inspect.isclass(base_cls):
+        return False
+    return issubclass(cls, base_cls)
