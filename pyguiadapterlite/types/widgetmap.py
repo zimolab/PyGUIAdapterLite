@@ -19,6 +19,7 @@ from pyguiadapterlite.types import (
     PathListValueWidget,
     SingleChoiceValuedWidget,
 )
+from pyguiadapterlite.types.choices.enumchoice import EnumValuedWidget
 from pyguiadapterlite.types.extendtypes import (
     text_t,
     int_r,
@@ -159,6 +160,6 @@ BUILTIN_WIDGETS_MAP = {
 
 # noinspection PyProtectedMember
 BUILTIN_WIDGETS_MAPPING_RULES = [
-    # EnumSelect._enum_type_mapping_rule,
+    EnumValuedWidget._enum_type_mapping_rule,
     # DictEdit._dict_mapping_rule,
 ]
