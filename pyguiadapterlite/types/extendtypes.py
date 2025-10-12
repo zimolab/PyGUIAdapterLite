@@ -52,20 +52,11 @@ class choices_t(list):
     pass
 
 
-class color_t(object):
-    pass
-
-
-class color_tuple_t(tuple):
-    pass
-
-
 class color_hex_t(str):
     pass
 
 
-class key_sequence_t(str):
-    pass
+color_t = color_hex_t
 
 
 class string_list_t(list):
@@ -96,19 +87,3 @@ class files_t(list):
 
 
 file_list_t = files_t
-
-
-class plain_dict_t(dict):
-    pass
-
-
-class json_obj_t(object):
-    pass
-
-
-class font_t(str):
-    pass
-
-
-class string_dict_t(dict):
-    pass

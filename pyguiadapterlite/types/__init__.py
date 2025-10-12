@@ -45,3 +45,4 @@ from pyguiadapterlite.types.choices.multichoice import (
     MultiChoiceValue,
     MultiChoiceValueWidget,
 )
+from pyguiadapterlite.types.colors.color import HexColorValue, HexColorValueWidget

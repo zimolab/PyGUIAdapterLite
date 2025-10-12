@@ -20,6 +20,7 @@ from pyguiadapterlite.types import (
     SingleChoiceValueWidget,
     LooseChoiceValueWidget,
     MultiChoiceValueWidget,
+    HexColorValueWidget,
 )
 from pyguiadapterlite.types.choices.enumchoice import EnumValuedWidget
 from pyguiadapterlite.types.extendtypes import (
@@ -29,20 +30,14 @@ from pyguiadapterlite.types.extendtypes import (
     float_r,
     directory_t,
     file_t,
-    json_obj_t,
     choice_t,
     choices_t,
-    color_tuple_t,
     color_hex_t,
-    key_sequence_t,
     string_list_t,
-    plain_dict_t,
     color_t,
     path_list_t,
     file_list_t,
     dir_list_t,
-    font_t,
-    string_dict_t,
     paths_t,
     float_s,
     int_ss,
@@ -73,25 +68,19 @@ TYPE_FLOAT_S = float_s.__name__
 TYPE_FLOAT_SS = float_ss.__name__
 TYPE_DIR_T = directory_t.__name__
 TYPE_FILE_T = file_t.__name__
-TYPE_JSON_OBJ_T = json_obj_t.__name__
 TYPE_PY_LITERAL = str(PyLiteralType)
 TYPE_CHOICE_T = choice_t.__name__
 TYPE_CHOICES_T = choices_t.__name__
 TYPE_DATETIME = datetime.__name__
 TYPE_DATE = date.__name__
 TYPE_TIME = time.__name__
-TYPE_COLOR_TUPLE = color_tuple_t.__name__
 TYPE_COLOR_HEX = color_hex_t.__name__
 # noinspection SpellCheckingInspection
 TYPE_COLOR_T = color_t.__name__
-TYPE_KEY_SEQUENCE_T = key_sequence_t.__name__
 TYPE_STRING_LIST_T = string_list_t.__name__
-TYPE_PLAIN_DICT_T = plain_dict_t.__name__
 TYPE_PATH_LIST_T = path_list_t.__name__
 TYPE_FILE_LIST_T = file_list_t.__name__
 TYPE_DIR_LIST_T = dir_list_t.__name__
-TYPE_FONT_T = font_t.__name__
-TYPE_STRING_DICT_T = string_dict_t.__name__
 TYPE_PATHS_T = paths_t.__name__
 
 BUILTIN_WIDGETS_MAP = {
@@ -136,7 +125,7 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_DATE: DateEdit,
     # TYPE_TIME: TimeEdit,
     # TYPE_COLOR_TUPLE: ColorTuplePicker,
-    # TYPE_COLOR_HEX: ColorHexPicker,
+    TYPE_COLOR_HEX: HexColorValueWidget,
     # TYPE_QCOLOR: ColorPicker,
     # TYPE_COLOR_T: ColorPicker,
     # TYPE_KEY_SEQUENCE_T: KeySequenceEdit,
