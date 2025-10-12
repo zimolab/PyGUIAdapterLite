@@ -21,11 +21,11 @@ class SingleChoiceValue(BaseParameterWidgetConfig):
     hide_label: bool = True
 
     @classmethod
-    def target_widget_class(cls) -> Type["SingleChoiceValuedWidget"]:
-        return SingleChoiceValuedWidget
+    def target_widget_class(cls) -> Type["SingleChoiceValueWidget"]:
+        return SingleChoiceValueWidget
 
 
-class SingleChoiceValuedWidget(BaseParameterWidget):
+class SingleChoiceValueWidget(BaseParameterWidget):
 
     ConfigClass = SingleChoiceValue
 
