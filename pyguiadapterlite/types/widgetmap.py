@@ -17,8 +17,9 @@ from pyguiadapterlite.types import (
     FileListValueWidget,
     DirectoryListValueWidget,
     PathListValueWidget,
-    SingleChoiceValuedWidget,
+    SingleChoiceValueWidget,
     LooseChoiceValueWidget,
+    MultiChoiceValueWidget,
 )
 from pyguiadapterlite.types.choices.enumchoice import EnumValuedWidget
 from pyguiadapterlite.types.extendtypes import (
@@ -41,8 +42,6 @@ from pyguiadapterlite.types.extendtypes import (
     file_list_t,
     dir_list_t,
     font_t,
-    int_quantity_t,
-    float_quantity_t,
     string_dict_t,
     paths_t,
     float_s,
@@ -92,8 +91,6 @@ TYPE_PATH_LIST_T = path_list_t.__name__
 TYPE_FILE_LIST_T = file_list_t.__name__
 TYPE_DIR_LIST_T = dir_list_t.__name__
 TYPE_FONT_T = font_t.__name__
-TYPE_INT_QUANTITY = int_quantity_t.__name__
-TYPE_FLOAT_QUANTITY = float_quantity_t.__name__
 TYPE_STRING_DICT_T = string_dict_t.__name__
 TYPE_PATHS_T = paths_t.__name__
 
@@ -130,9 +127,9 @@ BUILTIN_WIDGETS_MAP = {
     # TYPE_SET: SetEdit,
     # TYPING_SET: SetEdit,
     # TYPE_MUTABLE_SET: SetEdit,
-    TYPING_LITERAL: SingleChoiceValuedWidget,
+    TYPING_LITERAL: SingleChoiceValueWidget,
     TYPE_CHOICE_T: LooseChoiceValueWidget,
-    # TYPE_CHOICES_T: MultiChoiceBox,
+    TYPE_CHOICES_T: MultiChoiceValueWidget,
     # TYPE_SLIDER_INT_T: Slider,
     # TYPE_DIAL_INT_T: Dial,
     # TYPE_DATETIME: DateTimeEdit,

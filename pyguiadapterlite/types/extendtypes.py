@@ -110,13 +110,5 @@ class font_t(str):
     pass
 
 
-class int_quantity_t(tuple):
-    pass
-
-
-class float_quantity_t(tuple):
-    pass
-
-
 class string_dict_t(dict):
     pass

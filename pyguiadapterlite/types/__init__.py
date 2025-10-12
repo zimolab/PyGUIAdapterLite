@@ -35,9 +35,13 @@ from pyguiadapterlite.types.lists.pathlist import (
 )
 from pyguiadapterlite.types.choices.singlechoice import (
     SingleChoiceValue,
-    SingleChoiceValuedWidget,
+    SingleChoiceValueWidget,
 )
 from pyguiadapterlite.types.choices.loosechoice import (
     LooseChoiceValue,
     LooseChoiceValueWidget,
+)
+from pyguiadapterlite.types.choices.multichoice import (
+    MultiChoiceValue,
+    MultiChoiceValueWidget,
 )
