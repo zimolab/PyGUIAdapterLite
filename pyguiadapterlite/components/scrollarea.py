@@ -12,7 +12,7 @@ from pyguiadapterlite.components.valuewidget import (
 )
 from pyguiadapterlite.core.fn import ParameterInfo
 
-_DESCRIPTION_ICON_FILE = image_file("desc.png")
+_DESCRIPTION_ICON_FILE = image_file("info.png")
 _DESCRIPTION_ICON = None
 
 STICKY_MAP = {
