@@ -1,7 +1,7 @@
 import dataclasses
 from tkinter import Tk, Toplevel, Frame, messagebox, BooleanVar
-from tkinter.ttk import Button, Checkbutton
-from typing import Union, Optional, Any, cast, Dict
+from tkinter.ttk import Button, Checkbutton, Progressbar, Label
+from typing import Union, Optional, Any, cast, Dict, Literal
 
 from pyguiadapterlite._messages import (
     MSG_WARNING_TITLE,
@@ -88,6 +88,10 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     """提示消息，用以提示“当前函数为不可取消的函数”。"""
     function_not_executing_message: str = MSG_FUNC_NOT_EXECUTING
     """提示消息，用以提示“当前函数未处于执行状态”。"""
+    use_progress_bar: bool = False
+    """是否显示进度条。"""
+    use_progress_label: bool = False
+    """是否显示进度标签。"""
 
 
 class MainArea(ParameterGroupTabView):
@@ -106,7 +110,11 @@ class MainArea(ParameterGroupTabView):
         )
 
         self._document_view: Optional[TextView] = None
+        self._output_frame: Optional[Frame] = None
         self._output_view: Optional[TermView] = None
+        self._progress_frame: Optional[Frame] = None
+        self._progressbar: Optional[Progressbar] = None
+        self._progress_label: Optional[Label] = None
 
         # self._create_parameter_group(DEFAULT_GROUP_NAME)
         self._add_function_parameters()
@@ -143,6 +151,7 @@ class MainArea(ParameterGroupTabView):
 
     def _create_output_tab(self):
         terminal_frame = Frame(self._notebook)
+        self._output_frame = terminal_frame
         self._output_view = TermView(
             terminal_frame,
             font=self._config.output_font,
@@ -150,7 +159,22 @@ class MainArea(ParameterGroupTabView):
             background=self._config.output_background,
             foreground=self._config.output_foreground,
         )
-        self._output_view.pack(fill="both", expand=True)
+        self._output_view.pack(side="top", fill="both", expand=True)
+        terminal_frame.pack_propagate(False)
+
+        if self._config.use_progress_bar:
+            self._progress_frame = Frame(terminal_frame)
+            self._progress_frame.pack(side="bottom", fill="both", expand=True)
+            # self._progress_frame.pack_propagate(False)
+            self._progressbar = Progressbar(
+                self._progress_frame, orient="horizontal", mode="indeterminate"
+            )
+            self._progressbar.grid(row=0, column=0, sticky="we", padx=5)
+            if self._config.use_progress_label:
+                self._progress_label = Label(self._progress_frame, text="")
+                self._progress_label.grid(row=1, column=0, sticky="we", padx=5)
+            self._progress_frame.grid_columnconfigure(0, weight=1)
+
         self.add_tab(
             tab_id=self.__class__._OUTPUT_TAB_ID,
             tab_name=self._config.output_tab_title,
@@ -340,7 +364,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
     def on_close(self):
         if self._executor.is_executing:
-            show_warning(self.config.function_executing_message)
+            show_warning(self.config.function_executing_message, parent=self.parent)
             return False
         self._close_param_validation_win()
         UContext.execute_window_closed()
@@ -349,7 +373,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
     def on_execute(self):
         if self._executor.is_executing:
-            show_warning(self.config.function_executing_message)
+            show_warning(self.config.function_executing_message, parent=self.parent)
             return
         self._close_param_validation_win()
         parameter_values = self.get_parameter_values()
@@ -359,10 +383,10 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
     def on_cancel(self):
         if not self._fn_info.cancelable:
-            show_warning(self.config.uncancelable_function_message)
+            show_warning(self.config.uncancelable_function_message, parent=self.parent)
             return
         if not self._executor.is_executing:
-            show_warning(self.config.function_not_executing_message)
+            show_warning(self.config.function_not_executing_message, parent=self.parent)
             return
         self._executor.try_cancel()
 
@@ -434,7 +458,9 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         if config.print_function_result:
             self.print(f"\033[1m\033[92m{msg}\033[0m")
         if config.show_function_result:
-            show_information(title=config.result_dialog_title, message=msg)
+            show_information(
+                title=config.result_dialog_title, message=msg, parent=self.parent
+            )
 
     def _handle_function_exception(self, exception: BaseException):
         config = self.config
@@ -449,7 +475,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             if config.function_error_traceback and exc_tb:
                 self.print(f"\033[1m\033[93mTraceback:\n{exc_tb}\033[0m")
         if config.show_function_error:
-            show_error(title=config.error_dialog_title, message=exc_output_msg)
+            show_error(
+                title=config.error_dialog_title,
+                message=exc_output_msg,
+                parent=self.parent,
+            )
 
         if isinstance(exception, ParameterError):
             self._main_area.show_error_effect(exception.parameter_name)
