@@ -189,6 +189,7 @@ class BottomArea(Frame):
             command=self._parent_window.on_execute,
         )
         self._execute_button.pack(side="left", padx=5, pady=5)
+
         self._clear_button = Button(
             self,
             text=self._config.clear_button_text,
@@ -196,13 +197,16 @@ class BottomArea(Frame):
             state="disabled" if not self._config.clear_button_visible else "normal",
         )
         self._clear_button.pack(side="left", padx=5, pady=5)
-        self._cancel_button = Button(
-            self,
-            text=self._config.cancel_button_text,
-            command=self._parent_window.on_cancel,
-            state="normal" if self._fn_info.cancelable else "disabled",
-        )
-        self._cancel_button.pack(side="left", padx=5, pady=5)
+
+        if self._fn_info.cancelable:
+            self._cancel_button = Button(
+                self,
+                text=self._config.cancel_button_text,
+                command=self._parent_window.on_cancel,
+                state="normal" if self._fn_info.cancelable else "disabled",
+            )
+            self._cancel_button.pack(side="left", padx=5, pady=5)
+
         if self._config.clear_checkbox_visible:
             self._clear_checkbox = Checkbutton(
                 self,
