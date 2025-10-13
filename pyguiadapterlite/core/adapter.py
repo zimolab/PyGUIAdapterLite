@@ -53,11 +53,17 @@ class GUIAdapter(object):
         capture_system_exit_exception: bool = True,
         function_executor_class: Type[BaseFunctionExecutor] = ThreadedExecutor,
         ignore_self_parameter: bool = True,
+        enable_progressbar: bool = False,
+        enable_progress_label: bool = False,
     ) -> None:
         doc, params = self._fn_parser.parse(fn, ignore_self_param=ignore_self_parameter)
 
         if window_config is None:
-            window_config = FnExecuteWindowConfig(menus=window_menus)
+            window_config = FnExecuteWindowConfig(
+                menus=window_menus,
+                enable_progressbar=enable_progressbar,
+                enable_progress_label=enable_progress_label,
+            )
         else:
             if window_menus is not None:
                 window_config = dataclasses.replace(window_config, menus=window_menus)
