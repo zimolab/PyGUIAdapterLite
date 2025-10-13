@@ -21,20 +21,16 @@ from pyguiadapterlite._messages import (
     MSG_EXCEPTION_DURING_EXEC,
     MSG_FUNC_RET_MSG,
 )
-from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
-from pyguiadapterlite.windows.basewindow import BaseWindowConfig, BaseWindow
-from pyguiadapterlite.core.context import ParameterError
-from pyguiadapterlite.core.fn import FnInfo, BaseFunctionExecutor, ExecuteStateListener
-from pyguiadapterlite.windows.fnvalidationwindow import (
-    ParameterValidationWindow,
-    ParameterValidationWindowConfig,
-)
 from pyguiadapterlite.components.paramtabview import (
     ParameterGroupTabView,
     DEFAULT_GROUP_NAME,
 )
+from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
 from pyguiadapterlite.components.termview import TermView
 from pyguiadapterlite.components.textview import TextView, SimpleTextViewer
+from pyguiadapterlite.components.valuewidget import InvalidValue
+from pyguiadapterlite.core.context import ParameterError
+from pyguiadapterlite.core.fn import FnInfo, BaseFunctionExecutor, ExecuteStateListener
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.utils import (
@@ -46,7 +42,11 @@ from pyguiadapterlite.utils import (
     show_information,
     _info,
 )
-from pyguiadapterlite.components.valuewidget import InvalidValue
+from pyguiadapterlite.windows.basewindow import BaseWindowConfig, BaseWindow
+from pyguiadapterlite.windows.fnvalidationwindow import (
+    ParameterValidationWindow,
+    ParameterValidationWindowConfig,
+)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -88,10 +88,14 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     """提示消息，用以提示“当前函数为不可取消的函数”。"""
     function_not_executing_message: str = MSG_FUNC_NOT_EXECUTING
     """提示消息，用以提示“当前函数未处于执行状态”。"""
-    use_progress_bar: bool = False
+    use_progress_bar: bool = True
     """是否显示进度条。"""
-    use_progress_label: bool = False
+    use_progress_label: bool = True
     """是否显示进度标签。"""
+    progress_label_font: Optional[tuple] = None
+    progress_label_anchor: Literal[
+        "nw", "n", "ne", "w", "center", "e", "sw", "s", "se"
+    ] = "center"
 
 
 class MainArea(ParameterGroupTabView):
@@ -167,12 +171,18 @@ class MainArea(ParameterGroupTabView):
             self._progress_frame.pack(side="bottom", fill="both", expand=True)
             # self._progress_frame.pack_propagate(False)
             self._progressbar = Progressbar(
-                self._progress_frame, orient="horizontal", mode="indeterminate"
+                self._progress_frame, orient="horizontal", mode="determinate"
             )
-            self._progressbar.grid(row=0, column=0, sticky="we", padx=5)
+            self._progressbar.grid(row=0, column=0, sticky="we", padx=10)
             if self._config.use_progress_label:
                 self._progress_label = Label(self._progress_frame, text="")
-                self._progress_label.grid(row=1, column=0, sticky="we", padx=5)
+                if self._config.progress_label_font:
+                    self._progress_label.config(font=self._config.progress_label_font)
+                self._progress_label.grid(row=1, column=0, sticky="we", padx=10)
+                if self._config.progress_label_anchor:
+                    self._progress_label.config(
+                        anchor=self._config.progress_label_anchor
+                    )
             self._progress_frame.grid_columnconfigure(0, weight=1)
 
         self.add_tab(
@@ -180,6 +190,61 @@ class MainArea(ParameterGroupTabView):
             tab_name=self._config.output_tab_title,
             content=terminal_frame,
         )
+
+    def is_progressbar_enabled(self) -> bool:
+        return self._progressbar is not None
+
+    def is_progress_label_enabled(self) -> bool:
+        return self._progress_label is not None
+
+    def show_progressbar(self, show: bool = True):
+        if not self._progress_frame:
+            _warning("progress bar not enabled")
+            return
+        if show:
+            self._progressbar.grid_remove()
+            self._progress_label.grid_remove()
+            self._progressbar.grid(row=0, column=0, sticky="we", padx=10)
+            self._progress_label.grid(row=1, column=0, sticky="we", padx=10)
+        else:
+            self._progressbar.grid_remove()
+            self._progress_label.grid_remove()
+
+    def start_progressbar(
+        self,
+        total: int,
+        mode: Literal["determinate", "indeterminate"] = "determinate",
+        initial_value: int = 0,
+        initial_text: str = "",
+    ):
+        if not self._progressbar:
+            _warning("progress bar not enabled")
+            return
+        self.show_progressbar(True)
+        self._progressbar.config(value=initial_value, maximum=total, mode=mode)
+        if mode == "indeterminate":
+            self._progressbar.start()
+        if self._progress_label:
+            self._progress_label.config(text=initial_text)
+
+    def stop_progressbar(self, hide_progress_bar: bool = False):
+        if not self._progressbar:
+            return
+        self._progressbar.stop()
+        self.show_progressbar(not hide_progress_bar)
+
+    def hide_progressbar(self):
+        self.show_progressbar(False)
+
+    def update_progressbar(self, value: int, msg: str):
+        if not self._progressbar:
+            _warning("progress bar not enabled")
+            return
+        self._progressbar.step(value)
+        if not self._progress_label:
+            _warning("progress label not enabled, message will be ignored")
+        else:
+            self._progress_label.config(text=msg)
 
     def show_document_tab(self):
         if self._document_view:
@@ -328,6 +393,30 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             self._main_area.output_view.write(f"{message}{sep}")
         if end:
             self._main_area.output_view.write(end)
+
+    def is_progressbar_enabled(self) -> bool:
+        return self._main_area.is_progressbar_enabled()
+
+    def is_progress_label_enabled(self) -> bool:
+        return self._main_area.is_progress_label_enabled()
+
+    def show_progressbar(self, show: bool = True):
+        self._main_area.show_progressbar(show)
+
+    def start_progressbar(
+        self,
+        total: int,
+        mode: Literal["determinate", "indeterminate"] = "determinate",
+        initial_value: int = 0,
+        initial_text: str = "",
+    ):
+        self._main_area.start_progressbar(total, mode, initial_value, initial_text)
+
+    def stop_progressbar(self, hide_progress_bar: bool = False):
+        self._main_area.stop_progressbar(hide_progress_bar)
+
+    def hide_progressbar(self):
+        self._main_area.hide_progressbar()
 
     def before_execute(self, fn_info: "FnInfo", arguments: Dict[str, Any]) -> None:
         super().before_execute(fn_info, arguments)
