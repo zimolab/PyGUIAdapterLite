@@ -26,17 +26,12 @@ class BaseWindow(object):
     def __init__(self, parent: Union[Tk, Toplevel], config: BaseWindowConfig):
         self._parent = parent
         self._config = config
-
-        self._parent.title(config.title)
-        if config.icon:
-            icon_path = Path(config.icon)
-            if icon_path.exists():
-                self._parent.iconbitmap(icon_path)
         size = config.size
         position = config.position
         self._parent.geometry(
             f"{size[0]}x{size[1]}{f'+{position[0]}+{position[1]}' if position[0] and position[1] else ''}"
         )
+        self._parent.title(config.title)
         icon = config.icon
         if icon:
             icon = Path(icon)

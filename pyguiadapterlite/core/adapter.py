@@ -111,6 +111,7 @@ class GUIAdapter(object):
 
         UContext.reset()
         root = Tk()
+        root.withdraw()
         if self._hdpi_mode:
             if platform.system() == "Windows":
                 _info(
@@ -131,6 +132,7 @@ class GUIAdapter(object):
             self._show_select_window(select_window_config)
         else:
             self._show_execute_window(list(self._functions.values())[0])
+        root.deiconify()
         root.mainloop()
         self._select_window = None
         self._execute_window = None

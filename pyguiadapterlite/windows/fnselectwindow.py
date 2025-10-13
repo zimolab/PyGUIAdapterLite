@@ -223,10 +223,12 @@ class FnSelectWindow(BaseWindow):
         assert isinstance(info, FnInfo)
         # print("选择的函数:", info.get_function_name())
         self._execute_window_root = Toplevel(self._parent)
+        self._execute_window_root.withdraw()
         self._execute_window = FnExecuteWindow(self._execute_window_root, info)
         self._execute_window_root.transient(self._parent)
         self._execute_window_root.grab_set()
         self._execute_window.move_to_center()
+        self._execute_window_root.deiconify()
         _info(f"creating an execute window and wait for it to close(fn={info.fn_name})")
         self._parent.wait_window(self._execute_window_root)
         try:
