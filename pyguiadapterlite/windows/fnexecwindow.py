@@ -108,7 +108,7 @@ class MainArea(ParameterGroupTabView):
         self._document_view: Optional[TextView] = None
         self._output_view: Optional[TermView] = None
 
-        self._create_parameter_group(DEFAULT_GROUP_NAME)
+        # self._create_parameter_group(DEFAULT_GROUP_NAME)
         self._add_function_parameters()
         self._create_document_tab()
         self._create_output_tab()
@@ -219,7 +219,8 @@ class BottomArea(Frame):
         self._execute_button.config(state="normal" if enabled else "disabled")
 
     def set_cancel_button_state(self, enabled: bool):
-        self._cancel_button.config(state="normal" if enabled else "disabled")
+        if self._cancel_button:
+            self._cancel_button.config(state="normal" if enabled else "disabled")
 
     def set_clear_button_state(self, enabled: bool):
         self._clear_button.config(state="normal" if enabled else "disabled")
