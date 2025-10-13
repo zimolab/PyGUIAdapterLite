@@ -48,7 +48,7 @@ def equation_solver_3(
 if __name__ == "__main__":
     window_config = FnExecuteWindowConfig(
         title="Equation Solver",
-        icon="mdi6.function-variant",
+        icon="calculator.ico",
         execute_button_text="Solve",
         clear_button_text="Clear",
         size=(500, 600),
@@ -59,4 +59,4 @@ if __name__ == "__main__":
 
     adapter = GUIAdapter()
     adapter.add(equation_solver_3, window_config=window_config)
-    adapter.run()
+    adapter.run(show_select_window=True)
