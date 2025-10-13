@@ -29,7 +29,7 @@ from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
 from pyguiadapterlite.components.termview import TermView
 from pyguiadapterlite.components.textview import TextView, SimpleTextViewer
 from pyguiadapterlite.components.valuewidget import InvalidValue
-from pyguiadapterlite.core.context import ParameterError
+from pyguiadapterlite.core.fn import ParameterError
 from pyguiadapterlite.core.fn import FnInfo, BaseFunctionExecutor, ExecuteStateListener
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
