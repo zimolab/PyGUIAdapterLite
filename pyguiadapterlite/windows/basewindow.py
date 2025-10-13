@@ -16,7 +16,7 @@ class ParameterGroupNameNotAvailableError(Exception):
 class BaseWindowConfig(object):
     title: str = ""
     icon: Optional[str] = None
-    size: Tuple[int, int] = (800, 600)
+    size: Tuple[int, int] = (800, 605)
     position: Tuple[Optional[int], Optional[int]] = (None, None)
     always_on_top: bool = False
     menus: Optional[List[Union[Menu, Separator]]] = None
