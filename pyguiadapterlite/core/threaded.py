@@ -3,6 +3,7 @@ from typing import Dict, Any, Optional
 
 from pyguiadapterlite.core.fn import BaseFunctionExecutor, FnInfo, ExecuteStateListener
 from pyguiadapterlite.core.ucontext import UContext
+from pyguiadapterlite.utils import _exception
 
 
 class ThreadRunningException(RuntimeError):
@@ -94,9 +95,14 @@ class ThreadedExecutor(BaseFunctionExecutor):
             result = fn(**arguments)
             self._on_finish(fn_info, arguments, result, None)
         except SystemExit as e:
+            _exception(e, "SystemExit caught in function execution thread")
             if fn_info.capture_system_exit_exception:
                 self._on_finish(fn_info, arguments, None, e)
             else:
-                raise e
+                tk_instance = UContext.app_instance()
+                if not tk_instance:
+                    exit(e.code)
+                else:
+                    tk_instance.after(0, tk_instance.quit)
         except BaseException as e:
             self._on_finish(fn_info, arguments, None, e)
