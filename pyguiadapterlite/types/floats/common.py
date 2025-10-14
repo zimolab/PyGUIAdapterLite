@@ -10,13 +10,13 @@ from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     SetValueError,
 )
-from pyguiadapterlite.utils import _error
+from pyguiadapterlite.utils import _error, _exception
 
 
 @dataclasses.dataclass(frozen=True)
 class FloatValue(BaseParameterWidgetConfig):
     default_value: float = 0.0
-    auto_correct: bool = True
+    auto_correct: bool = False
 
     @classmethod
     def target_widget_class(cls) -> Type["FloatValueWidget"]:
@@ -40,10 +40,11 @@ class FloatEntry(Entry):
         value = value.strip()
         if value == "" or value == "-" or value == "." or value == "-.":
             return True
+        # noinspection PyBroadException
         try:
             float(value)
             return True
-        except ValueError:
+        except BaseException:
             return False
 
     def on_focus_out(self, event):
@@ -51,7 +52,8 @@ class FloatEntry(Entry):
         current_value = self.get().strip()
         try:
             float(current_value)
-        except ValueError:
+        except BaseException as e:
+            _exception(e, "invalid float value")
             self._parent.start_invalid_value_effect()
             if self._parent.config.auto_correct:
                 self.delete(0, END)
@@ -62,7 +64,7 @@ class FloatEntry(Entry):
         current_value = self.get().strip()
         try:
             return float(current_value)
-        except ValueError as e:
+        except BaseException as e:
             raise GetValueError(
                 raw_value=current_value, msg=f"invalid float value `{current_value}`"
             ) from e
@@ -72,7 +74,7 @@ class FloatEntry(Entry):
         raw_value = value
         try:
             value = float(raw_value)
-        except (ValueError, TypeError) as e:
+        except BaseException as e:
             raise SetValueError(
                 raw_value=raw_value, msg=f"invalid float value `{value}`"
             ) from e
@@ -115,13 +117,12 @@ class FloatValueWidget(BaseParameterWidget):
     def build(self) -> "FloatValueWidget":
         if self._build_flag:
             return self
-        self._build_flag = True
         self._input_entry = FloatEntry(self)
         self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
         self._input_entry.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._input_entry.value = self._config.default_value
-
+        self._build_flag = True
         return self
 
     def on_parameter_error(self, parameter_name: str, error: Any) -> None:

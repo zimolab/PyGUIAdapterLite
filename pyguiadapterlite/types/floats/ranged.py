@@ -10,7 +10,7 @@ from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     SetValueError,
 )
-from pyguiadapterlite.utils import _error
+from pyguiadapterlite.utils import _error, _exception
 
 MAX_VALUE = 2.0**31 - 1
 MIN_VALUE = -MAX_VALUE
@@ -27,7 +27,7 @@ class RangedFloatValue(BaseParameterWidgetConfig):
     max_value: float = MAX_VALUE
     step: float = DEFAULT_STEP
     decimals: int = DEFAULT_DECIMALS
-    auto_correct: bool = True
+    auto_correct: bool = False
     correct_to: Literal["default", "min", "max", "nearest"] = "nearest"
 
     def __post_init__(self):
@@ -74,9 +74,10 @@ class FloatSpinbox(Spinbox):
         value = value.strip()
         if value == "" or value == "-" or value == "." or value == "-.":
             return True
+        # noinspection PyBroadException
         try:
             float(value)
-        except ValueError:
+        except BaseException:
             return False
         return True
 
@@ -90,7 +91,8 @@ class FloatSpinbox(Spinbox):
             # 检查是否在范围内
             if not (config.min_value <= float_value <= config.max_value):
                 raise ValueError("out of range")
-        except ValueError:
+        except BaseException as e:
+            _exception(e, "invalid float value")
             self._parent.start_invalid_value_effect()
             if config.auto_correct:
                 self.set_value(self._corrected_value(float_value))
@@ -110,7 +112,7 @@ class FloatSpinbox(Spinbox):
                     raw_value=current_value,
                     msg=f"out of range [{config.min_value}, {config.max_value}]",
                 )
-        except ValueError as e:
+        except BaseException as e:
             raise GetValueError(
                 raw_value=current_value, msg=f"invalid float value `{current_value}`"
             ) from e
@@ -132,7 +134,7 @@ class FloatSpinbox(Spinbox):
             self.delete(0, END)
             self.insert(END, str(float_value))
 
-        except (ValueError, TypeError) as e:
+        except BaseException as e:
             raise SetValueError(
                 raw_value=value, msg=f"invalid float value `{value}`"
             ) from e
@@ -192,13 +194,12 @@ class RangedFloatValueWidget(BaseParameterWidget):
     def build(self) -> "RangedFloatValueWidget":
         if self._build_flag:
             return self
-        self._build_flag = True
         self._spinbox = FloatSpinbox(self)
         self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
         self._spinbox.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._spinbox.set_value(self._config.default_value)
-
+        self._build_flag = True
         return self
 
     def on_parameter_error(self, parameter_name: str, error: Any) -> None:

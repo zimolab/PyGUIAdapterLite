@@ -72,7 +72,7 @@ class FloatScale(ttk.Scale):
                     msg=f"out of range [{config.min_value}, {config.max_value}]",
                 )
             setter(float_value)
-        except (ValueError, TypeError) as e:
+        except BaseException as e:
             raise SetValueError(
                 raw_value=value, msg=f"invalid float value `{value}`"
             ) from e
@@ -81,7 +81,7 @@ class FloatScale(ttk.Scale):
     def get_(getter) -> float:
         try:
             return float(getter())
-        except (ValueError, TypeError) as e:
+        except BaseException as e:
             current_value = getter()
             raise GetValueError(
                 raw_value=current_value, msg=f"invalid float value `{current_value}`"
