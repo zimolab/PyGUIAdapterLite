@@ -103,6 +103,13 @@ class BaseParameterWidgetConfig(object):
     def new(cls, **kwargs) -> "BaseParameterWidgetConfig":
         return cls(**kwargs)
 
+    def serialize(self) -> dict:
+        return dataclasses.asdict(self)
+
+    @classmethod
+    def deserialize(cls, json_obj: dict) -> "BaseParameterWidgetConfig":
+        return cls.new(**json_obj)
+
 
 _T = TypeVar("_T", bound=BaseParameterWidgetConfig)
 
