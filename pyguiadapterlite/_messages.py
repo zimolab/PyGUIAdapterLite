@@ -123,3 +123,6 @@ MSG_SET_PARAMS_FAILED = tr_("Failed to set parameters!")
 MSG_INVALID_PARAMS_FOUND = tr_("Invalid parameters found!")
 MSG_LOAD_FILE_DIALOG_TITLE = tr_("Load File")
 MSG_LOAD_PARAMS_SUCCESS = tr_("Parameters loaded successfully!")
+MSG_INVALID_PARAMS_NOT_APPLIED = tr_(
+    "The following parameters are invalid and will not be applied:"
+)
