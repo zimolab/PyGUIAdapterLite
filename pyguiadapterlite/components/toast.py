@@ -1,25 +1,31 @@
-from tkinter import Widget, Toplevel, Label
+from tkinter import Widget, Toplevel, Label, Tk
+from typing import Literal, Union
 
 
 class Toast:
-    def __init__(self, parent: Widget):
+    def __init__(self, parent: Union[Widget, Tk, Toplevel]):
         self.parent = parent
 
     def show_toast(
         self,
-        message,
-        duration=3000,
-        position="top",
+        message: str,
+        duration: int = 3000,
+        position: Literal["top", "bottom", "center"] = "top",
         background: str = "#323232",
         foreground: str = "white",
         font: tuple = ("Arial", 10),
-        padding_x: int = 20,
-        padding_y: int = 20,
+        pad_x: int = 20,
+        pad_y: int = 20,
         alpha: float = 0.0,
     ):
         """显示Toast消息"""
         # 创建顶层窗口
-        toast_window = Toplevel(self.parent)
+
+        if isinstance(self.parent, Widget):
+            parent = self.parent.winfo_toplevel()
+        else:
+            parent = self.parent
+        toast_window = Toplevel(parent)
         toast_window.overrideredirect(True)  # 无边框
         toast_window.attributes("-alpha", alpha)  # 初始透明
         toast_window.attributes("-topmost", True)  # 置顶
@@ -34,8 +40,8 @@ class Toast:
             fg=foreground,
             bg=background,
             font=font,
-            padx=padding_x,
-            pady=padding_y,
+            padx=pad_x,
+            pady=pad_y,
         )
         label.pack()
 
