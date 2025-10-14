@@ -87,11 +87,13 @@ class ParameterGroupTabView(TabView):
         return values
 
     def update_parameter_values(
-        self, values: Dict[str, Any]
+        self, values: Dict[str, Any], ignore_not_exist: bool = True
     ) -> Dict[str, Union[Any, InvalidValue]]:
         ret = {}
         for group_name, group in self.parameter_groups:
-            group_values = group.update_parameter_values(values, ignore_not_exist=True)
+            group_values = group.update_parameter_values(
+                values, ignore_not_exist=ignore_not_exist
+            )
             if group_values:
                 ret.update(group_values)
         return ret
