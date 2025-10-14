@@ -18,6 +18,10 @@ from pyguiadapterlite.components.textview import TextView
 @dataclasses.dataclass(frozen=True)
 class ParameterValidationWindowConfig(BaseWindowConfig):
     title: str = MSG_PARAM_VALIDATION_WIN_TITLE
+    invalid_params_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
+    invalid_params_label_text: str = MSG_INVALID_PARAMS_LABEL_TEXT
+    description_group_title: str = MSG_INVALID_PARAMS_GROUP_TITLE
+    invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
     size: tuple = (400, 450)
     font: tuple = ("Arial", 11)
 
@@ -53,9 +57,12 @@ class ParameterValidationWindow(BaseWindow):
         return cast(ParameterValidationWindowConfig, super().config)
 
     def create_main_area(self) -> Any:
-        self._top_frame = LabelFrame(self._parent, text=MSG_INVALID_PARAMS_GROUP_TITLE)
+        config = self.config
+        self._top_frame = LabelFrame(
+            self._parent, text=config.invalid_params_group_title
+        )
         self._invalid_params_label = Label(
-            self._top_frame, text=MSG_INVALID_PARAMS_LABEL_TEXT
+            self._top_frame, text=config.invalid_params_label_text
         )
         self._invalid_params_label.pack(fill="x", padx=5, pady=5)
         self._listview = ListView(self._top_frame, selectmode="single")
@@ -66,7 +73,7 @@ class ParameterValidationWindow(BaseWindow):
 
     def create_bottom_area(self) -> Any:
         self._bottom_frame = LabelFrame(
-            self._parent, text=MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
+            self._parent, text=self.config.description_group_title
         )
         self._bottom_frame.pack(fill="both", expand=True, padx=5, pady=5)
         self._doc_view = TextView(self._bottom_frame, font=self.config.font)
@@ -107,12 +114,12 @@ class ParameterValidationWindow(BaseWindow):
         selection = self._listview.curselection()
         if selection:
             index = selection[0]
-            fn_name, display_name, validation_msg = self._invalid_params.get(index)
+            param_name, display_name, validation_msg = self._invalid_params.get(index)
             # 更新文档显示
-            self._update_document(fn_name, validation_msg)
+            self._update_document(param_name, validation_msg)
 
-    def _update_document(self, fn_name: str, validation_msg: str):
+    def _update_document(self, param_name: str, validation_msg: str):
         self._doc_view.clear()
         self._doc_view.set_text(
-            MSG_INVALID_PARAM_DETAIL_TEMPLATE.format(fn_name, validation_msg)
+            self.config.invalid_param_detail_template.format(param_name, validation_msg)
         )
