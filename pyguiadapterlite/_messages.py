@@ -113,3 +113,8 @@ MSG_REMOVE_PATH_CONFIRMATION = tr_(
 MSG_REMOVE_ALL_PATHS_CONFIRMATION = tr_(
     "Are you sure to remove all paths from the list?"
 )
+
+MSG_PARAMS_SERIALIZATION_FAILED = tr_("Failed to serialize parameters!")
+MSG_SAVE_PARAMS_FAILED = tr_("Failed to save parameters to file!")
+MSG_SAVE_PARAMS_SUCCESS = tr_("Parameters saved successfully!")
+MSG_PARAMS_DESERIALIZATION_FAILED = tr_("Failed to deserialize parameters!")
