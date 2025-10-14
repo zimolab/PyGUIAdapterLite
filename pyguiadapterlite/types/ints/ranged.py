@@ -45,7 +45,7 @@ class IntSpinbox(Spinbox):
         current_value = self.get().strip()
         try:
             val = int(current_value)
-        except ValueError as e:
+        except BaseException as e:
             raise GetValueError(
                 raw_value=current_value, msg=f"cannot convert to int"
             ) from e
@@ -61,7 +61,7 @@ class IntSpinbox(Spinbox):
         raw_value = value
         try:
             value = int(raw_value)
-        except ValueError as e:
+        except BaseException as e:
             raise SetValueError(
                 raw_value=raw_value, msg=f"cannot convert to int"
             ) from e
@@ -111,13 +111,12 @@ class RangedIntValueWidget(BaseParameterWidget):
     def build(self) -> "RangedIntValueWidget":
         if self._build_flag:
             return self
-        self._build_flag = True
         self._input_entry = IntSpinbox(self)
         self.color_flash_effect.set_target(self)
         # noinspection PyTypeChecker
         self._input_entry.pack(side="left", fill="both", expand=True, padx=1, pady=1)
         self._input_entry.value = self._config.default_value
-
+        self._build_flag = True
         return self
 
     def on_parameter_error(self, parameter_name: str, error: Any) -> None:

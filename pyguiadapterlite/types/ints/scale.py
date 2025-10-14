@@ -24,7 +24,7 @@ DEFAULT_TICK_INTERVAL = 10
 def _get_value(current_value, config):
     try:
         val = int(current_value)
-    except ValueError as e:
+    except BaseException as e:
         raise GetValueError(
             raw_value=current_value, msg=f"invalid int value `{current_value}`"
         ) from e
@@ -40,7 +40,7 @@ def _set_value(value, config, setter):
     raw_value = value
     try:
         value = int(raw_value)
-    except ValueError as e:
+    except BaseException as e:
         raise SetValueError(raw_value=raw_value, msg=f"cannot convert to int") from e
     if value < config.min_value or value > config.max_value:
         raise SetValueError(
