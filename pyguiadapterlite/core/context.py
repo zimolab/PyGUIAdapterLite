@@ -3,6 +3,7 @@ from typing import Any, Callable, Literal, Optional
 
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
+from pyguiadapterlite.components import toast
 
 
 def is_cancel_requested() -> bool:
@@ -105,4 +106,37 @@ def stop_progressbar(hide_after_stop: bool = True):
     exec_window.parent.after(0, exec_window.stop_progressbar, hide_after_stop)
 
 
+def show_toast(
+    message: str,
+    duration: int = 3000,
+    position: Literal["top", "bottom", "center"] = "top",
+    background: str = "#323232",
+    foreground: str = "#FFFFFF",
+    font: tuple = ("Arial", 10),
+    pad_x: int = 20,
+    pad_y: int = 20,
+    alpha: float = 0.0,
+):
+    exec_window = UContext.current_execute_window()
+    if not exec_window:
+        raise RuntimeError("fn execute_window is not set")
+
+    def _show_toast(window: FnExecuteWindow):
+        t = toast.Toast(window.parent)
+        t.show_toast(
+            message=message,
+            duration=duration,
+            position=position,
+            background=background,
+            foreground=foreground,
+            font=font,
+            pad_x=pad_x,
+            pad_y=pad_y,
+            alpha=alpha,
+        )
+
+    exec_window.parent.after(0, _show_toast, exec_window)
+
+
+# 定义别名
 is_function_cancelled = is_cancel_requested
