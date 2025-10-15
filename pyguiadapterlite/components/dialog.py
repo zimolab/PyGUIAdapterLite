@@ -13,6 +13,7 @@ from pyguiadapterlite._messages import (
     MSG_SELECT_FILE_DIALOG_TITLE,
     MSG_SELECT_DIR_DIALOG_TITLE,
 )
+from pyguiadapterlite.components.textview import TextView
 
 
 class BaseDialog(object):
@@ -310,3 +311,55 @@ class PathInputDialog(BaseSimpleDialog):
                 if "*." in first_pattern:
                     return first_pattern.split("*.")[-1]
         return ""
+
+
+class TextViewDialog(BaseSimpleDialog):
+
+    def __init__(
+        self,
+        parent: Union[Toplevel, Tk, Widget],
+        title: str = "",
+        size: tuple = (500, 400),
+        resizable: bool = True,
+        ok_text: str = MSG_DIALOG_BUTTON_OK,
+        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+        text: str = "",
+        textview_height: int = 18,
+        editable: bool = True,
+        default_menu: bool = True,
+        wrap: Literal["none", "char", "word"] = "word",
+        font: tuple = ("Arial", 10),
+        label_text: str = "",
+    ):
+        self._initial_text: str = text
+        self._editable = editable
+        self._default_menu = default_menu
+        self._wrap = wrap
+        self._font = font
+        self._textview_height = textview_height
+        self._label_text = label_text
+
+        self._textview: Optional[TextView] = None
+
+        super().__init__(parent, title, size, resizable, ok_text, cancel_text)
+
+    def on_create_content_area(self, dialog: Toplevel):
+        self._content_area = Frame(dialog)
+        self._content_area.pack(fill="both", expand=True)
+
+        label = Label(self._content_area, text=self._label_text)
+        label.pack(side="top", fill="x", padx=5, pady=(5, 0))
+
+        self._textview = TextView(
+            self._content_area,
+            editable=self._editable,
+            default_menu=self._default_menu,
+            wrap=self._wrap,
+            font=self._font,
+            height=self._textview_height,
+        )
+        self._textview.set_text(self._initial_text)
+        self._textview.pack(fill="x", expand=False, padx=5, pady=2)
+
+    def on_get_result(self) -> Any:
+        return self._textview.get_text()
