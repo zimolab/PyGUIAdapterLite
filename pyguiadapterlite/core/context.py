@@ -189,6 +189,9 @@ def show_critical_messagebox(
     return _run_ui_on_thread(_call)
 
 
+show_error_messagebox = show_critical_messagebox
+
+
 def show_question_messagebox(
     message: str,
     title: str = MSG_QUESTION_TITLE,
