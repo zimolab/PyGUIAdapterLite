@@ -1,6 +1,6 @@
 from concurrent.futures import Future
 from tkinter import messagebox, simpledialog
-from typing import Any, Callable, Literal, Optional
+from typing import Any, Callable, Literal, Optional, Type, Tuple, List
 
 from pyguiadapterlite._messages import (
     MSG_INFO_TITLE,
@@ -8,8 +8,23 @@ from pyguiadapterlite._messages import (
     MSG_CRITICAL_TITLE,
     MSG_QUESTION_TITLE,
     MSG_INPUT_DIALOG_TITLE,
+    MSG_DIALOG_BUTTON_OK,
+    MSG_DIALOG_BUTTON_CANCEL,
+    MSG_DIALOG_INPUT_PROMPT,
+    MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    MSG_SELECT_FILE_DIALOG_TITLE,
+    MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
+    MSG_SELECT_DIR_DIALOG_TITLE,
+    MSG_INPUT_PATH_PROMPT,
+    MSG_INPUT_FILE_PROMPT,
+    MSG_INPUT_DIR_PROMPT,
 )
 from pyguiadapterlite.components import toast
+from pyguiadapterlite.components.dialog import (
+    BaseDialog,
+    StringInputDialog,
+    PathInputDialog,
+)
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
 
@@ -301,6 +316,141 @@ def get_float_input(
         )
 
     return _run_ui_on_thread(_call)
+
+
+def show_custom_dialog(
+    dialog_class: Type[BaseDialog], title: str, **dialog_kwargs
+) -> Any:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        dialog = dialog_class(title=title, parent=window.parent, **dialog_kwargs)
+        if dialog.is_cancelled():
+            return None
+        return dialog.result
+
+    return _run_ui_on_thread(_call)
+
+
+def get_string_input2(
+    title: str = MSG_INPUT_DIALOG_TITLE,
+    size: tuple = (300, 100),
+    resizable: bool = False,
+    ok_text: str = MSG_DIALOG_BUTTON_OK,
+    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+    label_text: str = MSG_DIALOG_INPUT_PROMPT,
+    initial_value: str = "",
+    echo_char: Optional[str] = None,
+):
+    return show_custom_dialog(
+        dialog_class=StringInputDialog,
+        title=title,
+        size=size,
+        resizable=resizable,
+        ok_text=ok_text,
+        cancel_text=cancel_text,
+        label_text=label_text,
+        initial_value=initial_value,
+        echo_char=echo_char,
+    )
+
+
+def get_path_input(
+    title: str = MSG_INPUT_DIALOG_TITLE,
+    size: tuple = (420, 130),
+    resizable: bool = False,
+    file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    file_types: List[Tuple[str, str]] = None,
+    file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
+    file_dialog_action: Literal["open", "save"] = "open",
+    dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
+    dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+    start_dir: str = "",
+    ok_text: str = MSG_DIALOG_BUTTON_OK,
+    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+    label_text: str = MSG_INPUT_PATH_PROMPT,
+    initial_value: str = "",
+):
+    return show_custom_dialog(
+        dialog_class=PathInputDialog,
+        title=title,
+        size=size,
+        resizable=resizable,
+        file_button_text=file_button_text,
+        file_types=file_types,
+        file_dialog_title=file_dialog_title,
+        file_dialog_action=file_dialog_action,
+        dir_button_text=dir_button_text,
+        dir_dialog_title=dir_dialog_title,
+        start_dir=start_dir,
+        ok_text=ok_text,
+        cancel_text=cancel_text,
+        label_text=label_text,
+        initial_value=initial_value,
+    )
+
+
+def get_file_path_input(
+    title: str = MSG_INPUT_DIALOG_TITLE,
+    size: tuple = (420, 130),
+    resizable: bool = False,
+    file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    file_types: List[Tuple[str, str]] = None,
+    file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
+    file_dialog_action: Literal["open", "save"] = "open",
+    start_dir: str = "",
+    ok_text: str = MSG_DIALOG_BUTTON_OK,
+    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+    label_text: str = MSG_INPUT_FILE_PROMPT,
+    initial_value: str = "",
+):
+    return show_custom_dialog(
+        dialog_class=PathInputDialog,
+        title=title,
+        size=size,
+        resizable=resizable,
+        file_button_text=file_button_text,
+        file_types=file_types,
+        file_dialog_title=file_dialog_title,
+        file_dialog_action=file_dialog_action,
+        dir_button_text=None,
+        dir_dialog_title="",
+        start_dir=start_dir,
+        ok_text=ok_text,
+        cancel_text=cancel_text,
+        label_text=label_text,
+        initial_value=initial_value,
+    )
+
+
+def get_dir_path_input(
+    title: str = MSG_INPUT_DIALOG_TITLE,
+    size: tuple = (420, 130),
+    resizable: bool = False,
+    dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
+    dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+    start_dir: str = "",
+    ok_text: str = MSG_DIALOG_BUTTON_OK,
+    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+    label_text: str = MSG_INPUT_DIR_PROMPT,
+    initial_value: str = "",
+):
+    return show_custom_dialog(
+        dialog_class=PathInputDialog,
+        title=title,
+        size=size,
+        resizable=resizable,
+        file_button_text=None,
+        file_types="",
+        file_dialog_title="",
+        file_dialog_action="open",
+        dir_button_text=dir_button_text,
+        dir_dialog_title=dir_dialog_title,
+        start_dir=start_dir,
+        ok_text=ok_text,
+        cancel_text=cancel_text,
+        label_text=label_text,
+        initial_value=initial_value,
+    )
 
 
 # 定义别名
