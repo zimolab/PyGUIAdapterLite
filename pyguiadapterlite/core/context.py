@@ -24,6 +24,7 @@ from pyguiadapterlite.components.dialog import (
     BaseDialog,
     StringInputDialog,
     PathInputDialog,
+    TextViewDialog,
 )
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
@@ -450,6 +451,35 @@ def get_dir_path_input(
         cancel_text=cancel_text,
         label_text=label_text,
         initial_value=initial_value,
+    )
+
+
+def get_text_input(
+    title: str = MSG_INPUT_DIALOG_TITLE,
+    size: tuple = (500, 400),
+    resizable: bool = True,
+    ok_text: str = MSG_DIALOG_BUTTON_OK,
+    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+    label_text: str = MSG_DIALOG_INPUT_PROMPT,
+    initial_value: str = "",
+    textview_height: int = 20,
+    default_menu: bool = True,
+    wrap: Literal["none", "char", "word"] = "word",
+    font: tuple = ("Arial", 10),
+):
+    return show_custom_dialog(
+        TextViewDialog,
+        title=title,
+        size=size,
+        resizable=resizable,
+        ok_text=ok_text,
+        cancel_text=cancel_text,
+        default_menu=default_menu,
+        wrap=wrap,
+        font=font,
+        text=initial_value,
+        textview_height=textview_height,
+        label_text=label_text,
     )
 
 
