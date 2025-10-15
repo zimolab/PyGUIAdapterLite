@@ -55,6 +55,7 @@ class MultiChoiceValueWidget(BaseParameterWidget):
 
     def set_value(self, value: List[Any]) -> Union[Any, InvalidValue]:
         try:
+            self._value_widget.unselect_all()
             self._value_widget.select(value.copy())
         except Exception as e:
             return InvalidValue(raw_value=value, exception=e)
