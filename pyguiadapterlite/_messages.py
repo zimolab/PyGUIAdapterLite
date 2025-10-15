@@ -10,6 +10,8 @@ MSG_WARNING_TITLE = tr_("Warning")
 MSG_ERROR_TITLE = tr_("Error")
 MSG_INFO_TITLE = tr_("Information")
 MSG_QUESTION_TITLE = tr_("Question")
+MSG_CRITICAL_TITLE = tr_("Critical")
+
 MSG_NO_FUNC_DOC = tr_("No function documentation available.")
 
 MSG_COPY = tr_("Copy")
