@@ -1,5 +1,5 @@
 from concurrent.futures import Future
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from typing import Any, Callable, Literal, Optional
 
 from pyguiadapterlite._messages import (
@@ -7,6 +7,7 @@ from pyguiadapterlite._messages import (
     MSG_WARNING_TITLE,
     MSG_CRITICAL_TITLE,
     MSG_QUESTION_TITLE,
+    MSG_INPUT_DIALOG_TITLE,
 )
 from pyguiadapterlite.components import toast
 from pyguiadapterlite.core.ucontext import UContext
@@ -262,6 +263,42 @@ def show_yes_no_messagebox(
             title=title, message=message, parent=window.parent, **messagebox_kwargs
         )
         return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def get_string_input(
+    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+) -> Optional[str]:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        return simpledialog.askstring(
+            title=title, prompt=prompt, parent=window.parent, **dialog_kwargs
+        )
+
+    return _run_ui_on_thread(_call)
+
+
+def get_int_input(
+    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+) -> Optional[int]:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        return simpledialog.askinteger(
+            title=title, prompt=prompt, parent=window.parent, **dialog_kwargs
+        )
+
+    return _run_ui_on_thread(_call)
+
+
+def get_float_input(
+    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+) -> Optional[float]:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        return simpledialog.askfloat(
+            title=title, prompt=prompt, parent=window.parent, **dialog_kwargs
+        )
 
     return _run_ui_on_thread(_call)
 
