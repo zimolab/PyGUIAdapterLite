@@ -77,6 +77,9 @@ MSG_DIALOG_BUTTON_OK = tr_("OK")
 MSG_DIALOG_BUTTON_CANCEL = tr_("Cancel")
 MSG_DIALOG_INPUT_PROMPT = tr_("Input:")
 MSG_INPUT_DIALOG_TITLE = tr_("Input")
+MSG_INPUT_FILE_PROMPT = tr_("Select a file:")
+MSG_INPUT_DIR_PROMPT = tr_("Select a directory:")
+MSG_INPUT_PATH_PROMPT = tr_("Select a path:")
 
 
 MSG_PATH_DIALOG_FILE_BUTTON_TEXT = tr_("File")
