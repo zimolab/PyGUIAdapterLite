@@ -6,6 +6,7 @@ from pyguiadapterlite import (
     get_path_input,
     get_file_path_input,
     get_dir_path_input,
+    get_text_input,
 )
 from pyguiadapterlite import (
     get_string_input,
@@ -45,6 +46,9 @@ def input_dialog_demo(
     uprint(f"Selected file: {ret}")
     ret = get_dir_path_input(title="Select a directory", start_dir=os.getcwd())
     uprint(f"Selected directory: {ret}")
+
+    ret = get_text_input(title="Enter long text")
+    uprint(f"Long text: {ret}")
 
 
 if __name__ == "__main__":
