@@ -76,6 +76,8 @@ MSG_INVALID_PARAM_DETAIL_TEMPLATE = tr_("Parameter:\n  {}\nReason:\n  {}")
 MSG_DIALOG_BUTTON_OK = tr_("OK")
 MSG_DIALOG_BUTTON_CANCEL = tr_("Cancel")
 MSG_DIALOG_INPUT_PROMPT = tr_("Input:")
+MSG_INPUT_DIALOG_TITLE = tr_("Input")
+
 
 MSG_PATH_DIALOG_FILE_BUTTON_TEXT = tr_("File")
 MSG_PATH_DIALOG_DIR_BUTTON_TEXT = tr_("Folder")
