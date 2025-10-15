@@ -140,9 +140,11 @@ class StringInputDialog(BaseSimpleDialog):
         cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
         label_text: str = MSG_DIALOG_INPUT_PROMPT,
         initial_value: str = "",
+        echo_char: Optional[str] = None,
     ):
         self._label_text = label_text
         self._initial_value = initial_value
+        self._echo_char = echo_char
 
         self._input_label: Optional[Label] = None
         self._input_entry: Optional[Entry] = None
@@ -159,6 +161,8 @@ class StringInputDialog(BaseSimpleDialog):
         self._input_entry = Entry(self._content_area)
         self._input_entry.pack(side="bottom", fill="x", expand=True, padx=5, pady=2)
         self._input_entry.insert(0, self._initial_value)
+        if self._echo_char is not None:
+            self._input_entry.config(show=self._echo_char)
 
 
 class PathInputDialog(BaseSimpleDialog):
