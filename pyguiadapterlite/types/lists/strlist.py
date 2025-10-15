@@ -58,10 +58,14 @@ class StringListBox(BaseStringListBox):
 
     def on_edit(self, indexes: List[int]):
         if not indexes:
-            show_warning(self._config.no_selection_message)
+            show_warning(
+                self._config.no_selection_message, parent=self.winfo_toplevel()
+            )
             return
         if len(indexes) > 1:
-            show_warning(self._config.multi_selection_message)
+            show_warning(
+                self._config.multi_selection_message, parent=self.winfo_toplevel()
+            )
             return
         index = indexes[0]
         current_value = self._listview.real.get(index)
@@ -87,11 +91,13 @@ class StringListBox(BaseStringListBox):
             value = value.strip()
 
         if not self._config.accept_empty and value.strip() == "":
-            show_warning(self._config.empty_string_message)
+            show_warning(
+                self._config.empty_string_message, parent=self.winfo_toplevel()
+            )
             return None
 
         if not self._config.accept_duplicates and self._listview.real.contains(value):
-            show_warning(self._config.duplicate_message)
+            show_warning(self._config.duplicate_message, parent=self.winfo_toplevel())
             return None
 
         return value

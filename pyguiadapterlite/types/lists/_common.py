@@ -185,20 +185,26 @@ class BaseStringListBox(LabelFrame):
     def on_remove_selected(self):
         selection = self._listview.real.curselection()
         if not selection and self._config.no_selection_message:
-            show_warning(self._config.no_selection_message)
+            show_warning(
+                self._config.no_selection_message, parent=self.winfo_toplevel()
+            )
             return
         if self._config.confirm_remove:
-            reply = ask_yes_or_no(self._config.remove_confirm_message)
+            reply = ask_yes_or_no(
+                self._config.remove_confirm_message, parent=self.winfo_toplevel()
+            )
             if not reply:
                 return
         self._listview.real.remove_selected_items()
 
     def on_clear_all(self):
         if self._listview.real.size() <= 0 and self._config.no_item_message:
-            show_warning(self._config.no_item_message)
+            show_warning(self._config.no_item_message, parent=self.winfo_toplevel())
             return
         if self._config.confirm_clear:
-            reply = ask_yes_or_no(self._config.clear_confirm_message)
+            reply = ask_yes_or_no(
+                self._config.clear_confirm_message, parent=self.winfo_toplevel()
+            )
             if not reply:
                 return
         self._listview.real.clear()
@@ -206,14 +212,18 @@ class BaseStringListBox(LabelFrame):
     def on_move_up(self):
         selection = self._listview.real.curselection()
         if not selection and self._config.no_selection_message:
-            show_warning(self._config.no_selection_message)
+            show_warning(
+                self._config.no_selection_message, parent=self.winfo_toplevel()
+            )
             return
         self._listview.real.move_up()
 
     def on_move_down(self):
         selection = self._listview.real.curselection()
         if not selection and self._config.no_selection_message:
-            show_warning(self._config.no_selection_message)
+            show_warning(
+                self._config.no_selection_message, parent=self.winfo_toplevel()
+            )
             return
         self._listview.real.move_down()
 
