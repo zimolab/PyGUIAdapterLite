@@ -1,0 +1,14 @@
+{
+  "arg1": 123,
+  "arg2": -15.0,
+  "arg3": true,
+  "arg4": "Hello world！你好，世界！",
+  "arg5": [
+    "banana",
+    "pear",
+    "grape",
+    "pineapple"
+  ],
+  "arg6": "c++",
+  "arg7": "opt3"
+}

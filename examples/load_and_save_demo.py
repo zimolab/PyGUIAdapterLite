@@ -1,11 +1,34 @@
+from typing import Literal
+
 from pyguiadapterlite import uprint, FnExecuteWindow, Action, Menu, GUIAdapter
+from pyguiadapterlite.types import choices_t, choice_t
 
 
-def load_and_save_demo(arg1: int, arg2: float, arg3: bool, arg4: str):
+def load_and_save_demo(
+    arg1: int,
+    arg2: float,
+    arg3: bool,
+    arg4: str,
+    arg5: choices_t = (
+        "apple",
+        "banana",
+        "orange",
+        "pear",
+        "grape",
+        "pineapple",
+        "watermelon",
+        "kiwi",
+    ),
+    arg6: choice_t = ("java", "python", "javascript", "c++", "c#"),
+    arg7: Literal["opt1", "opt2", "opt3"] = "opt2",
+):
     """
     This demo shows how to save the parameters to a file and load them back later.
     """
     uprint(f"arg1: {arg1}, arg2: {arg2}, arg3: {arg3}, arg4: {arg4}")
+    uprint(f"arg5: {arg5}")
+    uprint(f"arg6: {arg6}")
+    uprint(f"arg7: {arg7}")
 
 
 if __name__ == "__main__":
