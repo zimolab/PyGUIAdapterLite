@@ -10,7 +10,7 @@
 本项目使用了以下优秀的开源库：
 
 - **IconPark** 
-  - 用途：使用了IconPark的图标，版权归IconPark所有。
+  - 用途：使用了IconPark部分图标，版权归IconPark所有。
   - 许可：Apache License 2.0
   - 许可证文件：`licenses/IconPark-LICENSE.txt`
   - 项目地址：https://github.com/bytedance/IconPark
