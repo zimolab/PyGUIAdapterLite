@@ -24,5 +24,18 @@ from pyguiadapterlite.core.context import (
     show_yes_no_messagebox,
     show_retry_cancel_messagebox,
     show_yes_no_cancel_messagebox,
+    get_string_input,
+    get_string_input2,
+    get_int_input,
+    get_float_input,
+    get_file_path_input,
+    get_dir_path_input,
+    get_path_input,
 )
 from pyguiadapterlite.components.menus import Action, Menu, Separator
+from pyguiadapterlite.components.dialog import (
+    BaseDialog,
+    BaseSimpleDialog,
+    StringInputDialog,
+    PathInputDialog,
+)
