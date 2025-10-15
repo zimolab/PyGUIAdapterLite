@@ -1,9 +1,16 @@
 from concurrent.futures import Future
+from tkinter import messagebox
 from typing import Any, Callable, Literal, Optional
 
+from pyguiadapterlite._messages import (
+    MSG_INFO_TITLE,
+    MSG_WARNING_TITLE,
+    MSG_CRITICAL_TITLE,
+    MSG_QUESTION_TITLE,
+)
+from pyguiadapterlite.components import toast
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
-from pyguiadapterlite.components import toast
 
 
 def is_cancel_requested() -> bool:
@@ -31,14 +38,13 @@ def _call_func(
     **kwargs,
 ):
     try:
-        result = func(window, *args, **kwargs)
-        future.set_result(result)
+        future.set_result(func(window, *args, **kwargs))
     except Exception as e:
         future.set_exception(e)
 
 
-def _run_on_ui_thread(
-    func: Callable[[FnExecuteWindow, Future, list, dict], Any], *args, **kwargs
+def _run_ui_on_thread(
+    func: Callable[[FnExecuteWindow, list, dict], Any], *args, **kwargs
 ) -> Any:
     exec_window = UContext.current_execute_window()
     if not exec_window:
@@ -53,7 +59,7 @@ def is_progressbar_enabled() -> bool:
         _ = args, kwargs  # unused
         return window.is_progressbar_enabled()
 
-    return _run_on_ui_thread(_func)
+    return _run_ui_on_thread(_func)
 
 
 def is_progress_label_enabled() -> bool:
@@ -61,7 +67,7 @@ def is_progress_label_enabled() -> bool:
         _ = args, kwargs  # unused
         return window.is_progress_label_enabled()
 
-    return _run_on_ui_thread(_func)
+    return _run_ui_on_thread(_func)
 
 
 def show_progressbar():
@@ -136,6 +142,125 @@ def show_toast(
         )
 
     exec_window.parent.after(0, _show_toast, exec_window)
+
+
+def show_info_messagebox(
+    message: str, title: str = MSG_INFO_TITLE, **messagebox_kwargs
+) -> str:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.showinfo(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_warning_messagebox(
+    message: str, title: str = MSG_WARNING_TITLE, **messagebox_kwargs
+) -> str:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.showwarning(
+            title=title,
+            message=message,
+            parent=window.parent,
+            **messagebox_kwargs,
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_critical_messagebox(
+    message: str, title: str = MSG_CRITICAL_TITLE, **messagebox_kwargs
+) -> str:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.showerror(
+            title=title,
+            message=message,
+            parent=window.parent,
+            **messagebox_kwargs,
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_question_messagebox(
+    message: str,
+    title: str = MSG_QUESTION_TITLE,
+    **messagebox_kwargs,
+) -> str:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        return messagebox.askquestion(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+
+    return _run_ui_on_thread(_call)
+
+
+def show_ok_cancel_messagebox(
+    message: str,
+    title: str = MSG_QUESTION_TITLE,
+    **messagebox_kwargs,
+) -> bool:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.askokcancel(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_retry_cancel_messagebox(
+    message: str,
+    title: str = MSG_QUESTION_TITLE,
+    **messagebox_kwargs,
+) -> Literal["ok", "retry", "cancel"]:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.askretrycancel(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_yes_no_cancel_messagebox(
+    message: str,
+    title: str = MSG_QUESTION_TITLE,
+    **messagebox_kwargs,
+) -> Optional[bool]:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.askyesnocancel(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
+
+
+def show_yes_no_messagebox(
+    message: str,
+    title: str = MSG_QUESTION_TITLE,
+    **messagebox_kwargs,
+) -> bool:
+    def _call(window: FnExecuteWindow, *args, **kwargs):
+        _ = args, kwargs  # unused
+        ret = messagebox.askyesno(
+            title=title, message=message, parent=window.parent, **messagebox_kwargs
+        )
+        return ret
+
+    return _run_ui_on_thread(_call)
 
 
 # 定义别名
