@@ -24,6 +24,7 @@ class ParameterValidationWindowConfig(BaseWindowConfig):
     invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
     size: tuple = (400, 450)
     font: tuple = ("Arial", 11)
+    bell: bool = True
 
 
 class ParameterValidationWindow(BaseWindow):
@@ -51,6 +52,8 @@ class ParameterValidationWindow(BaseWindow):
         self._fill_listview(invalid_params)
         self._listview.selection_set(0)
         self._on_select(None)
+        if self.config.bell:
+            self._parent.bell()
 
     @property
     def config(self) -> ParameterValidationWindowConfig:
