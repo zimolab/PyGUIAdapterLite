@@ -380,6 +380,51 @@ if __name__ == "__main__":
 <img src = "./docs/bool_types.png" height="35%"/>
 
 
+
+#### 3.1.4 基于str的扩展类型
+
+- `text_t`类型，用于多行文本输入
+- `file_t`类型，用于选择文件路径
+- `directory_t`类型，用于选择目录路径，也可以使用其别名`dir_t`
+- `color_hex_t`类型，用于选择颜色（以#开头的16进制字符串形式，RGB格式）
+
+
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import text_t, file_t, dir_t, color_hex_t
+
+
+def str_types_demo(
+    long_string: text_t = "This is a long string",
+    file_path: file_t = "/path/to/a/file.txt",
+    dir_path: dir_t = "/path/to/a/directory",
+    color_value: color_hex_t = "#FF0000",
+):
+    uprint("Long string:", long_string)
+    uprint("File path:", file_path)
+    uprint("Directory path:", dir_path)
+    uprint("Color value:", color_value)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(str_types_demo)
+    adapter.run()
+
+```
+
+效果如下：
+
+
+
+<img src = "./docs/str_types.png" height="35%"/>
+
+
+
+
+
+
 ### 3.2 参数验证与错误处理
 
 > TODO
