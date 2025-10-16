@@ -1,5 +1,9 @@
 # PyGUIAdapterLite
 
+目录：
+
+[toc]
+
 ## 0. 一些背景
 
 `PyGUIAdapterLite`是我另一个开源项目[`PyGUIAdapter`](https://github.com/zimolab/PyGUIAdapterLite)的Lite版本，
@@ -117,7 +121,7 @@ if __name__ == "__main__":
 
 运行如上代码，`PyGUIAdapterLite`将生成如下界面：
 
-<img src="./docs/code_snippet_1.gif" height="35%"/>
+<img src="./docs/code_snippet_1.gif" style="height:auto;width:65%"/>
 
 上述示例虽然非常简单，但为我们展示了`PyGUIAdapterLite`的一些基本特性：
 
@@ -221,7 +225,7 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-<img src="./docs/code_snippet_2.gif" height="35%"/>
+<img src="./docs/code_snippet_2.gif" style="height:auto;width:65%"/>
 
 上述示例展示了`PyGUIAdapterLite`对基本类型参数的支持，同时，也展示了`uprint()`函数的用法，这个函数与内置的`print()`类似，用于输出一些信息，
 但与`print()`不同的是，该函数会将信息输出到窗口的模拟终端界面，而非输出到标准输出。
@@ -276,7 +280,105 @@ if __name__ == "__main__":
     adapter.add(foo)
     adapter.run()
 ```
-<img src="./docs/code_snippet_3.gif" height="35%"/>
+<img src="./docs/code_snippet_3.gif" 	="35%"/>
+
+
+除了`file_t`类型，`PyGUIAdapterLite`还提供以下扩展类型。
+
+
+#### 3.1.1 基于int的扩展类型
+
+- `int_r`：代表一个有范围的整数，输入控件为一个SpinBox，最大值默认为`2**31 - 1`， 最小值默认为`-(2**31)`，步长默认为`1`。
+- `int_s`：代表一个有范围的整数，输入控件为一个现代样式的滑动条，最大值默认为`100`， 最小值默认为`0`。
+- `int_ss`：代表一个有范围的整数，输入控件为一个旧式样式的滑动条，最大值默认为`100`， 最小值默认为`0`，步长默认为`1`，刻度间隔默认为`10`。
+
+以下是简单的示例代码：
+
+```pycon
+from pyguiadapterlite import GUIAdapter
+from pyguiadapterlite.types import int_r, int_s, int_ss
+
+
+def int_types_demo(
+    normal_int: int = 64,
+    int_r_arg: int_r = 3,
+    int_s_arg: int_s = 29,
+    int_ss_arg: int_ss = 32,
+):
+    """
+    演示基于int类型的扩展类型及其对应输入控件
+    """
+    return int_r_arg + int_s_arg + int_ss_arg + normal_int
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(int_types_demo)
+    adapter.run()
+```
+
+下面是各种int类型输入控件的对比：
+
+<img src="./docs/int_types.png" style="height:auto;width:65%"/>
+
+#### 3.1.2 基于float的扩展类型
+
+- `float_r`：代表一个有范围的浮点数，输入控件为一个SpinBox，最大值默认为`2.0**31 - 1`， 最小值默认为`-(2.0**31 - 1)`，步长默认为`0.1`，
+默认小数位数为`2`。
+- `float_s`：代表一个有范围的浮点数，输入控件为一个现代样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`。
+- `float_ss`：代表一个有范围的浮点数，输入控件为一个旧式样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`，步长默认为`0.5`，刻度间隔默认为`10`。
+
+```pycon
+from pyguiadapterlite import GUIAdapter
+from pyguiadapterlite.types import float_r, float_s, float_ss
+
+
+def float_types_demo(
+    normal_float: float = 64.0,
+    float_r_arg: float_r = 3.14,
+    float_s_arg: float_s = 29,
+    float_ss_arg: float_ss = 32,
+):
+    """
+    演示基于int类型的扩展类型及其对应输入控件
+    """
+    return normal_float + float_r_arg + float_s_arg + float_ss_arg
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(float_types_demo)
+    adapter.run()
+```
+
+下面是各种float类型输入控件的对比：
+
+<img src="./docs/float_types.png" style="height:auto;width:65%"/>
+
+#### 3.1.3 基于bool的扩展类型
+
+- `bool_t`：普通的bol类型，输入控件为两个互斥的单选按钮，分别表示`True`和`False`，`bool_t`则以一个复选框的形式提供表示True/False的能力。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import bool_t
+
+
+def bool_types_demo(normal_bool: bool, bool_t_arg: bool_t):
+    uprint(f"Normal bool: {normal_bool}, bool_t bool: {bool_t_arg}")
+    return normal_bool and bool_t_arg
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(bool_types_demo)
+    adapter.run()
+```
+
+显示效果如下：
+
+<img src = "./docs/bool_types.png" height="35%"/>
+
 
 ### 3.2 参数验证与错误处理
 
