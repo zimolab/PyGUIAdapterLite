@@ -6,15 +6,13 @@ from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     GetValueError,
     InvalidValue,
-    SetValueError,
 )
-from pyguiadapterlite.utils import _error
-
 from pyguiadapterlite.types.floats.ttkscale import (
     ScaleFloatValue,
     FloatScale,
     ScaleFloatValueWidget,
 )
+from pyguiadapterlite.utils import _error
 
 DEFAULT_STEP = 0.5
 DEFAULT_TICK_INTERVAL = 10
