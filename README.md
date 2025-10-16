@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 运行如上代码，`PyGUIAdapterLite`将生成如下界面：
 
-<img src="./docs/code_snippet_1.gif" height="50%"/>
+<img src="./docs/code_snippet_1.gif" height="35%"/>
 
 上述示例虽然非常简单，但为我们展示了`PyGUIAdapterLite`的一些基本特性：
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-<img src="./docs/code_snippet_2.gif" height="50%"/>
+<img src="./docs/code_snippet_2.gif" height="35%"/>
 
 上述示例展示了`PyGUIAdapterLite`对基本类型参数的支持，同时，也展示了`uprint()`函数的用法，这个函数与内置的`print()`类似，用于输出一些信息，
 但与`print()`不同的是，该函数会将信息输出到窗口的模拟终端界面，而非输出到标准输出。
@@ -236,7 +236,84 @@ if __name__ == "__main__":
 
 ## 3. 进阶用法
 
+### 3.1 更多类型
+
+除了内置的基本类型，`PyGUIAdapterLite`还提供了一些扩展类型，这些类型基本上扩展自基本类型，但拥有更加特定和明确的语义。
+
+> 所有扩展类型定义在`pyguiadapterlite.types.extendtype`模块中，并且可以直接从`pyguiadapterlite.types`包导入。
+
+比如，`file_t`类型本质上就是`str`类型，但在语义上它表示文件路径，针对选择文件路径的需求，该类型会提供一个特定的文件选择控件，
+而非`str`类型默认的单行文本输入框。
+
+> `file_t`的定义如下，可以看到，它只是简单地继承了`str`类型，因此，我说它本质上就是`str`类型：
+> 
+> ```python 
+> class file_t(str):
+>     pass
+> ```
+> pyguiadapterlite/types/extendtypes.py
+
+
+```python
+from pyguiadapterlite import GUIAdapter, uprint
+from pyguiadapterlite.types import file_t
+
+def foo(str_arg: str, file_arg: file_t):
+    """
+    这个示例演示str、file_t类型参数控件的差异。
+    
+    Args:
+        str_arg: 字符串参数。
+        file_arg: 文件路径参数。
+    
+    """
+    uprint(f"str_arg: {str_arg}")
+    uprint(f"file_arg: {file_arg}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(foo)
+    adapter.run()
+```
+<img src="./docs/code_snippet_3.gif" height="35%"/>
+
+### 3.2 参数验证与错误处理
+
 > TODO
+
+### 3.3 配置参数控件
+
+> TODO
+
+### 3.4 配置配置窗口参数
+
+> TODO
+
+### 3.5 可取消的函数
+
+> TODO
+
+### 3.6 添加多个函数
+
+> TODO
+
+### 3.7 进度条
+
+> TODO
+
+### 3.8 窗口菜单
+
+> TODO
+
+## 打包应用
+
+> TODO
+
+
+## 许可证
+
+本项目使用MIT许可证，完整的许可证文本见`LICENSE`文件。 请在遵守相关法律法规的前提下使用本项目。
 
 ## 第三方库许可
 
