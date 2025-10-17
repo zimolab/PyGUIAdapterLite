@@ -1,8 +1,54 @@
 # PyGUIAdapterLite
 
-目录：
+## 目录
 
-[toc]
+- [PyGUIAdapterLite](#pyguiadapterlite)
+  
+  - [0. 一些背景](#0-一些背景)
+  - [1. 安装](#1-安装)
+  - [2. 快速入门](#2-快速入门)
+  - [3. 进阶用法](#3-进阶用法)
+    - [3.1 更多类型](#31-更多类型)
+      - [3.1.1 基于int的扩展类型](#311-基于int的扩展类型)
+        - [(1)`int_r`类型：有范围的整数](#1int_r类型有范围的整数)
+        - [(2)`int_s`类型：有范围的整数（滑动条-样式1）](#2int_s类型有范围的整数滑动条-样式1)
+        - [(3)`int_ss`类型：有范围的整数（滑动条-样式2）](#3int_ss类型有范围的整数滑动条-样式2)
+        - [(4) 示例](#4-示例)
+      - [3.1.2 基于float的扩展类型](#312-基于float的扩展类型)
+        - [(1)`float_r`类型：有范围的浮点数](#1float_r类型有范围的浮点数)
+        - [(2)`float_s`类型：有范围的浮点数（滑动条-样式1）](#2float_s类型有范围的浮点数滑动条-样式1)
+        - [(3)`float_ss`类型：有范围的浮点数（滑动条-样式2）](#3float_ss类型有范围的浮点数滑动条-样式2)
+        - [(4) 示例](#4-示例)
+      - [3.1.3 基于bool的扩展类型](#313-基于bool的扩展类型)
+        - [(1)`bool_t`类型：单个复选框](#1bool_t类型单个复选框)
+        - [(2) 示例](#2-示例)
+      - [3.1.4 基于str的扩展类型](#314-基于str的扩展类型)
+        - [(1)`text_t`类型：长文本输入框](#1text_t类型长文本输入框)
+        - [(2)`file_t`类型：文件路径选择器](#2file_t类型文件路径选择器)
+        - [(3)`directory_t`类型：目录路径选择器](#3directory_t类型目录路径选择器)
+        - [(4)`color_hex_t`类型：颜色选择器](#4color_hex_t类型颜色选择器)
+        - [(5) 示例](#5-示例)
+      - [3.1.5 基于list的扩展类型](#315-基于list的扩展类型)
+        - [(1)`string_list_t`类型（字符串列表）及其示例](#1string_list_t类型字符串列表及其示例)
+        - [(2)`path_list_t`类型（路径列表）及其示例](#2path_list_t类型路径列表及其示例)
+        - [(3)`file_list_t`类型（文件路径列表）及其示例](#3file_list_t类型文件路径列表及其示例)
+        - [(4)`dir_list_t`类型（目录路径列表）及其示例](#4dir_list_t类型目录路径列表及其示例)
+      - [3.1.6 选项类型](#316-选项类型)
+        - [(1)`choice_t`类型（单选组）及其示例](#1choice_t类型单选组及其示例)
+        - [(2) `enum.Enum`(枚举类型)、`typing.Literal`类型（自动提取选项的单选组）及其示例](#2-enumenum枚举类型typingliteral类型自动提取选项的单选组及其示例)
+        - [(3) `loose_choice_t`（宽松的单选类型）及其示例](#3-loose_choice_t宽松的单选类型及其示例)
+        - [(4)`choices_t`类型（多选组）及其示例](#4choices_t类型多选组及其示例)
+    - [3.2 参数验证与错误处理](#32-参数验证与错误处理)
+    - [3.3 控件配置](#33-控件配置)
+    - [3.4 窗口配置](#34-窗口配置)
+    - [3.5 可取消的函数](#35-可取消的函数)
+    - [3.6 添加多个函数](#36-添加多个函数)
+    - [3.7 进度条](#37-进度条)
+    - [3.8 窗口菜单](#38-窗口菜单)
+  - [打包应用](#打包应用)
+  - [许可证](#许可证)
+  - [第三方库许可](#第三方库许可)
+
 
 ## 0. 一些背景
 
@@ -267,23 +313,17 @@ if __name__ == "__main__":
 
 #### 3.1.1 基于int的扩展类型
 
-##### (1)`int_r`
+##### (1)`int_r`类型：有范围的整数
 
 代表一个有范围的整数，输入控件为一个SpinBox，最大值默认为`2**31 - 1`， 最小值默认为`-(2**31)`，步长默认为`1`。
 
-
-
-##### (2)`int_s`
+##### (2)`int_s`类型：有范围的整数（滑动条-样式1）
 
 代表一个有范围的整数，输入控件为一个现代样式的滑动条，最大值默认为`100`， 最小值默认为`0`。
 
-
-
-##### (3)`int_ss`
+##### (3)`int_ss`类型：有范围的整数（滑动条-样式2）
 
 代表一个有范围的整数，输入控件为一个旧式样式的滑动条，最大值默认为`100`， 最小值默认为`0`，步长默认为`1`，刻度间隔默认为`10`。
-
-
 
 ##### (4) 示例
 
@@ -320,23 +360,17 @@ if __name__ == "__main__":
 
 #### 3.1.2 基于float的扩展类型
 
-##### (1)`float_r`
+##### (1)`float_r`类型：有范围的浮点数
 
 代表一个有范围的浮点数，输入控件为一个SpinBox，最大值默认为`2.0**31 - 1`， 最小值默认为`-(2.0**31 - 1)`，步长默认为`0.1`，默认小数位数为`2`。
 
-
-
-##### (2)`float_s`
+##### (2)`float_s`类型：有范围的浮点数（滑动条-样式1）
 
 代表一个有范围的浮点数，输入控件为一个现代样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`。
 
-
-
-##### (3)`float_ss`
+##### (3)`float_ss`类型：有范围的浮点数（滑动条-样式2）
 
 代表一个有范围的浮点数，输入控件为一个旧式样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`，步长默认为`0.5`，刻度间隔默认为`10`。
-
-
 
 ##### (4) 示例
 
@@ -369,7 +403,7 @@ if __name__ == "__main__":
 
 #### 3.1.3 基于bool的扩展类型
 
-##### (1)`bool_t`
+##### (1)`bool_t`类型：单个复选框
 
 普通bol类型的输入控件为两个互斥的单选按钮，分别表示`True`和`False`，而`bool_t`类型则以单个复选框的形式提供表示True/False的能力。
 
@@ -399,29 +433,21 @@ if __name__ == "__main__":
 
 #### 3.1.4 基于str的扩展类型
 
-##### (1)`text_t`
+##### (1)`text_t`类型：长文本输入框
 
 提供用于多行文本输入的控件
 
-
-
-##### (2)`file_t`
+##### (2)`file_t`类型：文件路径选择器
 
 提供用于选择文件路径的控件
 
-
-
-##### (3)`directory_t`
+##### (3)`directory_t`类型：目录路径选择器
 
 也可以使用其别名`dir_t`，提供用于选择目录路径的控件
 
-
-
-##### (4)`color_hex_t`
+##### (4)`color_hex_t`类型：颜色选择器
 
 提供用于选择颜色的控件，颜色值以#开头的16进制字符串形式表示，RGB格式
-
-
 
 ##### (5) 示例
 
@@ -459,7 +485,7 @@ if __name__ == "__main__":
 
 `PyGUIAdapterLite`提供了一些基于`list`类型的扩展类型，包括：
 
-##### (1)`string_list_t`类型及其示例
+##### (1)`string_list_t`类型（字符串列表）及其示例
 
 也可以使用其别名：`str_list`、`string_list`)，用于输入一组字符串。
 
@@ -492,7 +518,7 @@ if __name__ == "__main__":
 
 <img src = "./docs/str_list_edit.png" style="height:auto;width:70%"/>
 
-##### (2)`path_list_t`类型及其示例
+##### (2)`path_list_t`类型（路径列表）及其示例
 
 也可以使用其别名：`path_list`、`paths_t`，用于输入一组路径(包括文件路径和目录路径)。
 
@@ -524,7 +550,7 @@ if __name__ == "__main__":
 
 <img src = "./docs/path_list_edit.png" style="height:auto;width:70%"/>
 
-##### (3)`file_list_t`类型及其示例
+##### (3)`file_list_t`类型（文件路径列表）及其示例
 
 也可以使用其别名：`file_list`、`files_t`，用于输入一组路径，仅支持选择文件路径。
 
@@ -560,7 +586,7 @@ if __name__ == "__main__":
 
 
 
-##### (4)`dir_list_t`类型及其示例
+##### (4)`dir_list_t`类型（目录路径列表）及其示例
 
 也可以使用其别名：`dir_list`、`dirs_t`，用于输入一组路径，仅支持选择目录路径。
 
@@ -591,6 +617,189 @@ if __name__ == "__main__":
 编辑路径界面：
 
 <img src = "./docs/dir_list_edit.png" style="height:auto;width:70%"/>
+
+
+
+#### 3.1.6 选项类型
+
+有时，可能会有这样的需求，对于某些参数，我们希望用户的输入限定在一组预先提供的选项中，为此，`PyGUIAdapterLite`提供了一些用于支持这种需求的扩展类型，其中，既包括从一组选项中选择一个的单选类型，也包括从一组选项中选择多个的多选类型。
+
+##### (1)`choice_t`类型（单选组）及其示例
+
+也可以使用其别名`option_t`，用于生成单选组。
+
+你可以通过如下方式，指定可选项的范围：
+
+```python
+
+def your_func(arg1: choice_t = ("opt1",  "opt2", "opt3")):
+    ...
+```
+
+也支持将一个dict作为可选项范围，此时dict中的key将作为选项显示的文本，而其value则将作为真正传给参数的值：
+
+```python
+def your_func(arg1: choice_t = {
+    "Python": 1,
+    "C++": 2,
+    "Jave": 3,
+    "Rust": 4
+}):
+    ...
+```
+
+下面是一个实际的示例，演示了上面这两种用法：
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import choice_t
+
+OPTIONS = {
+    "Python": 1,
+    "C/C++": 2,
+    "Java": 3,
+    "JavaScript": 4,
+    "C#": 5,
+    "Swift": 6,
+}
+
+
+def choice_t_example(
+    choice_t_arg1: choice_t = ("choice1", "choice2", "choice3"),
+    choice_t_arg2: choice_t = OPTIONS,
+):
+    uprint(f"choice_t_arg1: {choice_t_arg1}, type: {type(choice_t_arg1)}")
+    uprint(f"choice_t_arg2: {choice_t_arg2}, type: {type(choice_t_arg2)}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(choice_t_example)
+    adapter.run()
+```
+
+其效果如下：
+
+<img src = "./docs/choice_t.png" style="height:auto;width:70%"/>
+
+执行用户函数，输出如下：
+
+<img src = "./docs/choice_t_output.png" style="height:auto;width:70%"/>
+
+
+
+##### (2) `enum.Enum`(枚举类型)、`typing.Literal`类型（自动提取选项的单选组）及其示例
+
+除了使用`choice_t`来实现单选组，`PyGUIAdapterLite`也支持从`Enum`（枚举类）和`Literal`类型中自动提取选项范围，生成单选组。
+
+>  对于枚举类型，最终传递给参数的是所选项对应的枚举对象本身，而非该枚举对象的名称或者值。
+
+下面是一个简单的示例，演示两种类型的用法：
+
+```python
+from enum import Enum
+from typing import Literal
+
+from pyguiadapterlite import uprint, GUIAdapter
+
+
+class Weekday(Enum):
+    Monday = 1
+    Tuesday = 2
+    Wednesday = 3
+    Thursday = 4
+    Friday = 5
+    Saturday = 6
+    Sunday = 7
+
+
+def enum_and_literal_example(
+    day: Weekday = Weekday.Saturday,
+    favorite_fruit: Literal["apple", "banana", "orange", "grape"] = "orange",
+):
+    uprint(f"day: {day} (type: {type(day)})")
+    uprint(f"favorite_fruit: {favorite_fruit} (type: {type(favorite_fruit)})")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(enum_and_literal_example)
+    adapter.run()
+```
+
+其效果如下：
+
+<img src = "./docs/enum_literal.png" style="height:auto;width:70%"/>
+
+执行用户函数，输出如下：
+
+<img src = "./docs/enum_literal_output.png" style="height:auto;width:70%"/>
+
+
+
+##### (3) `loose_choice_t`（宽松的单选类型）及其示例
+
+`choice_t`、`Enum`、`Literal`可以被称为__严格的单选类型__，因为用户只能从我们提供的选项中选择其一，有时，我们可能会有这种需求，即用户可以从一组预定义的选项中选择其一，同时，又允许其自行输入自定义的值。为满足这一需求，`PyGUIAdapterLite`提供了一种__宽松的单选类型__——`loose_choice_t`。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import loose_choice_t
+
+
+def loose_choice_example(
+    arg1: loose_choice_t = ("Option 1", "Option 2", "Option 3", "Option 4")
+):
+    uprint(f"arg1: {arg1}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(loose_choice_example)
+    adapter.run()
+```
+
+其效果如下：
+
+<img src = "./docs/loose_choice_example.gif" style="height:auto;width:70%"/>
+
+
+
+##### (4)`choices_t`类型（多选组）及其示例
+
+`PyGUIAdapterLite`提供了`choices_t`类型，用于让用户从一组预定选项中选择0个或多个选项。
+
+> 传入`choices_t`类型参数的值是一个list，其中包含了用户当前选中的选项。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import choices_t
+
+ALL_CHOICES = (
+    "Choice 1",
+    "Choice 2",
+    "Choice 3",
+    "Choice 4",
+    "Choice 5",
+    "Choice 6",
+)
+
+
+def choices_t_example(arg: choices_t = ALL_CHOICES):
+    uprint(f"You selected {len(arg)} options")
+    if arg:
+        uprint(f"The options are: {arg}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(choices_t_example)
+    adapter.run()
+```
+
+<img src = "./docs/choices_t_example.gif" style="height:auto;width:70%"/>
+
+
+
 
 
 ### 3.2 参数验证与错误处理
