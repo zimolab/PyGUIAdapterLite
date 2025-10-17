@@ -89,6 +89,20 @@ class SingleChoiceValueWidget(BaseParameterWidget):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
-        if not config.choices and len(parameter_info.type_args) > 0:
-            return dataclasses.replace(config, choices=parameter_info.type_args.copy())
+        if not config.choices:
+            if len(parameter_info.type_args) > 0:
+                return dataclasses.replace(
+                    config, choices=parameter_info.type_args.copy()
+                )
+            if (
+                isinstance(parameter_info.default_value, (list, tuple, set, dict))
+                and len(parameter_info.default_value) > 0
+            ):
+                choices = parameter_info.default_value
+                if not isinstance(parameter_info.default_value, dict):
+                    choices = list(choices)
+                else:
+                    choices = {str(k): v for k, v in choices.items()}
+                return dataclasses.replace(config, choices=choices, default_value=None)
+
         return config
