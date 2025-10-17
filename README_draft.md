@@ -752,9 +752,256 @@ if __name__ == "__main__":
 
 
 
-### 3.2 参数验证与错误处理
+### 3.2 错误处理与参数校验
 
-> TODO
+增强程序健壮性的两个关键方面：一是提前检查用户的输入，发现那些非法的值，尽可能在错误发生之前就阻止它；二是尽可能预见程序可能在哪里失败，捕获可能发生的错误，并从错误中恢复。前者涉及__`参数校验`__的话题，后者则属于__`错误处理`__的内容。`PyGUIAdapterLite`的设计理念是尽可能保持处于可用状态，防止整个应用因用户函数而发生crash，因此，`PyGUIAdapterLite`内建了一些机制，帮助开发者更加轻松的完成__`参数校验`__和__`错误处理`__相关的工作。下面，分别就这两方面进行讨论。
+
+#### 3.2.1 错误处理
+
+##### （1）基本策略：尽可能捕获所有异常
+
+在默认情况下，`PyGUIAdapterLite`将尝试捕获用户函数中发生的任何异常/错误。因此，一般情况下，用户函数中发生的异常不会导致整个程序退出。当捕获到用户函数中发生的异常时，默认的做法是，弹出一个对话框提示用户某处发生了异常，同时，在窗口的模块终端区域打印异常的详细信息，包括trackback信息。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+
+
+def divide(a: int, b: int = 1):
+    """尝试b输入0，引发除0异常"""
+    r = a / b
+    uprint("a/b=", r)
+    return r
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(divide)
+    adapter.run()
+```
+
+<img src = "./docs/handle_exception.gif" style="height:auto;width:70%"/>
+
+
+
+>  尽管`PyGUIAdapterLite`将尝试捕获用户代码中发生的所有异常，但仍然建议开发者尽可能在自己的代码中考虑那些可能发生错误的情况，并捕获因此发生的异常。
+
+##### （2）处理`sys.exit()`和`SystemExit`
+
+在Python中，`SystemExit`是一类特殊的异常，通常由`sys.exit()`调用触发，专门用于程序退出，而不是表示错误，换言之，它的设计意图是用于表示受控的程序终止，而不同于其他表示意外情况的异常。为了错误处理逻辑的一致性，`PyGUIAdapterLite`也对该类异常进行了捕获，因此，用户代码中的`sys.exit()`调用不会导致程序退出。可用使用下面的代码验证这一点：
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+
+
+def system_exit_example_1(arg: int):
+    if arg == 0:
+        uprint("Exiting...")
+        sys.exit()
+    else:
+        uprint("Not exiting...")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(system_exit_example_1)
+    adapter.run()
+```
+
+<img src = "./docs/sys_exit_1.gif" style="height:auto;width:70%"/>
+
+这一默认的行为可能与用户希望的结果不符，`PyGUIAdapterLite`提供了方法来修改这一行为。`GUIAdapter.add()`有一个参数`capture_system_exit_exception`，当该参数设置为`False`时，`PyGUIAdapterLite`将在捕获到`SystemExit`后尝试退出应用。
+
+```python
+import sys
+
+from pyguiadapterlite import uprint, GUIAdapter
+
+
+def system_exit_example_1(arg: int):
+    if arg == 0:
+        uprint("Exiting...")
+        sys.exit()
+    else:
+        uprint("Not exiting...")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(system_exit_example_1, capture_system_exit_exception=False)
+    adapter.run()
+
+```
+
+<img src = "./docs/sys_exit_2.gif" style="height:auto;width:70%"/>
+
+用户应当根据自身需求，选择合适的策略。
+
+#### 3.2.2 参数校验
+
+`PyGUIAdapterLite`提供了多种参数校验的机制，一来尽可能地简化检验的过程，二来尽可能明确地提示用户哪些是非法的参数以及参数非法的原因。
+
+##### （1）利用异常提示非法参数以及`ParameterError`的用法
+
+我们可能把`参数校验`作为用户代码逻辑的一部分，在用户函数执行过程中检查参数，对应非法的参数，直接抛出异常即可。比如对应前面的例子，我们可用在用户函数中检查参数`b`的值:
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+
+def divide(a: int, b: int = 1):
+    if b == 0:
+        raise ValueError("b cannot be zero")
+    r = a / b
+    uprint("a/b=", r)
+    return r
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(divide)
+    adapter.run()
+
+```
+
+<img src = "./docs/validate_1.gif" style="height:auto;width:70%"/>
+
+这种做法的问题在于，给出非法参数并不是很明确，用户在看到异常信息后还需要自行到参数页中寻找出错的参数。为了解决这一点，`PyGUIAdapterLite`提供了`ParameterError`类型，通过抛出该类型，`PyGUIAdapterLite`可以自动定位出错的参数，并且闪烁参数对应的输入控件边框来提示用户。
+
+> 构造`ParameterError`对象，需要通过以下形式：
+>
+> ```python
+> def foo():
+>     ...
+>     raise ParameterError(parameter_name="参数名称",message="提示信息")
+> 
+> ```
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter, ParameterError
+
+
+def divide(a: int, b: int = 1):
+    if b == 0:
+        raise ParameterError(parameter_name="b", message="b cannot be zero")
+    r = a / b
+    uprint("a/b=", r)
+    return r
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(divide)
+    adapter.run()
+
+```
+
+<img src = "./docs/validate_2.gif" style="height:auto;width:70%"/>
+
+##### （2）通过参数校验函数进行参数校验
+
+除了上述方法，`PyGUIAdapterLite`还允许开发者定义一个专门的参数校验函数，__在调用用户函数之前__对函数参数进行检查。
+
+参数校验函数的定义应当符合如下条件：
+
+- 函数名称任意
+- 参数列表的第一个参数用于接收被校验函数的函数名称，第一个参数之后的参数为待检查的参数
+- 该函数应当返回一个字典，该字典的key为非法参数的名称，value为参数非法的原因。如返回空字典，则表示不存在非法参数
+
+举例，若用户函数定义如下：
+
+```python
+def user_func(param1: int, param2: str, param3: file_t):
+    ...
+```
+
+则，参数校验函数可以定义为如下形式：
+
+```python
+def validate_user_func(func_name: str, **params) -> Dict[str, str]:
+    param1 = params.get("param1")
+    param2 = params.get("param2")
+    param3 = params.get("param3")
+    ...
+    return {
+        "param1": "too big",
+        "param2": "empty string not allowed!",
+        "param3": "file not found!"
+    }
+    
+```
+
+或者，不通过关键字参数而是直接获取待校验参数：
+
+```python
+def validate_user_func(func_name: str, *, param1: int, param2: str, param3: file_t) -> Dict[str, str]:
+    ...
+    return {
+        "param1": "too big",
+        "param2": "empty string not allowed!",
+        "param3": "file not found!"
+    }
+```
+
+当指定参数校验函数后，`PyGUIAdapterLite`每次正式调用用户函数前，都会用收集到的参数调用参数校验函数，若参数校验函数返回为空，则继续调用用户函数，若不为空，则表示存在非法参数，`PyGUIAdapterLite`终止调用用户函数，并会逐一列出这些非法的参数及其非法的原因。
+
+开发者可以通过`GUIAdapter.add()`方法的`parameter_validator`参数指定参数校验函数。
+
+下面是一个简单的例子，在`validate()`函数中，我们对`backup_folder()`的每一个参数进行了检查，并根据不同去情况，设置了不同的说明信息。比如，针对`src_folderf`参数，在未输入值时提示信息为“Source folder cannot be empty”，在`src_folder`指向的目录不存在时设置提示信息为“Source folder does not exist”。其他参数也是类似的逻辑。
+
+```python
+import os
+from typing import Dict
+
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import dir_t
+
+
+def validate(
+    func_name: str, *, src_folder: dir_t, dst_folder: dir_t, max_recursion: int
+) -> Dict[str, str]:
+    uprint(f"Validating parameters for function '{func_name}'...")
+
+    validate_errors = {}
+
+    if max_recursion < 1:
+        validate_errors["max_recursion"] = "Max recursion cannot be less than 1."
+
+    if not src_folder:
+        validate_errors["src_folder"] = "Source folder cannot be empty."
+    elif not os.path.isdir(src_folder):
+        validate_errors["src_folder"] = "Source folder does not exist."
+    else:
+        pass
+
+    if not dst_folder:
+        validate_errors["dst_folder"] = "Destination folder cannot be empty."
+    elif os.path.isdir(dst_folder) and len(os.listdir(dst_folder)) > 0:
+        validate_errors["dst_folder"] = "Destination folder is not empty."
+    else:
+        pass
+
+    return validate_errors
+
+
+def backup_folder(src_folder: dir_t, dst_folder: dir_t, max_recursion: int = 10):
+    uprint(f"Backing up '{src_folder}' to '{dst_folder}'...")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(backup_folder, parameters_validator=validate)
+    adapter.run()
+```
+
+下面是未通过校验时的情形：
+
+<img src = "./docs/validate_3.gif" style="height:auto;width:70%"/>
+
+下面则是所有参数均通过校验时的效果：
+
+<img src = "./docs/validate_4.gif" style="height:auto;width:70%"/>
+
+##### （3）小结
+
+`PyGUIAdapterLite`提供的上述两种机制可以极大地帮助开发者完成参数校验工作，需要注意的是，上述两种方式并非互斥的，开发者完全可以同时应用两种方法，这却决于具体的业务。
 
 ### 3.3 控件配置
 
