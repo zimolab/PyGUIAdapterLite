@@ -93,8 +93,8 @@ BUILTIN_WIDGETS_MAP = {
     color_hex_t.__name__: HexColorValueWidget,
     color_t.__name__: HexColorValueWidget,
     # choices types
-    choice_t.__name__: LooseChoiceValueWidget,
-    option_t.__name__: LooseChoiceValueWidget,
+    choice_t.__name__: SingleChoiceValueWidget,
+    option_t.__name__: SingleChoiceValueWidget,
     loose_choice_t.__name__: LooseChoiceValueWidget,
     choices_t.__name__: MultiChoiceValueWidget,
     options_t.__name__: MultiChoiceValueWidget,
