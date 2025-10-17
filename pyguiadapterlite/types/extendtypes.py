@@ -47,12 +47,20 @@ class choice_t(object):
     pass
 
 
+class option_t(choice_t):
+    pass
+
+
 # loose_choices_t = choice_t
 class loose_choice_t(choice_t):
     pass
 
 
 class choices_t(list):
+    pass
+
+
+class options_t(choices_t):
     pass
 
 

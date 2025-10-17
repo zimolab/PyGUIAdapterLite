@@ -49,6 +49,8 @@ from pyguiadapterlite.types.extendtypes import (
     files_t,
     dir_list,
     dirs_t,
+    option_t,
+    options_t,
 )
 from pyguiadapterlite.types.ints.common import IntValueWidget
 from pyguiadapterlite.types.ints.ranged import RangedIntValueWidget
@@ -92,8 +94,10 @@ BUILTIN_WIDGETS_MAP = {
     color_t.__name__: HexColorValueWidget,
     # choices types
     choice_t.__name__: LooseChoiceValueWidget,
+    option_t.__name__: LooseChoiceValueWidget,
     loose_choice_t.__name__: LooseChoiceValueWidget,
     choices_t.__name__: MultiChoiceValueWidget,
+    options_t.__name__: MultiChoiceValueWidget,
     # list types
     # string list types
     string_list_t.__name__: StringListValueWidget,
