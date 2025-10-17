@@ -38,14 +38,18 @@ class dir_t(str):
     pass
 
 
-directory_t = dir_t
+# directory_t = dir_t
+class directory_t(dir_t):
+    pass
 
 
 class choice_t(object):
     pass
 
 
-loose_choices_t = choice_t
+# loose_choices_t = choice_t
+class loose_choice_t(choice_t):
+    pass
 
 
 class choices_t(list):
@@ -56,36 +60,53 @@ class color_hex_t(str):
     pass
 
 
-color_t = color_hex_t
+class color_t(color_hex_t):
+    pass
 
 
 class string_list_t(list):
     pass
 
 
-str_list = string_list_t
-string_list = string_list_t
+class str_list(string_list_t):
+    pass
+
+
+class string_list(string_list_t):
+    pass
 
 
 class path_list_t(list):
     pass
 
 
-path_list = path_list_t
-paths_t = path_list_t
+class path_list(path_list_t):
+    pass
+
+
+class paths_t(path_list_t):
+    pass
 
 
 class dir_list_t(list):
     pass
 
 
-dirs_t = dir_list_t
-dir_list = dir_list_t
+class dirs_t(dir_list_t):
+    pass
+
+
+class dir_list(dir_list_t):
+    pass
 
 
 class file_list_t(list):
     pass
 
 
-files_t = file_list_t
-file_list = file_list_t
+class file_list(file_list_t):
+    pass
+
+
+class files_t(file_list_t):
+    pass
