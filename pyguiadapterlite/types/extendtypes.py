@@ -80,6 +80,7 @@ class dir_list_t(list):
 
 
 dirs_t = dir_list_t
+dir_list = dir_list_t
 
 
 class file_list_t(list):
@@ -87,3 +88,4 @@ class file_list_t(list):
 
 
 files_t = file_list_t
+file_list = file_list_t
