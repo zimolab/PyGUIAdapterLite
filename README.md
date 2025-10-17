@@ -267,11 +267,25 @@ if __name__ == "__main__":
 
 #### 3.1.1 基于int的扩展类型
 
-- `int_r`：代表一个有范围的整数，输入控件为一个SpinBox，最大值默认为`2**31 - 1`， 最小值默认为`-(2**31)`，步长默认为`1`。
-- `int_s`：代表一个有范围的整数，输入控件为一个现代样式的滑动条，最大值默认为`100`， 最小值默认为`0`。
-- `int_ss`：代表一个有范围的整数，输入控件为一个旧式样式的滑动条，最大值默认为`100`， 最小值默认为`0`，步长默认为`1`，刻度间隔默认为`10`。
+##### (1)`int_r`
 
-以下是简单的示例代码：
+代表一个有范围的整数，输入控件为一个SpinBox，最大值默认为`2**31 - 1`， 最小值默认为`-(2**31)`，步长默认为`1`。
+
+
+
+##### (2)`int_s`
+
+代表一个有范围的整数，输入控件为一个现代样式的滑动条，最大值默认为`100`， 最小值默认为`0`。
+
+
+
+##### (3)`int_ss`
+
+代表一个有范围的整数，输入控件为一个旧式样式的滑动条，最大值默认为`100`， 最小值默认为`0`，步长默认为`1`，刻度间隔默认为`10`。
+
+
+
+##### (4) 示例
 
 ```pycon
 from pyguiadapterlite import GUIAdapter
@@ -296,15 +310,35 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
+
+
 其效果如下：
 
 <img src="./docs/int_types.png" style="height:auto;width:65%"/>
 
+
+
 #### 3.1.2 基于float的扩展类型
 
-- `float_r`：代表一个有范围的浮点数，输入控件为一个SpinBox，最大值默认为`2.0**31 - 1`， 最小值默认为`-(2.0**31 - 1)`，步长默认为`0.1`，默认小数位数为`2`。
-- `float_s`：代表一个有范围的浮点数，输入控件为一个现代样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`。
-- `float_ss`：代表一个有范围的浮点数，输入控件为一个旧式样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`，步长默认为`0.5`，刻度间隔默认为`10`。
+##### (1)`float_r`
+
+代表一个有范围的浮点数，输入控件为一个SpinBox，最大值默认为`2.0**31 - 1`， 最小值默认为`-(2.0**31 - 1)`，步长默认为`0.1`，默认小数位数为`2`。
+
+
+
+##### (2)`float_s`
+
+代表一个有范围的浮点数，输入控件为一个现代样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`。
+
+
+
+##### (3)`float_ss`
+
+代表一个有范围的浮点数，输入控件为一个旧式样式的滑动条，最大值默认为`100.0`， 最小值默认为`-100.0`，步长默认为`0.5`，刻度间隔默认为`10`。
+
+
+
+##### (4) 示例
 
 ```pycon
 from pyguiadapterlite import GUIAdapter
@@ -335,7 +369,11 @@ if __name__ == "__main__":
 
 #### 3.1.3 基于bool的扩展类型
 
-- `bool_t`：普通的bol类型，输入控件为两个互斥的单选按钮，分别表示`True`和`False`，`bool_t`则以一个复选框的形式提供表示True/False的能力。
+##### (1)`bool_t`
+
+普通bol类型的输入控件为两个互斥的单选按钮，分别表示`True`和`False`，而`bool_t`类型则以单个复选框的形式提供表示True/False的能力。
+
+##### (2) 示例
 
 ```python
 from pyguiadapterlite import uprint, GUIAdapter
@@ -361,12 +399,31 @@ if __name__ == "__main__":
 
 #### 3.1.4 基于str的扩展类型
 
-- `text_t`类型，提供用于多行文本输入的控件
-- `file_t`类型，提供用于选择文件路径的控件
-- `directory_t`类型（也可以使用其别名`dir_t`），提供用于选择目录路径的控件
-- `color_hex_t`类型，提供用于选择颜色的控件，颜色值以#开头的16进制字符串形式表示，RGB格式
+##### (1)`text_t`
+
+提供用于多行文本输入的控件
 
 
+
+##### (2)`file_t`
+
+提供用于选择文件路径的控件
+
+
+
+##### (3)`directory_t`
+
+也可以使用其别名`dir_t`，提供用于选择目录路径的控件
+
+
+
+##### (4)`color_hex_t`
+
+提供用于选择颜色的控件，颜色值以#开头的16进制字符串形式表示，RGB格式
+
+
+
+##### (5) 示例
 
 ```python
 from pyguiadapterlite import uprint, GUIAdapter
@@ -402,28 +459,30 @@ if __name__ == "__main__":
 
 `PyGUIAdapterLite`提供了一些基于`list`类型的扩展类型，包括：
 
-- `string_list_t`(也可以使用其别名：`str_list`、`string_list`)，用于输入一组字符串。
+##### (1)`string_list_t`类型及其示例
 
-  ```python
-  from pyguiadapterlite import uprint, GUIAdapter
-  from pyguiadapterlite.types import string_list_t
-  
-  
-  def str_list_example(str_list_arg: string_list_t):
-      uprint(f"len(str_list) == {len(str_list_arg)}")
-      for s in str_list_arg:
-          uprint(s)
-  
-  
-  if __name__ == "__main__":
-      adapter = GUIAdapter()
-      adapter.add(str_list_example)
-      adapter.run()
-  ```
+也可以使用其别名：`str_list`、`string_list`)，用于输入一组字符串。
 
-  效果如下：
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import string_list_t
 
-  <img src = "./docs/str_list.png" style="height:auto;width:70%"/>
+
+def str_list_example(str_list_arg: string_list_t):
+    uprint(f"len(str_list) == {len(str_list_arg)}")
+    for s in str_list_arg:
+        uprint(s)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(str_list_example)
+    adapter.run()
+```
+
+效果如下：
+
+<img src = "./docs/str_list.png" style="height:auto;width:70%"/>
 
 添加条目界面：
 
@@ -432,6 +491,106 @@ if __name__ == "__main__":
 编辑条目界面：
 
 <img src = "./docs/str_list_edit.png" style="height:auto;width:70%"/>
+
+##### (2)`path_list_t`类型及其示例
+
+也可以使用其别名：`path_list`、`paths_t`，用于输入一组路径(包括文件路径和目录路径)。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import path_list_t
+
+
+def path_list_example(path_list_arg: path_list_t):
+    for path in path_list_arg:
+        uprint(path)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(path_list_example)
+    adapter.run()
+```
+
+效果如下：
+
+<img src = "./docs/path_list.png" style="height:auto;width:70%"/>
+
+添加路径界面：
+
+<img src = "./docs/path_list_add.png" style="height:auto;width:70%"/>
+
+编辑路径界面：
+
+<img src = "./docs/path_list_edit.png" style="height:auto;width:70%"/>
+
+##### (3)`file_list_t`类型及其示例
+
+也可以使用其别名：`file_list`、`files_t`，用于输入一组路径，仅支持选择文件路径。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import file_list_t
+
+
+def file_list_example(file_list_arg: file_list_t):
+    for file in file_list_arg:
+        uprint(file)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(file_list_example)
+    adapter.run()
+```
+
+
+
+效果如下：
+
+<img src = "./docs/file_list.png" style="height:auto;width:70%"/>
+
+添加路径界面：
+
+<img src = "./docs/file_list_add.png" style="height:auto;width:70%"/>
+
+编辑路径界面：
+
+<img src = "./docs/file_list_edit.png" style="height:auto;width:70%"/>
+
+
+
+##### (4)`dir_list_t`类型及其示例
+
+也可以使用其别名：`dir_list`、`dirs_t`，用于输入一组路径，仅支持选择目录路径。
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import dir_list_t
+
+
+def dir_list_example(dir_list_arg: dir_list_t):
+    for dir_path in dir_list_arg:
+        uprint(dir_path)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(dir_list_example)
+    adapter.run()
+```
+
+效果如下：
+
+<img src = "./docs/dir_list.png" style="height:auto;width:70%"/>
+
+添加路径界面：
+
+<img src = "./docs/dir_list_add.png" style="height:auto;width:70%"/>
+
+编辑路径界面：
+
+<img src = "./docs/dir_list_edit.png" style="height:auto;width:70%"/>
 
 
 ### 3.2 参数验证与错误处理
