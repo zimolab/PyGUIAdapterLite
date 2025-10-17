@@ -942,7 +942,7 @@ def validate_user_func(func_name: str, *, param1: int, param2: str, param3: file
 
 当指定参数校验函数后，`PyGUIAdapterLite`每次正式调用用户函数前，都会用收集到的参数调用参数校验函数，若参数校验函数返回为空，则继续调用用户函数，若不为空，则表示存在非法参数，`PyGUIAdapterLite`终止调用用户函数，并会逐一列出这些非法的参数及其非法的原因。
 
-开发者可以通过`GUIAdapter.add()`方法的`parameter_validator`参数指定参数校验函数。
+开发者可以通过`GUIAdapter.add()`方法的`parameters_validator`参数指定参数校验函数。
 
 下面是一个简单的例子，在`validate()`函数中，我们对`backup_folder()`的每一个参数进行了检查，并根据不同去情况，设置了不同的说明信息。比如，针对`src_folderf`参数，在未输入值时提示信息为“Source folder cannot be empty”，在`src_folder`指向的目录不存在时设置提示信息为“Source folder does not exist”。其他参数也是类似的逻辑。
 
