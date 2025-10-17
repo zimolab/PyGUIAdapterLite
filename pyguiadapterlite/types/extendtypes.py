@@ -75,15 +75,15 @@ path_list = path_list_t
 paths_t = path_list_t
 
 
-class dirs_t(list):
+class dir_list_t(list):
     pass
 
 
-dir_list_t = dirs_t
+dirs_t = dir_list_t
 
 
-class files_t(list):
+class file_list_t(list):
     pass
 
 
-file_list_t = files_t
+files_t = file_list_t
