@@ -80,8 +80,11 @@ class LooseChoiceValueWidget(BaseParameterWidget):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
+        if isinstance(parameter_info.default_value, cls.ConfigClass):
+            return parameter_info.default_value
+
         if (
-            isinstance(config.default_value, (tuple, list))
+            isinstance(config.default_value, (tuple, list, set))
             and len(config.default_value) > 0
             and (not config.choices)
         ):

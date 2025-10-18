@@ -192,7 +192,9 @@ class BaseParameterWidget(Frame):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
-        _ = parameter_name, parameter_info  # unused
+        _ = parameter_name  # unused
+        if isinstance(parameter_info.default_value, cls.ConfigClass):
+            return parameter_info.default_value
         return config
 
 

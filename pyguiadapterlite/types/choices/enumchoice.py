@@ -106,6 +106,9 @@ class EnumValuedWidget(BaseParameterWidget):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
+        if isinstance(parameter_info.default_value, cls.ConfigClass):
+            return parameter_info.default_value
+
         if inspect.isclass(config.enum_class) and issubclass(config.enum_class, Enum):
             return config
         assert inspect.isclass(parameter_info.type) and issubclass(

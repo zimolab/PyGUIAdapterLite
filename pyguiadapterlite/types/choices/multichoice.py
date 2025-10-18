@@ -86,6 +86,9 @@ class MultiChoiceValueWidget(BaseParameterWidget):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
+        if isinstance(parameter_info.default_value, cls.ConfigClass):
+            return parameter_info.default_value
+
         if not config.choices:
             if (
                 isinstance(config.default_value, (list, tuple, set, dict))

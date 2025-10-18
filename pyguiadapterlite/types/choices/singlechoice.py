@@ -89,6 +89,9 @@ class SingleChoiceValueWidget(BaseParameterWidget):
         parameter_name: str,
         parameter_info: "ParameterInfo",
     ) -> BaseParameterWidgetConfig:
+        if isinstance(parameter_info.default_value, cls.ConfigClass):
+            return parameter_info.default_value
+
         if not config.choices:
             if len(parameter_info.type_args) > 0:
                 return dataclasses.replace(
