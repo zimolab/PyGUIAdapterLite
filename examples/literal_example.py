@@ -13,5 +13,22 @@ def foo(
 
 if __name__ == "__main__":
     adapter = GUIAdapter()
-    adapter.add(foo, widget_configs={"arg2": SingleChoiceValue(columns=4)})
+    adapter.add(
+        foo,
+        widget_configs={
+            "arg1": SingleChoiceValue(
+                default_value="choice1",
+                choices=["choice1", "choice2", "choice3", "choice4"],
+                content_title="Choose an option",
+                hide_label=False,
+                description="Choose an option for the first argument",
+            ),
+            "arg2": SingleChoiceValue(
+                default_value=1024,
+                content_title="Choose a size",
+                columns=4,
+                description="Choose a size for the new file",
+            ),
+        },
+    )
     adapter.run()
