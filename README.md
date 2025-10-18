@@ -41,13 +41,24 @@
         - [（1）基本策略：尽可能捕获所有异常](#1基本策略尽可能捕获所有异常)
         - [（2）处理`sys.exit()`和`SystemExit`](#2处理sysexit和systemexit)
       - [3.2.2 参数校验](#322-参数校验)
-        - [（1）利用异常提示非法参数以及`ParameterError`的用法](#1利用异常提示非法参数以及parametererror的用法)
+        - [（1）利用`Exception`提示非法参数以及`ParameterError`的使用](#1利用exception提示非法参数以及parametererror的使用)
         - [（2）通过参数校验函数进行参数校验](#2通过参数校验函数进行参数校验)
         - [（3）小结](#3小结)
     - [3.3 配置输入控件](#33-配置输入控件)
       - [3.3.1 输入控件的可配置属性](#331-输入控件的可配置属性)
-      - [3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性一览表](#332-常用数据类型及其对应的输入控件类配置类常用可配置属性一览表)
-      - [3.3.3 如何配置输入控件属性](#333-如何配置输入控件属性)
+      - [3.3.2 如何配置参数控件](#332-如何配置参数控件)
+        - [（1）配置控件初始值（default_value）和描述信息（description）的简单方法](#1配置控件初始值default_value和描述信息description的简单方法)
+        - [（2）通过`GUIAdapter.add()`方法配置参数控件属性](#2通过guiadapteradd方法配置参数控件属性)
+        - [（3）利用函数默认值配置参数控件属性](#3利用函数默认值配置参数控件属性)
+- [Configurations of the parameters for the function my_function](#configurations-of-the-parameters-for-the-function-my_function)
+- [function defined here](#function-defined-here)
+        - [（4）在`docstring`中配置参数控件属性](#4在docstring中配置参数控件属性)
+        - [（5）小结](#5小结)
+      - [3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性](#332-常用数据类型及其对应的输入控件类配置类常用可配置属性)
+        - [（1）`int`类型](#1int类型)
+        - [（2）`float`类型](#2float类型)
+        - [（3）`str`类型](#3str类型)
+        - [（4）`bool`类型](#4bool类型)
     - [3.4 窗口配置](#34-窗口配置)
     - [3.5 可取消的函数](#35-可取消的函数)
     - [3.6 添加多个函数](#36-添加多个函数)
@@ -874,7 +885,7 @@ if __name__ == "__main__":
 
 `PyGUIAdapterLite`提供了多种参数校验的机制，一来尽可能地简化检验的过程，二来尽可能明确地提示用户哪些是非法的参数以及参数非法的原因。
 
-##### （1）利用异常提示非法参数以及`ParameterError`的用法
+##### （1）利用`Exception`提示非法参数以及`ParameterError`的使用
 
 我们可能把`参数校验`作为用户代码逻辑的一部分，在用户函数执行过程中检查参数，对应非法的参数，直接抛出异常即可。比如对应前面的例子，我们可用在用户函数中检查参数`b`的值:
 
@@ -1098,13 +1109,13 @@ if __name__ == "__main__":
 >```python
 >@dataclasses.dataclass(frozen=True)
 >class StringValue(BaseParameterWidgetConfig):
->    default_value: str = ""
->        echo_char: str = ""
->        justify: Literal["left", "center", "right"] = "left"
->    
->        @classmethod
->        def target_widget_class(cls) -> Type["StringValueWidget"]:
->        return StringValueWidget
+>    	default_value: str = ""
+>         echo_char: str = ""
+>         justify: Literal["left", "center", "right"] = "left"
+>        
+>         @classmethod
+>         def target_widget_class(cls) -> Type["StringValueWidget"]:
+>             return StringValueWidget
 >    ```
 
 
@@ -1119,11 +1130,11 @@ if __name__ == "__main__":
 >```python
 >@dataclasses.dataclass(frozen=True)
 >class RangedIntValue(BaseParameterWidgetConfig):
->    default_value: int = 0
->    min_value: int = MIN_VALUE
->    max_value: int = MAX_VALUE
->    step: int = 1
->    wrap: bool = False
+>    	default_value: int = 0
+>    	min_value: int = MIN_VALUE
+>    	max_value: int = MAX_VALUE
+>    	step: int = 1
+>    	wrap: bool = False
 >
 >    @classmethod
 >    def target_widget_class(cls) -> Type["RangedIntValueWidget"]:
@@ -1133,27 +1144,444 @@ if __name__ == "__main__":
 
 
 
-可以总结这样的规律，在`PyGUIAdapterLite`中，一个类型就对应了一个输入控件类（BaseParameterWidget子类），一个输入控件就对应着一个输入控件配置类（BaseParameterWidgetConfig子类），输入控件配置类管理着输入控件可配置的属性，配置输入控件本质上就是为输入控件配置类的各属性设置不同的值。
+总结：在`PyGUIAdapterLite`中，一个类型对应了一个输入控件类（BaseParameterWidget子类），一个输入控件对应着一个配置类（BaseParameterWidgetConfig子类），控件的配置类管理着控件可配置的属性，配置控件本质上就是修改配置类中定义的属性。
 
-#### 3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性一览表
+#### 3.3.2 如何配置参数控件
 
-一般而言，输入控件类的名称为`XXXValueWidget`，而其对应的配置类名称则为`XXXValue`，若想了解某个输入控件有哪些属性可以配置，开发者可以查看`XXXValue`类源码。下表给出了常见“数据类型—输入控件类—输入控件配置类”之间的对应关系，并列出了各输入控件常用的可配置属性。
+`PyGUIAdapterLite`提供了多种配置参数控件的方法。
 
-| 参数数据类型 |                       默认输入控件类型                       |                      对应配置类型                       |                 常用可配置属性（不会共有属性）                  |                           默认外观                           |
-| :----------: | :----------------------------------------------------------: | :-----------------------------------------------------: |:------------------------------------------------:| :----------------------------------------------------------: |
-|    `int`     | [`IntValueWidget`](pyguiadapterlite/types/ints/common.py#L85) | [`IntValue`](pyguiadapterlite/types/ints/common.py#L18) | `auto_correct`：当用户输入非法值时，是否尝试自动修正为默认值，默认为`False` | <img src = "./docs/int_w.png" style="height:auto;width:90%"/> |
-|   `float`    |                                                              |                                                         |                                                  | <img src = "./docs/float_w.png" style="height:auto;width:90%"/> |
-|    `str`     |                                                              |                                                         |                                                  | <img src = "./docs/str_w.png" style="height:auto;width:90%"/> |
-|    `bool`    |                                                              |                                                         |                                                  | <img src = "./docs/bool_w.png" style="height:auto;width:90%"/> |
-|              |                                                              |                                                         |                                                  |                                                              |
-|              |                                                              |                                                         |                                                  |                                                              |
-|              |                                                              |                                                         |                                                  |                                                              |
-|              |                                                              |                                                         |                                                  |                                                              |
-|              |                                                              |                                                         |                                                  |                                                              |
+##### （1）配置控件初始值（default_value）和描述信息（description）的简单方法
 
-#### 3.3.3 如何配置输入控件属性
+如果只是想要设置参数的默认值和描述信息，可以采用一种简单而自然的方式。
+
+- 对于`default_value`：对于绝大多数类型而言，用户函数中参数的默认值就是控件中显示的初始值，因此，如果你希望控件显示一个初始值，将对应参数的默认值设置为该值即可。
+
+  > 这里存在一些例外情况，对于选项相关的类型，比如`choice_t`/`loose_choice_t`/`choices_t`而言，参数的默认值一般被用于设置可选项范围，[__3.1.6 选项类型__](#316-选项类型)小节给出了相关演示。
+
+- 对于`description`，开发者可以通过函数的`docstring`进行设置。`PyGUIAdapterLite`支持多种风格的`docstring`，包括：`ReST`、`Google`、`Numpydoc-style`、`Epydoc`。
+
+  ```python
+  def my_function_1(
+      param1: int = 100,
+      param2: str = "Hello World",
+      param3: float = 3.14,
+      param4: bool = True,
+  ):
+      """
+      This is the function description.
+      :param param1: description of the param1
+      :param param2: description of the param2
+      :param param3: description of the param3
+      :param param4: description of the param4
+      :return:
+      """
+      pass
+  
+  def my_function_2(
+      param1: int = 100,
+      param2: str = "Hello World",
+      param3: float = 3.14,
+      param4: bool = True,
+  ):
+      """
+      This is the function description.
+      Args:
+          param1: description of the param1
+          param2: description of the param2
+          param3: description of the param3
+          param4: description of the param4
+  
+      Returns:
+      
+      """
+      pass
+  ```
+
+  因此，上述示例中，两个函数`docstring`中对于各个参数的描述信息都能够被正常解析，并以tooltip的形式展示出来。
+
+  <img src = "./docs/param_config_1.png"/>
+
+#####	（2）通过`GUIAdapter.add()`方法配置参数控件属性
+
+`GUIAdapter.add()`方法提供了`widget_configs`参数，用于配置用户函数各参数的控件相关属性。开发者需要传入一个`dict`给参数，其中`dict`的`key`是函数参数的名称，`value`则为对应控件配置类的实例（前文提到的`BaseParameterWidgetConfig`的子类，具体某种类型对应哪个`BaseParameterWidgetConfig`，参考下一节）。
+
+比如，对于以下函数：
+
+```python
+def foo(arg1: int, arg2: float, arg3: str):
+    pass
+```
+
+其参数的控件配置可能是这样的：
+
+```python
+
+    {
+        "arg1": IntValue(
+            label="Argument 1",
+            description="This is the description of arg1",
+            default_value=10,
+            auto_correct=True,
+        ),
+        "arg2": FloatValue(
+            label="Argument 2",
+            description="This is the description of arg2",
+            default_value=20.0,
+        ),
+        "arg3": StringValue(
+            label="Argument 3",
+            description="This is the description of arg3",
+            default_value="Hello",
+            echo_char="*",
+            justify="center",
+        ),
+    }
+```
+
+完整代码：
+
+```python
+from pyguiadapterlite import GUIAdapter
+from pyguiadapterlite.types import IntValue, FloatValue, StringValue
 
 
+def foo(arg1: int, arg2: float, arg3: str):
+    pass
+
+
+if __name__ == "__main__":
+    PARAM_CONFIGS = {
+        "arg1": IntValue(
+            label="Argument 1",
+            description="This is the description of arg1",
+            default_value=10,
+            auto_correct=True,
+        ),
+        "arg2": FloatValue(
+            label="Argument 2",
+            description="This is the description of arg2",
+            default_value=20.0,
+        ),
+        "arg3": StringValue(
+            label="Argument 3",
+            description="This is the description of arg3",
+            default_value="Hello",
+            echo_char="*",
+            justify="center",
+        ),
+    }
+
+    adapter = GUIAdapter()
+    adapter.add(foo, widget_configs=PARAM_CONFIGS)
+    adapter.run()
+```
+
+
+
+<img src = "./docs/param_config_2.png"/>
+
+下面是一个更加复杂一些的例子，演示了更多数据类型：
+
+```python
+import os
+
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import (
+    choice_t,
+    int_ss,
+    file_t,
+    SingleChoiceValue,
+    ScaleIntValue2,
+    FileValue,
+    StringValue,
+    bool_t,
+    BoolValue2,
+)
+
+
+def my_function(
+    param1: str, param2: choice_t, param3: int_ss, param4: file_t, param5: bool_t
+):
+    """
+    This is the function description. The parameters of this function will be configured using `GUIAdapter.add()` method.
+    """
+    uprint("param1:", param1)
+    uprint("param2:", param2)
+    uprint("param3:", param3)
+    uprint("param4:", param4)
+    uprint("param5:", param5)
+
+
+if __name__ == "__main__":
+    PARAM_CONFIGS = {
+        "param1": StringValue(
+            label="Password",
+            default_value="default value of param1",
+            description="Input your password",
+            echo_char="*",
+            justify="center",
+        ),
+        "param2": SingleChoiceValue(
+            label="Hash Algorithm",
+            choices=["MD5", "SHA1", "SHA256", "SHA512"],
+            default_value="SHA256",
+            description="Select a hash algorithm",
+        ),
+        "param3": ScaleIntValue2(
+            label="Keep Alive Time",
+            default_value=10,
+            description="Keep alive time in minutes",
+            min_value=0,
+            max_value=20,
+            step=5,
+            tick_interval=5,
+        ),
+        "param4": FileValue(
+            label="File to Upload",
+            default_value="",
+            description="Select a file to upload",
+            filters=[
+                ("Text Files", "*.txt"),
+                ("Python Files", "*.py"),
+                ("All Files", "*.*"),
+            ],
+            start_dir=os.getcwd(),
+            select_button_text="Select File",
+        ),
+        "param5": BoolValue2(
+            label="Enable SSL",
+            default_value=True,
+            description="Enable SSL encryption",
+        ),
+    }
+
+    adapter = GUIAdapter()
+    adapter.add(my_function, widget_configs=PARAM_CONFIGS)
+    adapter.run()
+
+```
+
+<img src = "./docs/param_config_3.gif" style="height:auto;width:75%"/>
+
+##### （3）利用函数默认值配置参数控件属性
+
+如果函数参数的默认值被指定一个`BaseParameterWidgetConfig`子类对象，那么，`PyGUIAdapterLite`将把该对象作为该参数对应控件的配置对象。利用这一机制，上面的例子可以改写为：
+
+```python
+import os
+
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import (
+    choice_t,
+    int_ss,
+    file_t,
+    SingleChoiceValue,
+    ScaleIntValue2,
+    FileValue,
+    StringValue,
+    bool_t,
+    BoolValue2,
+)
+
+
+# Configurations of the parameters for the function my_function
+PARMA1_CONF = StringValue(
+    label="Password",
+    default_value="default value of param1",
+    description="Input your password",
+    echo_char="*",
+    justify="center",
+)
+PARMA2_CONF = SingleChoiceValue(
+    label="Hash Algorithm",
+    choices=["MD5", "SHA1", "SHA256", "SHA512"],
+    default_value="SHA256",
+    description="Select a hash algorithm",
+)
+PARMA3_CONF = ScaleIntValue2(
+    label="Keep Alive Time",
+    default_value=10,
+    description="Keep alive time in minutes",
+    min_value=0,
+    max_value=20,
+    step=5,
+    tick_interval=5,
+)
+PARMA4_CONF = FileValue(
+    label="File to Upload",
+    default_value="",
+    description="Select a file to upload",
+    filters=[
+        ("Text Files", "*.txt"),
+        ("Python Files", "*.py"),
+        ("All Files", "*.*"),
+    ],
+    start_dir=os.getcwd(),
+    select_button_text="Select File",
+)
+PARMA5_CONF = BoolValue2(
+    label="Enable SSL",
+    default_value=True,
+    description="Enable SSL encryption",
+)
+
+# function defined here
+def my_function(
+    param1: str = PARMA1_CONF,
+    param2: choice_t = PARMA2_CONF,
+    param3: int_ss = PARMA3_CONF,
+    param4: file_t = PARMA4_CONF,
+    param5: bool_t = PARMA5_CONF,
+):
+    """
+    The parameters of this function will be configured using the default value of its parameters.
+    """
+    uprint("param1:", param1)
+    uprint("param2:", param2)
+    uprint("param3:", param3)
+    uprint("param4:", param4)
+    uprint("param5:", param5)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(my_function)
+    adapter.run()
+```
+
+##### （4）在`docstring`中配置参数控件属性
+
+开发者可以在函数的`docstring`中配置参数的控件。`PyGUIAdapterLite`将`docstring`中使用`@params`和`@end`包裹起来文本块视为参数控件的配置块，配置块的格式为`TOML`。在配置块中，开发者可以使用如下格式配置指定参数控件属性：
+
+```toml
+[参数名称]
+属性名称1 = 属性值1
+属性名称2 = 属性值2
+属性名称N = 属性值N
+```
+
+下面是一个简单的示例：
+
+```python
+from pyguiadapterlite import uprint, GUIAdapter
+from pyguiadapterlite.types import int_r, bool_t
+
+
+def my_function(username: str, password: str, age: int_r, keep_logged_in: bool_t):
+    """
+    The parameter widgets of this function will be configured in the docstring below using config block syntax.
+
+    @params
+    [username]
+    label = "Username"
+    default_value = "admin"
+    description = "Please enter your username"
+
+    [password]
+    label = "Password"
+    default_value = "123456"
+    description = "Please enter your password"
+    echo_char = "*"
+
+    [age]
+    label = "Age"
+    default_value = 25
+    description = "Please enter your age"
+    min_value = 18
+    max_value = 100
+
+    [keep_logged_in]
+    label = "Keep me logged in"
+    default_value = true
+
+    @end
+
+    """
+    uprint(f"Username: {username}")
+    uprint(f"Password: {password}")
+    uprint(f"Age: {age}")
+    uprint(f"Keep logged in: {keep_logged_in}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(my_function)
+    adapter.run()
+
+```
+
+<img src = "./docs/param_config_4.gif" style="height:auto;width:75%"/>
+
+##### （5）小结
+
+前面介绍了几种配置参数控件属性的方法，这些方法并无优劣之分，开发者可以根据需要和喜好选择合适的方法来配置函数参数的控件。
+
+#### 3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性
+
+
+
+##### （1）`int`类型
+
+<img src = "./docs/int_w.png"/>
+
+默认控件类：[`IntValueWidget`](pyguiadapterlite/types/ints/common.py#L85)
+
+对应配置类：[`IntValue`](pyguiadapterlite/types/ints/common.py#L18)  
+
+常用可配置属性：
+
+- `auto_correct`：当用户输入非法值时，是否尝试自动修正为默认值，默认为`False`
+
+
+
+
+
+##### （2）`float`类型
+
+<img src = "./docs/float_w.png" />
+
+默认控件类：[`FloatValueWidget`](pyguiadapterlite/types/floats/common.py#L85)
+
+对应配置类：[`FloatValue`](pyguiadapterlite/types/floats/common.py#L17)
+
+常用可配置属性：
+
+- `auto_correct`：当用户输入非法值时，是否尝试自动修正为默认值，默认为`False`
+
+
+
+
+
+##### （3）`str`类型
+
+<img src = "./docs/str_w.png">
+
+默认控件类：[`StringValueWidget`](pyguiadapterlite/types/strs/line.py#L43)
+
+对应配置类：[`StringValue`](pyguiadapterlite/types/strs/line.py#L18)(pyguiadapterlite/types/floats/common.py#L17)
+
+常用可配置属性：
+
+- `echo_char`：回显字符，为空时表示显示原字符，默认为空。可以将该属性设置为“*”或“·”来模拟密码输入框的效果。
+- `justify`：文本对齐方式，支持`"left"`、`"center"`、`"right"`，默认为`"left"`。
+
+
+
+
+
+##### （4）`bool`类型
+
+<img src = "./docs/bool_w.png" >
+
+默认控件类：[`BoolValueWidget`](pyguiadapterlite/types/booleans/common.py#L67)
+
+对应配置类：[`BoolValue`](pyguiadapterlite/types/booleans/common.py#L17)
+
+常用可配置属性：
+
+- `true_text`：代表真值的选项的文本，默认为`"True"`
+- `false_text`：代表假值的选项的文本，默认为`"False"`
+- `orientation`：选项排列的方式，`"horizontal"`表示水平排列，`"vertical"`表示垂直排列，默认水平排列。
 
 
 
