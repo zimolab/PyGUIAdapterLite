@@ -17,8 +17,12 @@ from pyguiadapterlite.components.valuewidget import (
 @dataclasses.dataclass(frozen=True)
 class StringValue(BaseParameterWidgetConfig):
     default_value: str = ""
+
     echo_char: str = ""
+    """回显字符，如果不为空，则用户输入的字符会以该字符显示。可以用于模拟密码输入框，比如将echo_char设置为'*'"""
+
     justify: Literal["left", "center", "right"] = "left"
+    """文本对齐方式，默认为左对齐（`"left"`）"""
 
     @classmethod
     def target_widget_class(cls) -> Type["StringValueWidget"]:

@@ -17,9 +17,16 @@ from pyguiadapterlite.utils import _error
 class TextValue(BaseParameterWidgetConfig):
     default_value: str = ""
     wrap: Literal["none", "char", "word"] = "word"
+    """断行方式，若设置为'none'则不进行自动断行"""
+
     default_menu: bool = True
+    """是否显示默认菜单"""
+
     font: tuple = ("Arial", 11)
+    """字体"""
+
     height: int = 8
+    """文本框高度，注意单位为行，而非像素"""
 
     @classmethod
     def target_widget_class(cls) -> Type["TextValueWidget"]:
