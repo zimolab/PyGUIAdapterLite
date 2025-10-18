@@ -30,17 +30,6 @@ class RangedFloatValue(BaseParameterWidgetConfig):
     auto_correct: bool = False
     correct_to: Literal["default", "min", "max", "nearest"] = "nearest"
 
-    def __post_init__(self):
-        # 验证参数合理性
-        if self.min_value >= self.max_value:
-            raise ValueError("min_value must be less than max_value")
-        if self.step <= 0:
-            raise ValueError("step must be positive")
-        if not (self.min_value <= self.default_value <= self.max_value):
-            raise ValueError("default_value must be between min_value and max_value")
-        if not (0 <= self.decimals <= MAX_DECIMALS):
-            raise ValueError("decimals must be between 0 and 10")
-
     @classmethod
     def target_widget_class(cls) -> Type["RangedFloatValueWidget"]:
         return RangedFloatValueWidget
