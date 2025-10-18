@@ -83,14 +83,6 @@ class ScaleIntValue(BaseParameterWidgetConfig):
     show_value: bool = True
     cursor: str = "hand2"
 
-    def __post_init__(self):
-        # 验证参数合理性
-        if self.min_value >= self.max_value:
-            raise ValueError("min_value must be less than max_value")
-
-        if not (self.min_value <= self.default_value <= self.max_value):
-            raise ValueError("default_value must be between min_value and max_value")
-
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget"]:
         return ScaleIntValueWidget
@@ -177,13 +169,6 @@ class ScaleIntValue2(ScaleIntValue):
     step: int = DEFAULT_STEP
     digits: int = DEFAULT_DIGITS
     tick_interval: int = DEFAULT_TICK_INTERVAL
-
-    def __post_init__(self):
-        super().__post_init__()
-        if self.step <= 0:
-            raise ValueError("step must be positive")
-        if self.digits < 0:
-            raise ValueError("digits must be positive")
 
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget2"]:

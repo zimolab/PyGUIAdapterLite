@@ -33,11 +33,6 @@ class FileValue(BaseParameterWidgetConfig):
     readonly: bool = False
     allow_backspace: bool = False
 
-    def __post_init__(self):
-        # 设置默认文件类型
-        if not self.filters:
-            object.__setattr__(self, "filters", [(MSG_FILE_FILTER_ALL, "*.*")])
-
     @classmethod
     def target_widget_class(cls) -> Type["FileValueWidget"]:
         return FileValueWidget

@@ -30,9 +30,6 @@ class DirectoryValue(BaseParameterWidgetConfig):
     readonly: bool = False
     allow_backspace: bool = False
 
-    def __post_init__(self):
-        pass
-
     @classmethod
     def target_widget_class(cls) -> Type["DirectoryValueWidget"]:
         return DirectoryValueWidget

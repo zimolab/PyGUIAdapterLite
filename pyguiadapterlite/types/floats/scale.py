@@ -25,12 +25,6 @@ class ScaleFloatValue2(ScaleFloatValue):
     digits: int = DEFAULT_DIGITS
     tick_interval: float = DEFAULT_TICK_INTERVAL
 
-    def __post_init__(self):
-        # 验证参数合理性
-        super().__post_init__()
-        if self.step <= 0:
-            raise ValueError("step must be positive")
-
     @classmethod
     def target_widget_class(cls) -> Type["ScaleFloatValueWidget2"]:
         return ScaleFloatValueWidget2

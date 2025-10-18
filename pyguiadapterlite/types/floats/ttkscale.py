@@ -28,16 +28,6 @@ class ScaleFloatValue(BaseParameterWidgetConfig):
     show_value: bool = True
     cursor: str = "hand2"
 
-    def __post_init__(self):
-        # 验证参数合理性
-        if self.min_value >= self.max_value:
-            raise ValueError("min_value must be less than max_value")
-        if not (self.min_value <= self.default_value <= self.max_value):
-            raise ValueError("default_value must be between min_value and max_value")
-        if self.digits != 0:
-            if self.digits < 0 or self.digits > MAX_DIGITS:
-                raise ValueError(f"digits must be between 0 and {MAX_DIGITS}")
-
     @classmethod
     def target_widget_class(cls) -> Type["ScaleFloatValueWidget"]:
         return ScaleFloatValueWidget
