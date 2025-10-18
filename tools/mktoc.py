@@ -44,7 +44,8 @@ class MarkdownTOCGenerator:
 
         return headers
 
-    def generate_anchor(self, title):
+    @staticmethod
+    def generate_anchor(title):
         """生成GitHub风格的锚点链接"""
         # GitHub锚点生成规则：小写，空格转横线，移除特殊字符
         anchor = title.lower()
@@ -122,7 +123,6 @@ class MarkdownTOCGenerator:
                 output_path = (
                     input_path.parent / f"{input_path.stem}_with_toc{input_path.suffix}"
                 )
-
             # 写入输出文件
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(new_content)
@@ -130,7 +130,6 @@ class MarkdownTOCGenerator:
             print(f"成功生成目录: {output_path}")
             print(f"找到 {len(headers)} 个标题")
             return True
-
         except Exception as e:
             print(f"处理文件 {input_file} 时出错: {e}")
             return False
