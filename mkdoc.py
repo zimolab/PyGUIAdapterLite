@@ -7,7 +7,16 @@ if __name__ == "__main__":
     py = sys.executable
     command = [py]
     if action == "toc":
-        command.extend(["tools/mktoc.py", "README_draft.md", "-o", "README.md"])
+        command.extend(
+            [
+                "tools/mktoc.py",
+                "--placeholder",
+                "[TOC]",
+                "README_draft.md",
+                "-o",
+                "README.md",
+            ]
+        )
     elif action == "typedoc":
         command.extend(
             ["tools/mktypedoc.py", "--action", "save", "--output-file", "tmp.md"]
