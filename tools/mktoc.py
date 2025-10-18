@@ -2,6 +2,7 @@
 """
 Markdown目录生成器
 自动提取Markdown文件中的标题并生成目录(TOC)
+修复了会将代码块中的#注释也当作标题进行提取的BUG
 """
 
 import re
@@ -26,11 +27,46 @@ class MarkdownTOCGenerator:
         self.header_pattern = re.compile(r"^(#{1,6})\s+(.+)$")
 
     def extract_headers(self, content):
-        """从Markdown内容中提取标题"""
+        """从Markdown内容中提取标题，忽略代码块中的内容"""
         headers = []
         lines = content.split("\n")
 
+        in_code_block = False
+        code_block_delimiter = None
+
         for line_num, line in enumerate(lines, 1):
+            # 检查是否进入或离开代码块
+            stripped_line = line.strip()
+
+            # 检测围栏代码块（以```或~~~开头）
+            if stripped_line.startswith("```") or stripped_line.startswith("~~~"):
+                if not in_code_block:
+                    # 进入代码块
+                    in_code_block = True
+                    code_block_delimiter = stripped_line[:3]  # 获取前三个字符作为分隔符
+                elif stripped_line.startswith(code_block_delimiter):
+                    # 离开代码块（使用相同的分隔符）
+                    in_code_block = False
+                    code_block_delimiter = None
+                continue
+
+            # 检测缩进代码块（以4个空格或1个制表符开头）
+            if not in_code_block and re.match(r"^( {4,}|\t)", line):
+                in_code_block = True
+                continue
+            elif (
+                in_code_block
+                and not re.match(r"^( {4,}|\t)", line)
+                and line.strip() != ""
+            ):
+                # 离开缩进代码块（遇到非空行且不以4个空格或制表符开头）
+                in_code_block = False
+
+            # 如果当前在代码块中，跳过标题检测
+            if in_code_block:
+                continue
+
+            # 检测标题
             match = self.header_pattern.match(line.strip())
             if match:
                 level = len(match.group(1))  # #的数量就是级别
@@ -85,7 +121,14 @@ class MarkdownTOCGenerator:
             # 如果没有占位符，插入到第一个标题之后
             lines = content.split("\n")
             for i, line in enumerate(lines):
-                if self.header_pattern.match(line.strip()):
+                # 检查是否在代码块中
+                in_code_block = False
+                for j in range(i):
+                    stripped = lines[j].strip()
+                    if stripped.startswith("```") or stripped.startswith("~~~"):
+                        in_code_block = not in_code_block
+
+                if not in_code_block and self.header_pattern.match(line.strip()):
                     # 在第一个标题后插入目录
                     return "\n".join(lines[: i + 1] + [""] + [toc] + lines[i + 1 :])
 
