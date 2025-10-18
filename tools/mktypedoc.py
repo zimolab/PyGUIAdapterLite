@@ -15,9 +15,13 @@ DOCS_TEMPLATE = """
 <img src="docs/{typename}_w.png" style="" />
 
 默认控件类：[`{widget_class}`]({widget_class_path}#L{widget_class_line})
+
 默认配置类：[`{conf_class}`]({conf_class_path}#L{conf_class_line})
+
 可配置属性：
+
 {props}
+
 """
 
 import sys
