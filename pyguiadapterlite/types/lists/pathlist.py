@@ -35,38 +35,79 @@ from pyguiadapterlite.utils import show_warning
 class PathListValue(BaseStringListValue):
 
     add_button_text: str = MSG_ADD_BUTTON_TEXT
+    """添加按钮文本"""
+
     add_file_button_text: Optional[str] = MSG_ADD_FILE_BUTTON_TEXT
+    """添加文件按钮文本"""
+
     add_dir_button_text: Optional[str] = MSG_ADD_DIR_BUTTON_TEXT
+    """添加目录按钮文本"""
 
     add_method: Literal["append", "prepend"] = "append"
+    """添加方法，append表示在列表尾部添加，prepend表示在列表头部添加"""
 
     start_dir: str = ""
+    """打开文件对话框的初始目录"""
+
     normalize_path: bool = True
+    """是否将路径规范化"""
+
     absolutize_path: bool = True
+    """是否将路径绝对化"""
+
     filters: List[Tuple[str, str]] = dataclasses.field(default_factory=list)
+    """文件类型过滤器"""
+
     file_dialog_action: Literal["open", "save"] = "open"
+    """文件对话框的行为，open表示打开文件，save表示保存文件"""
+
     file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE
+    """文件对话框标题"""
+
     dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE
+    """目录对话框标题"""
 
     strip: bool = True
+    """是否去除路径两端的空格"""
 
     accept_empty: bool = False
+    """是否接受空路径"""
+
     empty_path_message: str = MSG_EMPTY_PATH_WARNING
+    """空路径警告信息"""
 
     accept_duplicates: bool = False
+    """是否接受重复路径"""
+
     duplicate_message: str = MSG_DUPLICATE_PATH_WARNING
+    """重复路径警告信息"""
 
     multi_selection_message: str = MSG_MULTIPLE_SELECTION_WARNING
+    """多选警告信息"""
 
     add_path_dialog_title: str = MSG_ADD_PATH_DIALOG_TITLE
+    """添加路径对话框标题"""
+
     add_path_dialog_label_text: str = MSG_ADD_PATH_DIALOG_LABEL_TEXT
+    """添加路径对话框标签文本"""
+
     edit_path_dialog_title: str = MSG_EDIT_PATH_DIALOG_TITLE
+    """编辑路径对话框标题"""
+
     edit_path_dialog_label_text: str = MSG_EDIT_PATH_DIALOG_LABEL_TEXT
+    """编辑路径对话框标签文本"""
 
     no_item_message: str = MSG_NO_PATHS_WARNING
+    """未添加项警告信息"""
+
     no_selection_message: str = MSG_NO_PATHS_SELECTED_WARNING
+    """未选择项警告信息"""
+
     remove_confirm_message: str = MSG_REMOVE_PATH_CONFIRMATION
+    """移除路径确认信息"""
+
     clear_confirm_message: str = MSG_REMOVE_ALL_PATHS_CONFIRMATION
+    """清空路径确认信息"""
 
     @classmethod
     def target_widget_class(cls) -> Type["PathListValueWidget"]:

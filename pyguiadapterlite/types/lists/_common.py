@@ -28,32 +28,69 @@ from pyguiadapterlite.utils import _error, show_warning, ask_yes_or_no
 @dataclasses.dataclass(frozen=True)
 class BaseStringListValue(BaseParameterWidgetConfig):
     default_value: List[str] = dataclasses.field(default_factory=list)
+
     content_title: str = ""
+    """列表外框标题"""
+
     select_mode: Literal["single", "multiple", "extended"] = "extended"
+    """列表选择模式，single：单选，multiple：多选，extended：多选-需按下Ctrl或Shift键"""
+
     scrollbar: Literal["horizontal", "vertical", "both", "none"] = "vertical"
+    """滚动条设置，horizontal：启用水平滚动条，vertical：启用垂直滚动条，both：启用水平和垂直滚动条，none：不显示滚动条"""
+
     height: int = 0
+    """列表高度，0表示自动适配"""
+
     hide_label: bool = True
+    """是否隐藏参数名称标签"""
+
     double_click_to_edit: bool = True
+    """是否启用双击编辑模式"""
 
     move_buttons: bool = True
+    """是否显示上下移动按钮"""
+
     move_up_button_text: str = MSG_MOVE_UP_BUTTON_TEXT
+    """上移按钮文本"""
+
     move_down_button_text: str = MSG_MOVE_DOWN_BUTTON_TEXT
+    """下移按钮文本"""
 
     clear_button: bool = True
+    """是否显示清空按钮"""
+
     cleat_button_text: str = MSG_REMOVE_ALL_BUTTON_TEXT
+    """清空按钮文本"""
 
     remove_button: bool = True
+    """是否显示移除按钮"""
+
     remove_button_text: str = MSG_REMOVE_BUTTON_TEXT
+    """移除按钮文本"""
 
     edit_button: bool = True
+    """是否显示编辑按钮"""
+
     edit_button_text: str = MSG_EDIT_BUTTON_TEXT
+    """编辑按钮文本"""
 
     confirm_clear: bool = True
+    """是否显示清空确认对话框"""
+
     clear_confirm_message: str = MSG_REMOVE_ALL_CONFIRMATION
+    """清空确认对话框信息"""
+
     confirm_remove: bool = True
+    """是否显示移除确认对话框"""
+
     remove_confirm_message: str = MSG_REMOVE_CONFIRMATION
+    """移除确认对话框信息"""
+
     no_selection_message: str = MSG_NO_SELECTION_WARNING
+    """无选中项提示信息"""
+
     no_item_message: str = MSG_NO_ITEMS_WARNING
+    """未添加项提示信息"""
 
     @classmethod
     def target_widget_class(cls) -> Type["BaseStringListValueWidget"]:

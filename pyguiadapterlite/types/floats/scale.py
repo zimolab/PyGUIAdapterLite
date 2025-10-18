@@ -6,11 +6,14 @@ from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     GetValueError,
     InvalidValue,
+    BaseParameterWidgetConfig,
 )
 from pyguiadapterlite.types.floats.ttkscale import (
-    ScaleFloatValue,
     FloatScale,
     ScaleFloatValueWidget,
+    DEFAULT_VALUE,
+    MIN_VALUE,
+    MAX_VALUE,
 )
 from pyguiadapterlite.utils import _error
 
@@ -20,10 +23,29 @@ DEFAULT_DIGITS = 0
 
 
 @dataclasses.dataclass(frozen=True)
-class ScaleFloatValue2(ScaleFloatValue):
+class ScaleFloatValue2(BaseParameterWidgetConfig):
+    default_value: float = DEFAULT_VALUE
+
+    min_value: float = MIN_VALUE
+    """允许的最小值"""
+
+    max_value: float = MAX_VALUE
+    """允许的最大值"""
+
     step: float = DEFAULT_STEP
+    """步长（即单次滑动的距离）"""
+
     digits: int = DEFAULT_DIGITS
+    """显示的小数位数"""
+
+    show_value: bool = True
+    """是否显示当前值"""
+
+    cursor: str = "hand2"
+    """鼠标指针样式"""
+
     tick_interval: float = DEFAULT_TICK_INTERVAL
+    """刻度线间隔"""
 
     @classmethod
     def target_widget_class(cls) -> Type["ScaleFloatValueWidget2"]:

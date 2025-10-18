@@ -26,23 +26,43 @@ from pyguiadapterlite.utils import show_warning
 class StringListValue(BaseStringListValue):
 
     add_button: bool = True
+    """是否显示添加按钮"""
+
     add_button_text: str = MSG_ADD_BUTTON_TEXT
+    """添加按钮文本"""
+
     add_method: Literal["append", "prepend"] = "append"
+    """添加方法，append表示在列表尾部添加，prepend表示在列表头部添加"""
 
     strip: bool = False
+    """是否去除输入字符串两端的空格"""
 
     accept_empty: bool = True
+    """是否接受空字符串"""
+
     empty_string_message: str = MSG_EMPTY_STRING_WARNING
+    """空字符串警告信息"""
 
     accept_duplicates: bool = True
+    """是否接受重复项"""
+
     duplicate_message: str = MSG_DUPLICATE_ITEMS_WARNING
+    """重复项警告信息"""
 
     multi_selection_message: str = MSG_MULTIPLE_SELECTION_WARNING
+    """多选警告信息"""
 
     add_item_dialog_title: str = MSG_ADD_ITEM_DIALOG_TITLE
+    """添加项对话框标题"""
+
     add_item_dialog_label_text: str = MSG_ADD_ITEM_DIALOG_LABEL_TEXT
+    """添加项对话框标签文本"""
+
     edit_item_dialog_title: str = MSG_EDIT_ITEM_DIALOG_TITLE
+    """编辑项对话框标题"""
+
     edit_item_dialog_label_text: str = MSG_EDIT_ITEM_DIALOG_LABEL_TEXT
+    """编辑项对话框标签文本"""
 
     @classmethod
     def target_widget_class(cls) -> Type["StringListValueWidget"]:

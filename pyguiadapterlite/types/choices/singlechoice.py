@@ -15,10 +15,18 @@ from pyguiadapterlite.core.fn import ParameterInfo
 @dataclasses.dataclass(frozen=True)
 class SingleChoiceValue(BaseParameterWidgetConfig):
     default_value: Any = None
+
     choices: Union[List[Any], Dict[str, Any]] = dataclasses.field(default_factory=list)
+    """可选项，可以是字典或列表，如果是字典，则键值对的`key`为展示给用户的名称，`value`为选项实际值"""
+
     columns: int = 1
+    """单选框列数"""
+
     content_title: str = ""
+    """选项外框标题，若为空则将参数名称作为标题"""
+
     hide_label: bool = True
+    """是否隐藏参数名称标签"""
 
     @classmethod
     def target_widget_class(cls) -> Type["SingleChoiceValueWidget"]:

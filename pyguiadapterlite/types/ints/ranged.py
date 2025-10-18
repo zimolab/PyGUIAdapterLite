@@ -19,10 +19,18 @@ MIN_VALUE = -MAX_VALUE
 @dataclasses.dataclass(frozen=True)
 class RangedIntValue(BaseParameterWidgetConfig):
     default_value: int = 0
+
     min_value: int = MIN_VALUE
+    """允许的最小值"""
+
     max_value: int = MAX_VALUE
+    """允许的最大值"""
+
     step: int = 1
+    """步长（即单次增加/减少的数量）"""
+
     wrap: bool = False
+    """是否允许循环，即当值超出范围时，是否回到另一端边界"""
 
     @classmethod
     def target_widget_class(cls) -> Type["RangedIntValueWidget"]:

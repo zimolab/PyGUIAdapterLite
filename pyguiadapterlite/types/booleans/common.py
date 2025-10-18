@@ -16,9 +16,15 @@ from pyguiadapterlite.utils import _error
 @dataclasses.dataclass(frozen=True)
 class BoolValue(BaseParameterWidgetConfig):
     default_value: bool = False
+
     true_text: str = "True"
+    """代表真值的选项框的文本"""
+
     false_text: str = "False"
+    """代表假值的选项框的文本"""
+
     orientation: Literal["horizontal", "vertical"] = "horizontal"
+    """选项框的排列方向，'horizontal': 横向排列，'vertical': 纵向排列"""
 
     @classmethod
     def target_widget_class(cls) -> Type["BoolValueWidget"]:

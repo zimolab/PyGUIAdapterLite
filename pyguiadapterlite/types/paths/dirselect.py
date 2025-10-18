@@ -22,13 +22,27 @@ from pyguiadapterlite.utils import _error
 @dataclasses.dataclass(frozen=True)
 class DirectoryValue(BaseParameterWidgetConfig):
     default_value: str = ""
+
     start_dir: str = ""
+    """起始目录"""
+
     dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE
+    """目录选择对话框标题"""
+
     select_button_text: str = MSG_BROWSE_BUTTON_TEXT
+    """浏览按钮文本"""
+
     normalize_path: bool = False
+    """是否规范化路径"""
+
     absolutize_path: bool = False
+    """是否绝对化路径"""
+
     readonly: bool = False
+    """路径输入框是否为只读状态"""
+
     allow_backspace: bool = False
+    """在路径输入框为只读状态时，是否允许使用回退键删除输入框内容"""
 
     @classmethod
     def target_widget_class(cls) -> Type["DirectoryValueWidget"]:

@@ -23,15 +23,33 @@ from pyguiadapterlite.utils import _error
 @dataclasses.dataclass(frozen=True)
 class FileValue(BaseParameterWidgetConfig):
     default_value: str = ""
+
     filters: List[Tuple[str, str]] = None
+    """文件类型过滤器，格式为[(描述, 后缀名),...]，例如[("Text files", "*.txt"), ("All files", "*")]"""
+
     start_dir: str = ""
+    """起始目录"""
+
     dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE
+    """文件选择对话框标题"""
+
     save_file: bool = False
+    """是否为保存文件模式"""
+
     select_button_text: str = MSG_BROWSE_BUTTON_TEXT
+    """浏览按钮文本"""
+
     normalize_path: bool = False
+    """是否将路径规范化"""
+
     absolutize_path: bool = False
+    """是否绝对化路径"""
+
     readonly: bool = False
+    """是否为只读模式"""
+
     allow_backspace: bool = False
+    """在路径输入框为只读状态时，是否允许使用回退键删除输入框内容"""
 
     @classmethod
     def target_widget_class(cls) -> Type["FileValueWidget"]:
@@ -67,12 +85,17 @@ class FileSelectBox(Frame):
         """打开文件选择对话框"""
         config = self._parent.config
 
+        if not config.filters:
+            filters = [(MSG_FILE_FILTER_ALL, "*")]
+        else:
+            filters = config.filters
+
         try:
             if not config.save_file:
                 file_path = filedialog.askopenfilename(
                     title=config.dialog_title,
                     initialdir=config.start_dir or os.getcwd(),
-                    filetypes=config.filters,
+                    filetypes=filters,
                 )
                 if file_path:
                     self._entry.delete(0, "end")
@@ -81,8 +104,8 @@ class FileSelectBox(Frame):
                 file_path = filedialog.asksaveasfilename(
                     title=config.dialog_title,
                     initialdir=config.start_dir or os.getcwd(),
-                    filetypes=config.filters,
-                    defaultextension=(config.filters[0][1] if config.filters else ""),
+                    filetypes=filters,
+                    defaultextension=(filters[0][1] if filters else ""),
                 )
                 if file_path:
                     self._entry.delete(0, "end")

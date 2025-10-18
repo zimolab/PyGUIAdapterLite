@@ -1,7 +1,7 @@
 import dataclasses
 from tkinter import Widget, Frame, IntVar
-from tkinter.ttk import Radiobutton, Checkbutton
-from typing import Type, Any, Optional, Union, Literal
+from tkinter.ttk import Checkbutton
+from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
@@ -16,8 +16,12 @@ from pyguiadapterlite.utils import _error
 @dataclasses.dataclass(frozen=True)
 class BoolValue2(BaseParameterWidgetConfig):
     default_value: bool = False
+
     hint_text: str = ""
+    """选项提示文本，如果为空则使用label或description作为提示文本，默认为空"""
+
     hide_label: bool = True
+    """是否因此标签"""
 
     @classmethod
     def target_widget_class(cls) -> Type["BoolValueWidget2"]:

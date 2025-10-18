@@ -23,12 +23,24 @@ MAX_DECIMALS = 10
 @dataclasses.dataclass(frozen=True)
 class RangedFloatValue(BaseParameterWidgetConfig):
     default_value: float = DEFAULT_VALUE
+
     min_value: float = MIN_VALUE
+    """允许的最小值"""
+
     max_value: float = MAX_VALUE
+    """允许的最大值"""
+
     step: float = DEFAULT_STEP
+    """步长（即单次增加/减少的值）"""
+
     decimals: int = DEFAULT_DECIMALS
+    """小数点后保留的位数"""
+
     auto_correct: bool = False
+    """是否自动纠正非法的值"""
+
     correct_to: Literal["default", "min", "max", "nearest"] = "nearest"
+    """触发自动纠正时的目标值，'default': 纠正到默认值，'min': 纠正到最小值，'max': 纠正到最大值，'nearest': 纠正到最近的合法值"""
 
     @classmethod
     def target_widget_class(cls) -> Type["RangedFloatValueWidget"]:

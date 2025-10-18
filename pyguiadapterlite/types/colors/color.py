@@ -16,14 +16,30 @@ from pyguiadapterlite.utils import _error
 @dataclasses.dataclass(frozen=True)
 class HexColorValue(BaseParameterWidgetConfig):
     default_value: str = "#000000"
+
     color_picker_title: str = ""
+    """颜色选择对话框的标题"""
+
     show_color_code: bool = True
+    """是否显示颜色代码"""
+
     show_color_picker: bool = True
+    """是否启用颜色选择对话框，启用时单击颜色标签会弹出颜色选择对话框"""
+
     width: Optional[int] = None
+    """颜色标签的宽度"""
+
     height: Optional[int] = 1
+    """颜色标签的高度"""
+
     borderwidth: int = 1
+    """颜色标签的边框宽度"""
+
     relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "flat"
+    """颜色标签的边框样式"""
+
     font: Union[tuple, str] = ("Arial", 13, "bold")
+    """颜色标签的字体"""
 
     @classmethod
     def target_widget_class(cls) -> Type["HexColorValueWidget"]:

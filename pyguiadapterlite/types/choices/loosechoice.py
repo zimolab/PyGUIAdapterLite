@@ -14,10 +14,18 @@ from pyguiadapterlite.core.fn import ParameterInfo
 @dataclasses.dataclass(frozen=True)
 class LooseChoiceValue(BaseParameterWidgetConfig):
     default_value: Optional[str] = None
+
     choices: List[str] = dataclasses.field(default_factory=list)
+    """可选项列表"""
+
     readonly: bool = False
+    """是否只读，若为True则用户只能从可选项列表中选择，为False则用户可以输入自定义值"""
+
     justify: Literal["left", "center", "right"] = "left"
+    """对齐方式"""
+
     add_user_input: bool = False
+    """是否将用户输入自定义值添加到可选项列表中"""
 
     @classmethod
     def target_widget_class(cls) -> Type["LooseChoiceValueWidget"]:

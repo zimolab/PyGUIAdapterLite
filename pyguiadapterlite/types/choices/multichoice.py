@@ -15,12 +15,20 @@ from pyguiadapterlite.core.fn import ParameterInfo
 @dataclasses.dataclass(frozen=True)
 class MultiChoiceValue(BaseParameterWidgetConfig):
     default_value: Iterable[Any] = dataclasses.field(default_factory=list)
+
     choices: Union[Dict[str, Any], Iterable[Any]] = dataclasses.field(
         default_factory=list
     )
+    """可选项列表"""
+
     columns: int = 2
+    """多选框的列数"""
+
     content_title: str = ""
+    """选项外框的标题，如果为空则将参数名称作为标题"""
+
     hide_label: bool = True
+    """是否隐藏参数名称标签"""
 
     @classmethod
     def target_widget_class(cls) -> Type["MultiChoiceValueWidget"]:

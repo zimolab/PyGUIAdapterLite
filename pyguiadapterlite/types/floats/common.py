@@ -16,7 +16,9 @@ from pyguiadapterlite.utils import _error, _exception
 @dataclasses.dataclass(frozen=True)
 class FloatValue(BaseParameterWidgetConfig):
     default_value: float = 0.0
+
     auto_correct: bool = False
+    """当用户输入非法字符时是否尝试自动纠正为默认值"""
 
     @classmethod
     def target_widget_class(cls) -> Type["FloatValueWidget"]:

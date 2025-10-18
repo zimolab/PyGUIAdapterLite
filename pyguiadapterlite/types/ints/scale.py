@@ -79,9 +79,16 @@ def _set_value_to_widget(
 class ScaleIntValue(BaseParameterWidgetConfig):
     default_value: int = DEFAULT_VALUE
     min_value: int = MIN_VALUE
+    """允许的最小值"""
+
     max_value: int = MAX_VALUE
+    """允许的最大值"""
+
     show_value: bool = True
+    """是否显示当前值"""
+
     cursor: str = "hand2"
+    """鼠标指针样式"""
 
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget"]:

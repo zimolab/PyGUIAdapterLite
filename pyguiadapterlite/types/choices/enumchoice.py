@@ -18,11 +18,18 @@ from pyguiadapterlite.utils import is_subclass_of
 @dataclasses.dataclass(frozen=True)
 class EnumValue(BaseParameterWidgetConfig):
     default_value: Union[Enum, str, None] = None
+
     columns: int = 1
+    """单选框列数"""
+
     content_title: str = ""
+    """选项框标题，如果为空则显示参数名称，默认为空"""
+
     hide_label: bool = True
+    """是否隐藏参数名称"""
 
     enum_class: Optional[Type[Enum]] = None
+    """枚举类"""
 
     @classmethod
     def target_widget_class(cls) -> Type["EnumValuedWidget"]:
