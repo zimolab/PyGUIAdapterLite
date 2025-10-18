@@ -50,8 +50,6 @@
         - [（1）配置控件初始值（default_value）和描述信息（description）的简单方法](#1配置控件初始值default_value和描述信息description的简单方法)
         - [（2）通过`GUIAdapter.add()`方法配置参数控件属性](#2通过guiadapteradd方法配置参数控件属性)
         - [（3）利用函数默认值配置参数控件属性](#3利用函数默认值配置参数控件属性)
-- [Configurations of the parameters for the function my_function](#configurations-of-the-parameters-for-the-function-my_function)
-- [function defined here](#function-defined-here)
         - [（4）在`docstring`中配置参数控件属性](#4在docstring中配置参数控件属性)
         - [（5）小结](#5小结)
       - [3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性](#332-常用数据类型及其对应的输入控件类配置类常用可配置属性)
