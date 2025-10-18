@@ -14,7 +14,7 @@ from pyguiadapterlite.types import (
 )
 
 
-# Configuration of parameters for the function my_function
+# Configurations of the parameters for the function my_function
 PARMA1_CONF = StringValue(
     label="Password",
     default_value="default value of param1",
@@ -22,7 +22,6 @@ PARMA1_CONF = StringValue(
     echo_char="*",
     justify="center",
 )
-
 PARMA2_CONF = SingleChoiceValue(
     label="Hash Algorithm",
     choices=["MD5", "SHA1", "SHA256", "SHA512"],
@@ -38,7 +37,6 @@ PARMA3_CONF = ScaleIntValue2(
     step=5,
     tick_interval=5,
 )
-
 PARMA4_CONF = FileValue(
     label="File to Upload",
     default_value="",
@@ -51,7 +49,6 @@ PARMA4_CONF = FileValue(
     start_dir=os.getcwd(),
     select_button_text="Select File",
 )
-
 PARMA5_CONF = BoolValue2(
     label="Enable SSL",
     default_value=True,
@@ -59,6 +56,7 @@ PARMA5_CONF = BoolValue2(
 )
 
 
+# function defined here
 def my_function(
     param1: str = PARMA1_CONF,
     param2: choice_t = PARMA2_CONF,
@@ -67,7 +65,7 @@ def my_function(
     param5: bool_t = PARMA5_CONF,
 ):
     """
-    This is the function description. The parameters of this function will be configured using `GUIAdapter.add()` method.
+    The parameters of this function will be configured using the default value of its parameters.
     """
     uprint("param1:", param1)
     uprint("param2:", param2)
@@ -77,7 +75,6 @@ def my_function(
 
 
 if __name__ == "__main__":
-
     adapter = GUIAdapter()
     adapter.add(my_function)
     adapter.run()
