@@ -17,7 +17,9 @@ from pyguiadapterlite.components.valuewidget import (
 @dataclasses.dataclass(frozen=True)
 class IntValue(BaseParameterWidgetConfig):
     default_value: int = 0
+
     auto_correct: bool = False
+    """用户输入非法值时，是否尝试自动修正为默认值"""
 
     @classmethod
     def target_widget_class(cls) -> Type["IntValueWidget"]:
