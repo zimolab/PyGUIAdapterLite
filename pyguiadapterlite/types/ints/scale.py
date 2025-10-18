@@ -78,6 +78,7 @@ def _set_value_to_widget(
 @dataclasses.dataclass(frozen=True)
 class ScaleIntValue(BaseParameterWidgetConfig):
     default_value: int = DEFAULT_VALUE
+
     min_value: int = MIN_VALUE
     """允许的最小值"""
 
@@ -172,10 +173,29 @@ class ScaleIntValueWidget(BaseParameterWidget):
 
 
 @dataclasses.dataclass(frozen=True)
-class ScaleIntValue2(ScaleIntValue):
+class ScaleIntValue2(BaseParameterWidgetConfig):
+    default_value: int = DEFAULT_VALUE
+
+    min_value: int = MIN_VALUE
+    """允许的最小值"""
+
+    max_value: int = MAX_VALUE
+    """允许的最大值"""
+
+    show_value: bool = True
+    """是否显示当前值"""
+
+    cursor: str = "hand2"
+    """鼠标指针样式"""
+
     step: int = DEFAULT_STEP
+    """滑块的步长"""
+
     digits: int = DEFAULT_DIGITS
+    """滑块的精度"""
+
     tick_interval: int = DEFAULT_TICK_INTERVAL
+    """滑块的刻度间隔"""
 
     @classmethod
     def target_widget_class(cls) -> Type["ScaleIntValueWidget2"]:
