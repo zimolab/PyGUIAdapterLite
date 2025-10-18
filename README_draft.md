@@ -1,17 +1,20 @@
 # PyGUIAdapterLite
 
-## 0. 一些背景
+<!-- TOC -->
+
+## 
+
+0. 一些背景
 
 `PyGUIAdapterLite`是我另一个开源项目[`PyGUIAdapter`](https://github.com/zimolab/PyGUIAdapterLite)的Lite版本，在保持基本功能一致的情况下，聚焦于“轻量化”这一目标。因此，它去除了`PyGUIAdapter`中最重量级的外部依赖——`Qt`，使用了更轻量级的`tkinter`作为GUI后端。
 
 使用`tkinter`最大的好处是， 它是Python的标准GUI库，绝大多数情况下随Python一起安装，不需要任何额外的步骤，这也意味着我们基本上无需考虑它与python的版本兼容性以及跨平台问题。
 
 > 部分Linux发行版预装的Python中可能没有包含tkinter， 此时需要手动安装，但这非常简单，以Ubuntu-based发行版为例，可以运行类似以下命令来安装tkinter：
-> 
+>
 > ```
 > sudo apt-get install python3-tk
 > ```
->
 
 另外，`tkinter`非常轻量，无论是生成的可执行文件体积还是运行时的内存占用，相比于Qt（无论是`PyQt`还是`PySide`），都要小很多。
 
@@ -44,7 +47,7 @@
 
 > `PyGUIAdapterLite`使用了`poetry`作为项目管理和构建工具，因此需要先安装`poetry`。
 
-``` bash
+```bash
 > git clone https://github.com/zimolab/PyGUIAdapterLite.git
 > cd PyGUIAdapterLite/
 > poetry install
@@ -59,11 +62,11 @@
 def sum_two_numbers(a: int, b: int) -> int:
     """
     计算两个整数之和。
-    
+  
     Args:
         a: 第一个整数。
         b: 第二个整数。
-        
+      
     Returns:
         两个整数之和。
     """
@@ -81,17 +84,18 @@ if __name__ == "__main__":
     adapter.add(sum_two_numbers)
     adapter.run()
 ```
+
 完整代码如下：
 
 ```python
 def sum_two_numbers(a: int, b: int) -> int:
     """
     计算两个整数之和。
-    
+  
     Args:
         a: 第一个整数。
         b: 第二个整数。
-        
+      
     Returns:
         两个整数之和。
     """
@@ -112,6 +116,7 @@ if __name__ == "__main__":
 上述示例虽然非常简单，但为我们展示了`PyGUIAdapterLite`的一些基本特性：
 
 - `PyGUIAdapterLite`为函数的每一个参数创建一个输入控件，输入控件的类型取决于参数的类型，而参数的类型通常通过其typing hint进行推导。`PyGUIAdapterLite`会读取和分析函数参数的类型注解信息，并自动匹配适合的输入控件。
+
 > 也可以在不使用类型标准的情况下为参数指定输入控件类型，这涉及到`GUIAdapterLite`的进阶用法。并且，无论在何种情况下，均推荐用户使用类型注解来描述函数参数。事实证明，这样做可以大大提高代码的可读性和可维护性。
 
 - `PyGUIAdapterLite`也会读取和分析函数的`docstring`，并自动生成对应的帮助信息。帮助信息包含两种类型，一种是函数的描述信息，另一种是函数的每个参数的描述信息。对于函数的描述信息，`PyGUIAdapterLite`会将其显示在单独的Tab页中，而对于参数的描述信息，`PyGUIAdapterLite`会将其显示在每个参数对应的输入控件的旁边，以`tooltip`的形式进行展示。
@@ -225,13 +230,13 @@ if __name__ == "__main__":
 比如，`file_t`类型本质上就是`str`类型，但在语义上它表示文件路径，针对选择文件路径的需求，该类型会提供一个特定的文件选择控件，而非`str`类型默认的单行文本输入框。
 
 > `file_t`的定义如下，可以看到，它只是简单地继承了`str`类型，因此，我说它本质上就是`str`类型：
-> 
-> ```python 
+>
+> ```python
 > class file_t(str):
 >     pass
 > ```
+>
 > pyguiadapterlite/types/extendtypes.py
-
 
 ```python
 from pyguiadapterlite import GUIAdapter, uprint
@@ -240,11 +245,11 @@ from pyguiadapterlite.types import file_t
 def foo(str_arg: str, file_arg: file_t):
     """
     这个示例演示str、file_t类型参数控件的差异。
-    
+  
     Args:
         str_arg: 字符串参数。
         file_arg: 文件路径参数。
-    
+  
     """
     uprint(f"str_arg: {str_arg}")
     uprint(f"file_arg: {file_arg}")
@@ -255,11 +260,10 @@ if __name__ == "__main__":
     adapter.add(foo)
     adapter.run()
 ```
+
 <img src="./docs/code_snippet_3.gif" 	style="height:auto;width:70%"/>
 
-
 除了`file_t`类型，`PyGUIAdapterLite`还提供以下扩展类型。
-
 
 #### 3.1.1 基于int的扩展类型
 
@@ -300,13 +304,9 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-
-
 其效果如下：
 
 <img src="./docs/int_types.png" style="height:auto;width:65%"/>
-
-
 
 #### 3.1.2 基于float的扩展类型
 
@@ -379,8 +379,6 @@ if __name__ == "__main__":
 
 <img src = "./docs/bool_types.png" style="height:auto;width:65%"/>
 
-
-
 #### 3.1.4 基于str的扩展类型
 
 ##### (1)`text_t`类型：长文本输入框
@@ -426,8 +424,6 @@ if __name__ == "__main__":
 ```
 
 效果如下：
-
-
 
 <img src = "./docs/str_types.png" style="height:auto;width:70%"/>
 
@@ -520,8 +516,6 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-
-
 效果如下：
 
 <img src = "./docs/file_list.png" style="height:auto;width:70%"/>
@@ -533,8 +527,6 @@ if __name__ == "__main__":
 编辑路径界面：
 
 <img src = "./docs/file_list_edit.png" style="height:auto;width:70%"/>
-
-
 
 ##### (4)`dir_list_t`类型（目录路径列表）及其示例
 
@@ -567,8 +559,6 @@ if __name__ == "__main__":
 编辑路径界面：
 
 <img src = "./docs/dir_list_edit.png" style="height:auto;width:70%"/>
-
-
 
 #### 3.1.6 选项类型
 
@@ -636,13 +626,11 @@ if __name__ == "__main__":
 
 <img src = "./docs/choice_t_output.png" style="height:auto;width:70%"/>
 
-
-
 ##### (2) `enum.Enum`(枚举类型)、`typing.Literal`类型（自动提取选项的单选组）及其示例
 
 除了使用`choice_t`来实现单选组，`PyGUIAdapterLite`也支持从`Enum`（枚举类）和`Literal`类型中自动提取选项范围，生成单选组。
 
->  对于枚举类型，最终传递给参数的是所选项对应的枚举对象本身，而非该枚举对象的名称或者值。
+> 对于枚举类型，最终传递给参数的是所选项对应的枚举对象本身，而非该枚举对象的名称或者值。
 
 下面是一个简单的示例，演示两种类型的用法：
 
@@ -685,8 +673,6 @@ if __name__ == "__main__":
 
 <img src = "./docs/enum_literal_output.png" style="height:auto;width:70%"/>
 
-
-
 ##### (3) `loose_choice_t`（宽松的单选类型）及其示例
 
 `choice_t`、`Enum`、`Literal`可以被称为__严格的单选类型__，因为用户只能从我们提供的选项中选择其一，有时，我们可能会有这种需求，即用户可以从一组预定义的选项中选择其一，同时，又允许其自行输入自定义的值。为满足这一需求，`PyGUIAdapterLite`提供了一种__宽松的单选类型__——`loose_choice_t`。
@@ -711,8 +697,6 @@ if __name__ == "__main__":
 其效果如下：
 
 <img src = "./docs/loose_choice_example.gif" style="height:auto;width:70%"/>
-
-
 
 ##### (4)`choices_t`类型（多选组）及其示例
 
@@ -748,10 +732,6 @@ if __name__ == "__main__":
 
 <img src = "./docs/choices_t_example.gif" style="height:auto;width:70%"/>
 
-
-
-
-
 ### 3.2 错误处理与参数校验
 
 增强程序健壮性的两个关键方面：一是提前检查用户的输入，发现那些非法的值，尽可能在错误发生之前就阻止它；二是尽可能预见程序可能在哪里失败，捕获可能发生的错误，并从错误中恢复。前者涉及__`参数校验`__的话题，后者则属于__`错误处理`__的内容。`PyGUIAdapterLite`的设计理念是尽可能保持处于可用状态，防止整个应用因用户函数而发生crash，因此，`PyGUIAdapterLite`内建了一些机制，帮助开发者更加轻松的完成__`参数校验`__和__`错误处理`__相关的工作。下面，分别就这两方面进行讨论。
@@ -781,9 +761,7 @@ if __name__ == "__main__":
 
 <img src = "./docs/handle_exception.gif" style="height:auto;width:70%"/>
 
-
-
->  尽管`PyGUIAdapterLite`将尝试捕获用户代码中发生的所有异常，但仍然建议开发者尽可能在自己的代码中考虑那些可能发生错误的情况，并捕获因此发生的异常。
+> 尽管`PyGUIAdapterLite`将尝试捕获用户代码中发生的所有异常，但仍然建议开发者尽可能在自己的代码中考虑那些可能发生错误的情况，并捕获因此发生的异常。
 
 ##### （2）处理`sys.exit()`和`SystemExit`
 
@@ -871,7 +849,7 @@ if __name__ == "__main__":
 > def foo():
 >     ...
 >     raise ParameterError(parameter_name="参数名称",message="提示信息")
-> 
+>
 > ```
 
 ```python
@@ -925,7 +903,7 @@ def validate_user_func(func_name: str, **params) -> Dict[str, str]:
         "param2": "empty string not allowed!",
         "param3": "file not found!"
     }
-    
+  
 ```
 
 或者，不通过关键字参数而是直接获取待校验参数：
@@ -991,7 +969,7 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-下面是未通过校验时的情形：
+下面是未通过校验时的效果：
 
 <img src = "./docs/validate_3.gif" style="height:auto;width:70%"/>
 
@@ -1001,11 +979,127 @@ if __name__ == "__main__":
 
 ##### （3）小结
 
-`PyGUIAdapterLite`提供的上述两种机制可以极大地帮助开发者完成参数校验工作，需要注意的是，上述两种方式并非互斥的，开发者完全可以同时应用两种方法，这却决于具体的业务。
+`PyGUIAdapterLite`提供的上述两种机制可以极大地帮助开发者简化参数校验工作，需要注意的是，上述两种方式并非互斥的，开发者完全可以同时应用两种方法，这却决于具体的业务。
 
-### 3.3 控件配置
+### 3.3 配置输入控件
 
-> TODO
+前面，我们介绍了`PyGUIAdapterLiter`支持的常用数据类型及其对应的输入控件，`PyGUIAdapterLite`允许开发者对参数的输入控件进行配置，以调整其外观和行为，使整个程序更加符合用户习惯和预期。
+
+#### 3.3.1 输入控件的可配置属性
+
+从内部实现的角度来看，`PyGUIAdapterLite`的所有输入控件都继承自[`BaseParameterWidget`](pyguiadapterlite/components/valuewidget.py)基类，而`BaseParameterWidget`则由的[`BaseParameterWidgetConfig`](pyguiadapterlite/components/valuewidget.py)类对象进行配置。
+
+`BaseParameterWidgetConfig`中定义了所有参数控件共有的属性，包括：
+
+- `default_value`：显示在控件中的默认值。
+- `label`：函数参数标签，显示在输入组件的左侧，默认情况下为函数参数的名称。
+- `description`：函数参数的描述信息，如果提供了description信息，则会在输入控件的右侧显示一个小图标（通常是问好），鼠标悬停在该处时，会通过tooltip显示description信息。
+- `group`：函数参数所属的分组，当参数比较多时，可以通过分组的方式将不同类别的参数分散到不同的tab页中。如果未指定分组，则函数参数将添加到默认分组中，该分组的名称一般为“Main”。
+- `hide_label`：是否隐藏函数参数标签，默认情况下，将显示函数参数标签。
+
+>`BaseParameterWidgetConfig`类的源代码如下：
+>
+>```python
+>@dataclasses.dataclass(frozen=True)
+>class BaseParameterWidgetConfig(object):
+>    	default_value: Any = None
+>	label: str = ""
+>    	description: str = ""
+>    	group: str = ""
+>    	hide_label: bool = False
+>    
+>    	# noinspection PyAbstractClass
+>	@classmethod
+>    	@abstractmethod
+>    	def target_widget_class(cls) -> Type["BaseParameterWidget"]:
+>       		raise NotImplementedError()
+>    
+>     	@classmethod
+>	def new(cls, **kwargs) -> "BaseParameterWidgetConfig":
+>       		return cls(**kwargs)
+>    
+>     	def serialize(self) -> dict:
+>   		return dataclasses.asdict(self)
+>    
+>     	@classmethod
+>	def deserialize(cls, json_obj: dict) -> "BaseParameterWidgetConfig":
+>       		return cls.new(**json_obj)
+>    ```
+
+<img src = "./docs/common_props.png" style="height:auto;width:90%"/>
+
+
+
+除了共有的属性，`BaseParameterWidget`的子类通常还会定义属于自己的`BaseParameterWidgetConfig`类，用于配置该输入控件特有的属性。
+
+比如，`str`类型对应的输入控件类为[`StringValueWidget`](pyguiadapterlite/types/strs/line.py#L43)，其对应的配置类为[`StringValue`](pyguiadapterlite/types/strs/line.py#L18)，在`StringValue`类中，定义了`StringValueWidget`专属的属性，包括：
+
+- `echo_char`：回显字符，如果设置了该属性，则在输入控件中输入的值，将会以该字符显示，而不是实际输入的内容。非常适合密码输入场景。
+- `justify`：文本对齐方式，可以设置为`left`、`center`或`right`。
+
+>`StringValue`类源代码如下：
+>
+>```python
+>@dataclasses.dataclass(frozen=True)
+>class StringValue(BaseParameterWidgetConfig):
+>    default_value: str = ""
+>        echo_char: str = ""
+>        justify: Literal["left", "center", "right"] = "left"
+>    
+>        @classmethod
+>        def target_widget_class(cls) -> Type["StringValueWidget"]:
+>        return StringValueWidget
+>    ```
+
+
+
+又比如，`int_r`类型对应的输入控件类为[`RangedIntValueWidget`](pyguiadapterlite/types/ints/ranged.py#L79)，其对应的配置类为[`RangedIntValue`](pyguiadapterlite/types/ints/ranged.py#L20)，在`RangedIntValue`类中，定义了`RangedIntValueWidget`专属的属性，包括：
+
+- `min_value`：最小值。
+- `max_value`：最大值。
+- `step`：单步调整长度（步长）。
+- `wrap`：是否支持循环（即输入值超过最大值时，自动回到最小值，或者输入值低于最小值时，自动回到最大值）。
+
+>```python
+>@dataclasses.dataclass(frozen=True)
+>class RangedIntValue(BaseParameterWidgetConfig):
+>    default_value: int = 0
+>    min_value: int = MIN_VALUE
+>    max_value: int = MAX_VALUE
+>    step: int = 1
+>    wrap: bool = False
+>
+>    @classmethod
+>    def target_widget_class(cls) -> Type["RangedIntValueWidget"]:
+>        return RangedIntValueWidget
+>    
+>```
+
+
+
+可以总结这样的规律，在`PyGUIAdapterLite`中，一个类型就对应了一个输入控件类（BaseParameterWidget子类），一个输入控件就对应着一个输入控件配置类（BaseParameterWidgetConfig子类），输入控件配置类管理着输入控件可配置的属性，配置输入控件本质上就是为输入控件配置类的各属性设置不同的值。
+
+#### 3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性一览表
+
+一般而言，输入控件类的名称为`XXXValueWidget`，而其对应的配置类名称则为`XXXValue`，若想了解某个输入控件有哪些属性可以配置，开发者可以查看`XXXValue`类源码。下表给出了常见“数据类型—输入控件类—输入控件配置类”之间的对应关系，并列出了各输入控件常用的可配置属性。
+
+| 参数数据类型 |                       默认输入控件类型                       |                      对应配置类型                       |                常用可配置属性（不会共有属性）                |                           默认外观                           |
+| :----------: | :----------------------------------------------------------: | :-----------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|    `int`     | [`IntValueWidget`](pyguiadapterlite/types/ints/common.py#L85) | [`IntValue`](pyguiadapterlite/types/ints/common.py#L18) | `auto_correct`：当用户输入非法值时，是否尝试自动修正为默认值，默认为`False` | <img src = "./docs/int_w.png" style="height:auto;width:90%"/> |
+|   `float`    |                                                              |                                                         |                                                              | <img src = "./docs/float_w.png" style="height:auto;width:90%"/> |
+|    `str`     |                                                              |                                                         |                                                              | <img src = "./docs/str_w.png" style="height:auto;width:90%"/> |
+|    `bool`    |                                                              |                                                         |                                                              | <img src = "./docs/bool_w.png" style="height:auto;width:90%"/> |
+|              |                                                              |                                                         |                                                              |                                                              |
+|              |                                                              |                                                         |                                                              |                                                              |
+|              |                                                              |                                                         |                                                              |                                                              |
+|              |                                                              |                                                         |                                                              |                                                              |
+|              |                                                              |                                                         |                                                              |                                                              |
+
+#### 3.3.3 如何配置输入控件属性
+
+
+
+
 
 ### 3.4 窗口配置
 
@@ -1031,7 +1125,6 @@ if __name__ == "__main__":
 
 > TODO
 
-
 ## 许可证
 
 本项目使用MIT许可证，完整的许可证文本见`LICENSE`文件。 请在遵守相关法律法规的前提下使用本项目。
@@ -1040,19 +1133,20 @@ if __name__ == "__main__":
 
 本项目使用了以下优秀的开源库：
 
-- **IconPark** 
+- **IconPark**
+
   - 用途：使用了IconPark部分图标，版权归IconPark所有。
   - 许可：Apache License 2.0
   - 许可证文件：`licenses/IconPark-LICENSE.txt`
   - 项目地址：https://github.com/bytedance/IconPark
-
 - **tomlkit**
+
   - 用途：解析和生成TOML格式的配置文件。
   - 许可：MIT License
   - 许可证文件：`licenses/tomlkit-LICENSE.txt`
   - 项目地址：https://github.com/python-poetry/tomlkit/
-
 - **docstring_parser**
+
   - 用途：解析Python文件的docstring。
   - 许可：MIT License
   - 许可证文件：`licenses/docstring_parser-LICENSE.md`
