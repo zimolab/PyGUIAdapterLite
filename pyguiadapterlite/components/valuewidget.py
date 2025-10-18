@@ -88,10 +88,19 @@ class BaseParameterWidgetConfig(object):
     """值控件配置基类"""
 
     default_value: Any = None
+    """控件的默认值/初始值"""
+
     label: str = ""
+    """参数标签，若为空则使用参数名作为标签"""
+
     description: str = ""
+    """参数的描述信息"""
+
     group: str = ""
+    """参数所在的组，若为空则归到默认组"""
+
     hide_label: bool = False
+    """是否隐藏参数标签"""
 
     # noinspection PyAbstractClass
     @classmethod
