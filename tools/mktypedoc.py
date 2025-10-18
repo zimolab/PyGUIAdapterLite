@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Set, Literal
 DOCS_TEMPLATE = """
 {headings} （{num}）`{typename}` ——> `{conf_class}`
 
-<img src="docs/{typename}_w.png" style="height: auto;width: 100%;" />
+<img src="docs/{typename}_w.png" style="" />
 
 默认控件类：[`{widget_class}`]({widget_class_path}#L{widget_class_line})
 默认配置类：[`{conf_class}`]({conf_class_path}#L{conf_class_line})
