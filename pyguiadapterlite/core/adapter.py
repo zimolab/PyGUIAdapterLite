@@ -83,6 +83,7 @@ class GUIAdapter(object):
         )
         user_widget_configs = widget_configs or {}
         parsed_widget_configs = self._fn_parser.parse_widget_configs(fn_info, params)
+
         final_widget_configs: Dict[str, BaseParameterWidgetConfig] = (
             self._merge_widget_configs(
                 parameters=params,
@@ -90,6 +91,7 @@ class GUIAdapter(object):
                 user_configs=user_widget_configs,
             )
         )
+
         fn_info.parameter_configs = final_widget_configs
         self._functions[fn] = fn_info
 
@@ -177,6 +179,12 @@ class GUIAdapter(object):
             param_info = parameters.get(param_name, None)
             assert param_info is not None
 
+            if parsed_widget_config:
+                default_value = parsed_widget_config.get("default_value", None)
+                if isinstance(default_value, BaseParameterWidgetConfig):
+                    final_widget_configs[param_name] = default_value
+                    continue
+
             user_config = user_configs.get(param_name, None)
 
             if user_config is None:
@@ -246,25 +254,18 @@ class GUIAdapter(object):
         return final_widget_configs
 
     @staticmethod
-    def _get_widget_class(
-        widget_class_name: Optional[str], param_info: ParameterInfo
-    ) -> Optional[Type[BaseParameterWidget]]:
-        if widget_class_name is not None:
-            widget_class_name = widget_class_name.strip()
-        if widget_class_name:
-            return ParameterWidgetFactory.find_by_widget_class_name(widget_class_name)
-        widget_class = ParameterWidgetFactory.find_by_typename(param_info.typename)
-        if is_parameter_widget_class(widget_class):
-            return widget_class
-        return ParameterWidgetFactory.find_by_rule(param_info)
-
-    @staticmethod
     def _get_widget_class_v2(
         widget_class_name: Optional[str],
         value_type_name: Optional[str],
         param_info: Optional[ParameterInfo],
         default_value: object,
-    ):
+    ) -> Optional[Type[BaseParameterWidget]]:
+
+        if param_info and isinstance(
+            param_info.default_value, BaseParameterWidgetConfig
+        ):
+            return param_info.default_value.target_widget_class()
+
         if widget_class_name:
             widget_class_name = widget_class_name.strip()
             if widget_class_name:
