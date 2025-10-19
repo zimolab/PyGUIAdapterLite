@@ -1,4 +1,4 @@
-### `PyGUIAdapterLite`中支持参数类型及其默认控件
+### `PyGUIAdapterLite`支持的参数类型及其控件
 
 [TOC]
 
