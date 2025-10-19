@@ -36,7 +36,7 @@ class ScaleFloatValue2(BaseParameterWidgetConfig):
     """步长（即单次滑动的距离）"""
 
     digits: int = DEFAULT_DIGITS
-    """显示的小数位数"""
+    """显示的总的位数，包含整数部分位数和小数部分位数"""
 
     show_value: bool = True
     """是否显示当前值"""
