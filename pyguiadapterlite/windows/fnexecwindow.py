@@ -307,7 +307,7 @@ class BottomArea(Frame):
                 self,
                 text=self._config.cancel_button_text,
                 command=self._parent_window.on_cancel,
-                state="normal" if self._fn_info.cancelable else "disabled",
+                state="disabled",
             )
             self._cancel_button.pack(side="left", padx=5, pady=5)
 
