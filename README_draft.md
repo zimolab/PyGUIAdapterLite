@@ -1639,9 +1639,9 @@ if __name__ == "__main__":
 
 ### 3.7 进度条
 
-`PyGUIAdapterLite`函数执行窗口中显示`uprint()`函数输出内容的区域是一个模拟终端样式的文本区，它主要支持普通文本（plain text）和部分颜色相关的`ANSI`控制代码，没有实现如光标移动、屏幕管理等特性，因此无法支持一些比较fancy的控制台进度条效果。
+函数执行窗口的模拟终端区域主要用于支持通过`uprint()`输出的普通文本（plain text），以及通过`ANSI`代码着色的文本。目前没有实现对光标移动、屏幕管理等高级`ANSI`特性的支持，因此，在模拟终端区域，无法显示一些比较fancy的控制台进度条效果。
 
-比如，下面这个示例演示了如何使用`ANS`I打印带颜色的文本：
+下面这个示例演示了如何使用`ANSI`打印着色的文本：
 
 ```python
 from pyguiadapterlite import GUIAdapter, uprint
@@ -1820,6 +1820,8 @@ if __name__ == "__main__":
 ### 3.6 窗口配置
 
 除了可以对函数参数的控件进行配置，`PyGUIAdapterLite`也允许开发者对窗口本身进行配置，比如设置窗口的大小、位置、图标、标题、界面上的文本等等。
+
+
 
 对于函数执行窗口，开发者需要在`GUIAdapter.add()`时传入`window_config`参数来进行配置，该参数是一个`FnExecuteWindowConfig`对象。对于函数选择窗口，则需在调用`GUIAdapter.run()`时传入`select_window_config`参数，该参数为`FnSelectWindowConfig`对象。
 
