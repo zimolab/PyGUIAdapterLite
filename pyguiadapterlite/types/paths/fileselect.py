@@ -97,6 +97,7 @@ class FileSelectBox(Frame):
                     initialdir=config.start_dir or os.getcwd(),
                     filetypes=filters,
                 )
+                file_path = self._normpath(file_path)
                 if file_path:
                     self._entry.delete(0, "end")
                     self._entry.insert(0, file_path)
@@ -107,6 +108,7 @@ class FileSelectBox(Frame):
                     filetypes=filters,
                     defaultextension=(filters[0][1] if filters else ""),
                 )
+                file_path = self._normpath(file_path)
                 if file_path:
                     self._entry.delete(0, "end")
                     self._entry.insert(0, file_path)
