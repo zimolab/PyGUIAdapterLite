@@ -55,6 +55,7 @@ class GUIAdapter(object):
         ignore_self_parameter: bool = True,
         enable_progressbar: bool = False,
         enable_progress_label: bool = False,
+        **extra_widget_configs,
     ) -> None:
         doc, params = self._fn_parser.parse(fn, ignore_self_param=ignore_self_parameter)
 
@@ -82,6 +83,9 @@ class GUIAdapter(object):
             parameter_infos=params,
         )
         user_widget_configs = widget_configs or {}
+        if extra_widget_configs:
+            user_widget_configs.update(extra_widget_configs)
+
         parsed_widget_configs = self._fn_parser.parse_widget_configs(fn_info, params)
 
         final_widget_configs: Dict[str, BaseParameterWidgetConfig] = (
