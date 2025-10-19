@@ -839,8 +839,8 @@ if __name__ == "__main__":
 >
 > ```python
 > def foo():
->     ...
->     raise ParameterError(parameter_name="参数名称",message="提示信息")
+>    	...
+>        raise ParameterError(parameter_name="参数名称",message="提示信息")
 >
 > ```
 
@@ -1577,23 +1577,241 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-<img src = "./docs/many_functions.png" style="height:auto;width:75%"/>
-
 
 
 
 
 ### 3.5 可取消的函数
 
-> TODO
+有时候，我们希望用户可以在函数运行过程中终止函数的执行，针对这一需求，`PyGUIAdapterLite`提供了相应的机制。但需要说明的是，`PyGUIAdapterLite`不支持强行打断一个执行中的函数，因为`PyGUIAdapterLite`默认实现的函数执行器是基于线程的，这意味着你的函数和GUI是在同一个进程中，只是运行在不同的线程中，如果允许用户在任意时刻强制终止执行函数的线程，那么可能造成一些无法预料的结果，比如，可能导致资源泄露，引发程序崩溃或数据损坏。
+
+`PyGUIAdapterLite`实现了一个“协商式退出“的机制。顾名思义，`PyGUIAdapterLite`不会尝试强行终止函数的执行，但当用户希望取消执行时，它会”告知“正在执行的函数——用户发出了终止执行的意图，但是是否真的终止执行，则由函数自行决定。
+
+要启用这一机制，首先需要将`cancelable=True`传递给`GUIAdapter.add()`，比如：
+
+```python
+adapter.add(your_func, cancelable=True)
+```
+
+此时，函数执行窗口将显示一个“取消”按钮，用户通过点击该按钮，向正在运行中的函数发出终止其执行的意图。
+
+<img src = "./docs/cancel_button.png" style="height:auto;width:75%"/>
+
+然后，在用户函数中，开发者需要定期调用`is_function_cancelled()`函数来检查用户是否发出了终止执行的意图，并根据具体情况决定是否终止执行。
+
+下面提供一个简单的示例：
+
+```python
+import time
+
+from pyguiadapterlite import uprint, is_function_cancelled, GUIAdapter
 
 
+def mock_heavy_task(mount: int = 100, delay: float = 0.05):
+    uprint("Starting heavy task...")
+    cancelled = False
+    total = 0
+    for i in range(mount):
+        if is_function_cancelled():
+            uprint("User asked to cancel the task.")
+            cancelled = True
+            break
+        total += i
+        uprint(f"Progress: {i+1}/{mount}")
+        time.sleep(delay)
+
+    if cancelled:
+        uprint("Task cancelled by user.")
+        return -1
+    uprint("Task completed successfully.")
+    return total
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(mock_heavy_task, cancelable=True)
+    adapter.run()
+```
+
+<img src = "./docs/cancel_function.gif" style="height:auto;width:75%"/>
 
 
 
 ### 3.7 进度条
 
-> TODO
+`PyGUIAdapterLite`函数执行窗口中显示`uprint()`函数输出内容的区域是一个模拟终端样式的文本区，它主要支持普通文本（plain text）和部分颜色相关的`ANSI`控制代码，没有实现如光标移动、屏幕管理等特性，因此无法支持一些比较fancy的控制台进度条效果。
+
+比如，下面这个示例演示了如何使用`ANS`I打印带颜色的文本：
+
+```python
+from pyguiadapterlite import GUIAdapter, uprint
+
+
+def foo(message: str = "Hello World!"):
+    uprint(message)
+    uprint(f"\x1b[1m{message}\x1b[0m")
+    uprint(f"\x1b[3m{message}\x1b[0m")
+    uprint(f"\x1b[4m{message}\x1b[0m")
+    uprint(f"\x1b[7m{message}\x1b[0m")
+    uprint(f"\x1b[6m{message}\x1b[0m")
+    uprint(f"\x1b[5m{message}\x1b[0m")
+    uprint(f"\x1b[31m{message}\x1b[0m")
+    uprint(f"\x1b[32m{message}\x1b[0m")
+    uprint(f"\x1b[33m{message}\x1b[0m")
+    uprint(f"\x1b[34m{message}\x1b[0m")
+    uprint(f"\x1b[35m{message}\x1b[0m")
+    uprint(f"\x1b[36m{message}\x1b[0m")
+    uprint("")
+    # 组合样式
+    uprint(f"\x1b[1;31m{message}\x1b[0m")
+    uprint(f"\x1b[1;32;44m{message}\x1b[0m")
+    uprint(f"\x1b[1;4;33m{message}\x1b[0m")
+    uprint("")
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(foo)
+    adapter.run()
+
+```
+
+<img src = "./docs/ANSI_code.png" style="height:auto;width:75%"/>
+
+`PyGUIAdapterLite`为开发者提供了实体进度条，开发者可以在其函数中显示、更新、隐藏进度条。进度条由两个部分组成：一是进度条本体，二是位于进度条本体下方的消息标签。开发者可以在函数中动态更新当前进度和消息标签中的内容。要启用进度条及其消息标签，需要将`GUIAdapter.add()`非法的`enable_progressbar`和`enable_progress_label`指定为`True`。
+
+<img src = "./docs/progressbar.png" style="height:auto;width:75%"/>
+
+
+
+`PyGUIAdapterLite`为开发者提供了以下函数：
+
+- `is_progressbar_enabled() -> bool`
+
+  检测是否启用了进度条。
+
+  
+
+- ` is_progress_label_enabled() -> bool`
+
+  检测是否启用进度消息标签。
+
+  
+
+- `show_progressbar()`
+
+  显示进度条。
+
+  
+
+-  `hide_progressbar()`
+
+  隐藏进度条。
+
+  
+
+- `start_progressbar()`
+
+  开始进度条，或者理解为初始化进度条相关参数。
+
+  ```python
+  def start_progressbar(
+      total: int,
+      mode: Literal["determinate", "indeterminate"] = "determinate",
+      initial_value: int = 0,
+      initial_msg: Optional[str] = "",
+  ):
+  	...
+  ```
+
+  - `total`：总的进度值
+
+  - `mode`：进度条模式，一般保持默认`determinate`即可。
+
+  - `initial_value`：初始进度值
+
+  - `initial_msg`：初始进度消息文本
+
+    
+
+- `update_progressbar()`
+
+  ```python
+  def update_progressbar(value: int, msg: Optional[str] = None):
+      ...
+  ```
+
+  更新当前进度和消息文本。
+
+  
+
+- ` stop_progressbar(hide_after_stop: bool = True)`
+
+  停止进度条，`hide_after_stop`参数用于指示是否在停止进度条后将其隐藏。若设置为`False`则由用户自行负责是否以及何时隐藏进度条（通过调用`hide_progressbar()`）。
+
+
+
+下面这个示例结合了进度条和函数取消功能：
+
+```python
+import time
+
+from pyguiadapterlite import GUIAdapter, uprint, is_function_cancelled
+from pyguiadapterlite import (
+    is_progressbar_enabled,
+    is_progress_label_enabled,
+    start_progressbar,
+    update_progressbar,
+    stop_progressbar,
+)
+
+
+def progressbar_demo(delay: int = 100, hide_after_stop: bool = True):
+    #Check if progressbar and progress label are enabled
+    progressbar_enabled = is_progressbar_enabled()
+    progress_label_enabled = is_progress_label_enabled()
+    uprint("is progressbar enabled:", progressbar_enabled)
+    uprint("is progress label enabled:", progress_label_enabled)
+
+    #initialize progressbar
+    start_progressbar(total=100, initial_value=0, initial_msg="Starting...")
+    cancelled = False
+    for i in range(100):
+        current_progress = i
+        #check if user clicked the cancel button
+        #if so, quit the loop and update the progressbar
+        if is_function_cancelled():
+            update_progressbar(current_progress, "Cancelling...")
+            #delay for a while to mock the cancellation process
+            time.sleep(delay / 1000)
+            cancelled = True
+            break
+        #update progress of the progressbar and the progress label
+        update_progressbar(i + 1, f"Progress: {i+1}%")
+        current_progress += 1
+        #delay for a while to mock some heavy work
+        time.sleep(delay / 1000)
+
+    if cancelled:
+        update_progressbar(0, "Task Cancelled!")
+    #stop the progressbar and update the progress label
+    #when hide_after_stop=False to keep the progressbar visible after the function returned
+    #otherwise, the progressbar will disappear after the function returned
+    stop_progressbar(hide_after_stop=hide_after_stop)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        progressbar_demo,
+        cancelable=True,
+        enable_progressbar=True,
+        enable_progress_label=True,
+    )
+    adapter.run()
+
+```
+
+<img src = "./docs/progressbar.gif" style="height:auto;width:75%"/>
 
 
 
@@ -1601,7 +1819,151 @@ if __name__ == "__main__":
 
 ### 3.6 窗口配置
 
-> TODO
+除了可以对函数参数的控件进行配置，`PyGUIAdapterLite`也允许开发者对窗口本身进行配置，比如设置窗口的大小、位置、图标、标题、界面上的文本等等。
+
+对于函数执行窗口，开发者需要在`GUIAdapter.add()`时传入`window_config`参数来进行配置，该参数是一个`FnExecuteWindowConfig`对象。对于函数选择窗口，则需在调用`GUIAdapter.run()`时传入`select_window_config`参数，该参数为`FnSelectWindowConfig`对象。
+
+
+
+无论是函数选择窗口，还是函数执行窗口，均支持以下属性：
+
+| 字段名        | 类型                                                | 默认值         | 描述                  |
+| :------------ | :-------------------------------------------------- | :------------- | :-------------------- |
+| always_on_top | `bool`                                              | `False`        | 窗口是否置顶          |
+| icon          | `Union[str, NoneType]`                              | `None`         | 窗口图标路径，ico格式 |
+| menus         | `Union[List[Union[Menu, Separator]], NoneType]`     | `None`         | 窗口菜单              |
+| position      | `Tuple[Union[int, NoneType], Union[int, NoneType]]` | `(None, None)` | 窗口位置              |
+| size          | `Tuple[int, int]`                                   | `(800, 605)`   | 窗口大小              |
+| title         | `str`                                               | ""             | 窗口标题              |
+
+
+
+下面时函数执行窗口的可配置属性：
+
+| 字段名                         | 类型                                                         | 默认值                                        | 描述                                                         |
+| :----------------------------- | :----------------------------------------------------------- | :-------------------------------------------- | :----------------------------------------------------------- |
+| cancel_button_text             | `str`                                                        | `"Cancel"`                                    | 取消按钮文本                                                 |
+| clear_button_text              | `str`                                                        | `"Clear Output"`                              | 清除按钮文本                                                 |
+| clear_button_visible           | `bool`                                                       | `True`                                        | 是否显示清除按钮。                                           |
+| clear_checkbox_checked         | `bool`                                                       | `True`                                        | 清除复选框默认是否选中。                                     |
+| clear_checkbox_text            | `str`                                                        | `"clear output before execution"`             | 清除复选框文本                                               |
+| clear_checkbox_visible         | `bool`                                                       | `True`                                        | 是否显示清除复选框。                                         |
+| default_parameter_group_name   | `str`                                                        | `"Main"`                                      | 默认参数分组名称                                             |
+| disable_widgets_on_execute     | `bool`                                                       | `False`                                       | 是否在执行函数时禁用窗口内的所有控件                         |
+| document_font                  | `tuple`                                                      | `('Arial', 12)`                               | 函数文档字体                                                 |
+| document_tab                   | `bool`                                                       | `True`                                        | 是否显示函数文档                                             |
+| document_tab_title             | `str`                                                        | `"Function Document"`                         | 函数文档Tab页标题                                            |
+| enable_output_default_menu     | `bool`                                                       | `True`                                        | 是否显示默认的模拟终端区域右键菜单                           |
+| enable_progress_label          | `bool`                                                       | `False`                                       | 是否显示进度标签。                                           |
+| enable_progressbar             | `bool`                                                       | `False`                                       | 是否显示进度条                                               |
+| error_dialog_title             | `str`                                                        | `"Error"`                                     | 错误对话框标题                                               |
+| execute_button_text            | `str`                                                        | `"Execute"`                                   | 执行按钮文本                                                 |
+| function_error_message         | `str`                                                        | `"{}: {}`                                     | 函数异常或错误的消息模板，模板第一个变量（`{}`）为`异常的类型`，第二个变量(`{}`)为`异常的消息（message）`。 |
+| function_error_traceback       | `bool`                                                       | `True`                                        | 是否显示函数的异常或错误的详细堆栈信息                       |
+| function_executing_message     | `str`                                                        | `"The function is executing, please wait..."` | 提示消息，用以提示“函数正在执行”。                           |
+| function_not_executing_message | `str`                                                        | `"The function is not executing."`            | 提示消息，用以提示“当前函数未处于执行状态”。                 |
+| function_result_message        | `str`                                                        | `"The function returned: {}"`                 | 函数调用结果的消息模板，在模板中可以使用模板变量（`{}`）来捕获函数的返回值。 |
+| output_background              | `str`                                                        | `"black"`                                     | 模拟终端区域背景色                                           |
+| output_font                    | `tuple`                                                      | `('Consolas', 12)`                            | 模拟终端区域字体                                             |
+| output_foreground              | `str`                                                        | `"white"`                                     | 模拟终端区域前景色（即默认输出文本的默认颜色）               |
+| output_tab_title               | `str`                                                        | `"Function Output"`                           | 模拟终端区域所在Tab页标题                                    |
+| parameter_error_message        | `str`                                                        | `"{}: {}"`                                    | `ParameterError`类型异常的消息模板，模板第一个变量（`{}`）为`参数名称`，第二个变量(`{}`)为`异常的消息（message）`。 |
+| print_function_error           | `bool`                                                       | `True`                                        | 是否打印函数的异常或错误信息                                 |
+| print_function_result          | `bool`                                                       | `True`                                        | 是否打印函数的返回值                                         |
+| progress_label_anchor          | `Literal['nw', 'n', 'ne', 'w', 'center', 'e', 'sw', 's', 'se']` | `"center"`                                    | 进度标签文本对齐方式。                                       |
+| progress_label_font            | `Union[tuple, NoneType]`                                     | `None`                                        | 进度标签字体。                                               |
+| result_dialog_title            | `str`                                                        | `"Result"`                                    | 函数返回值对话框标题                                         |
+| show_function_error            | `bool`                                                       | `True`                                        | 是否弹窗显示函数的异常或错误信息                             |
+| show_function_result           | `bool`                                                       | `True`                                        | 是否弹窗显示函数的返回值                                     |
+| uncancelable_function_message  | `str`                                                        | `"The function is not cancellable."`          | 提示消息，用以提示“当前函数为不可取消的函数”。               |
+
+
+
+下面时函数选择窗口支持的可配置属性：
+
+| 字段名                   | 类型    | 默认值                        | 描述                   |
+| :----------------------- | :------ | :---------------------------- | :--------------------- |
+| current_view_status_text | `str`   | `"Current function: "`        | 当前视图状态消息       |
+| document_font            | `tuple` | `('Arial', 10, 'bold')`       | 文档字体               |
+| document_view_title      | `str`   | `"Function Document"`         | 文档区域标题           |
+| function_list_title      | `str`   | `"Function List"`             | 函数列表标题           |
+| label_text_font          | `tuple` | `('Arial', 10, 'bold')`       | 标签字体               |
+| no_document_text         | `str`   | `"No documentation provided"` | 未提供文档时的提示消息 |
+| no_selection_status_text | `str`   | `"Select a function first!"`  | 未选择函数时的提示消息 |
+| select_button_text       | `str`   | `"Select"`                    | 选择按钮文本           |
+
+下面是一个综合示例：
+
+```python
+from pyguiadapterlite import (
+    GUIAdapter,
+    uprint,
+    FnSelectWindowConfig,
+    FnExecuteWindowConfig,
+)
+from pyguiadapterlite.types import dir_t
+
+
+def convert_pngs(input_dir: dir_t, output_dir: dir_t):
+    """Convert PNGs to JPGs."""
+    uprint(f"Converting PNGs from {input_dir} to {output_dir}")
+
+
+def converts_gifs(input_dir: dir_t, output_dir: dir_t):
+    """Convert GIFs to PNGs."""
+    uprint(f"Converting GIFs from {input_dir} to {output_dir}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        convert_pngs,
+        display_name="PNG Converter",
+        window_config=FnExecuteWindowConfig(
+            title="PNG Converter",
+            icon="pic_32.ico",
+            execute_button_text="Convert",
+            clear_button_text="Clear Output",
+            clear_checkbox_visible=False,
+            default_parameter_group_name="Input/Output",
+            output_tab_title="Output",
+            output_background="#300A24",
+            document_tab_title="Description",
+            show_function_result=False,
+            print_function_result=False,
+        ),
+    )
+    adapter.add(converts_gifs, display_name="GIF Converter", icon="gif_64.ico")
+    adapter.run(
+        select_window_config=FnSelectWindowConfig(
+            title="Image ToolBox",
+            icon="toolkit_64.ico",
+            select_button_text="Go",
+            function_list_title="Image Tools",
+            document_view_title="Description",
+            no_document_text="No description available",
+            no_selection_status_text="Please select an image tool",
+            current_view_status_text="Current Function: ",
+        )
+    )
+
+```
+
+对于函数选择窗口：
+
+<img src = "./docs/sel_config.png" />
+
+
+
+对于`convert_pngs()`函数的执行窗口：
+
+<img src = "./docs/exec_config.gif" style="height:auto;width:75%"/>
+
+
+
+
+
+**对于函数执行窗口来说，`show_function_result=False`、`print_function_result=False`可能非常常用，因为很多时候我们都希望不要弹窗显示函数的返回值或者自动将其打印到模拟终端区域**
 
 
 
