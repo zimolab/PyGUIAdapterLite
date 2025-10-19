@@ -1491,30 +1491,143 @@ if __name__ == "__main__":
 
 
 
+### 3.4 添加多个函数
 
-### 3.4 窗口配置
+可以向一个`GUIAdapter`类对象添加多个函数，当一个`GUIAdapter`中添加了多个函数时，`PyGUIAdapterLite`会向用户显示一个函数选择窗口，让用户选择需要执行的函数。
 
-> TODO
+比如，下面这个示例，将三个函数添加到同一个`GUIAdapter`实例中：
+
+>  由于这三个函数的参数一样，所以让它们共享了参数控件配置，开发者也可以单独为每个函数配置参数控件
+
+```python
+from pyguiadapterlite import GUIAdapter
+from pyguiadapterlite.types import dir_t, bool_t, DirectoryValue, BoolValue2
+
+
+def convert_to_pngs(input_dir: dir_t, output_dir: dir_t, recursive: bool_t = False):
+    """Converts all image files in the input directory to PNG format and saves them in the output directory."""
+    pass
+
+
+def convert_to_pdfs(input_dir: dir_t, output_dir: dir_t, recursive: bool_t = False):
+    """Converts all image files in the input directory to PDF format and saves them in the output directory."""
+    pass
+
+
+def convert_to_jpgs(input_dir: dir_t, output_dir: dir_t, recursive: bool_t = False):
+    """Converts all image files in the input directory to JPG format and saves them in the output directory."""
+    pass
+
+
+PARAM_CONFS = {
+    "input_dir": DirectoryValue(
+        label="Input Directory",
+        default_value="",
+        start_dir="./",
+        dialog_title="Select Input Directory",
+        select_button_text="Browse",
+        normalize_path=True,
+        absolutize_path=True,
+    ),
+    "output_dir": DirectoryValue(
+        label="Output Directory",
+        default_value="",
+        start_dir="./",
+        dialog_title="Select Output Directory",
+        select_button_text="Browse",
+        normalize_path=True,
+        absolutize_path=True,
+    ),
+    "recursive": BoolValue2(
+        label="Find files recursively",
+        default_value=False,
+    ),
+}
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(convert_to_pngs, widget_configs=PARAM_CONFS)
+    adapter.add(convert_to_pdfs, widget_configs=PARAM_CONFS)
+    adapter.add(convert_to_jpgs, widget_configs=PARAM_CONFS)
+    adapter.run()
+
+```
+
+效果如下：
+
+<img src = "./docs/many_functions_1.gif" style="height:auto;width:75%"/>
+
+
+
+默认情况下，函数选择窗口列表中显示的是函数名，开发者可能希望为函数指定显示的名称，而非函数名本身，可以通过`display_name`参数做到这一点：
+
+```python
+...
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        convert_to_pngs, display_name="PNG Converter", widget_configs=PARAM_CONFS
+    )
+    adapter.add(
+        convert_to_pdfs, display_name="PDF Converter", widget_configs=PARAM_CONFS
+    )
+    adapter.add(
+        convert_to_jpgs, display_name="JPG Converter", widget_configs=PARAM_CONFS
+    )
+    adapter.run()
+```
+
+<img src = "./docs/many_functions.png" style="height:auto;width:75%"/>
+
+
+
+
 
 ### 3.5 可取消的函数
 
 > TODO
 
-### 3.6 添加多个函数
 
-> TODO
+
+
 
 ### 3.7 进度条
 
 > TODO
 
+
+
+
+
+### 3.6 窗口配置
+
+> TODO
+
+
+
 ### 3.8 窗口菜单
 
 > TODO
 
+
+
+### 3.9 自定义参数类型及其控件
+
+> TODO
+
+
+
+### 3.10 拾遗
+
+> TODO
+
+
+
 ## 打包应用
 
 > TODO
+
+
 
 ## 许可证
 
