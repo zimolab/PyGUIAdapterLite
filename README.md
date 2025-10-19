@@ -54,42 +54,7 @@
         - [（3）利用函数默认值配置参数控件属性](#3利用函数默认值配置参数控件属性)
         - [（4）在`docstring`中配置参数控件属性](#4在docstring中配置参数控件属性)
         - [（5）小结](#5小结)
-      - [3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性](#332-常用数据类型及其对应的输入控件类配置类常用可配置属性)
-        - [（1）`str` ——> `StringValue`](#1str-stringvalue)
-        - [（2）`int` ——> `IntValue`](#2int-intvalue)
-        - [（3）`bool` ——> `BoolValue`](#3bool-boolvalue)
-        - [（4）`float` ——> `FloatValue`](#4float-floatvalue)
-        - [（5）`Literal` ——> `SingleChoiceValue`](#5literal-singlechoicevalue)
-        - [（6）`bool_t` ——> `BoolValue2`](#6bool_t-boolvalue2)
-        - [（7）`int_r` ——> `RangedIntValue`](#7int_r-rangedintvalue)
-        - [（8）`int_s` ——> `ScaleIntValue2`](#8int_s-scaleintvalue2)
-        - [（9）`int_ss` ——> `ScaleIntValue`](#9int_ss-scaleintvalue)
-        - [（10）`float_r` ——> `RangedFloatValue`](#10float_r-rangedfloatvalue)
-        - [（11）`float_s` ——> `ScaleFloatValue`](#11float_s-scalefloatvalue)
-        - [（12）`float_ss` ——> `ScaleFloatValue2`](#12float_ss-scalefloatvalue2)
-        - [（13）`text_t` ——> `TextValue`](#13text_t-textvalue)
-        - [（14）`directory_t` ——> `DirectoryValue`](#14directory_t-directoryvalue)
-        - [（15）`dir_t` ——> `DirectoryValue`](#15dir_t-directoryvalue)
-        - [（16）`file_t` ——> `FileValue`](#16file_t-filevalue)
-        - [（17）`color_hex_t` ——> `HexColorValue`](#17color_hex_t-hexcolorvalue)
-        - [（18）`color_t` ——> `HexColorValue`](#18color_t-hexcolorvalue)
-        - [（19）`choice_t` ——> `SingleChoiceValue`](#19choice_t-singlechoicevalue)
-        - [（20）`option_t` ——> `SingleChoiceValue`](#20option_t-singlechoicevalue)
-        - [（21）`loose_choice_t` ——> `LooseChoiceValue`](#21loose_choice_t-loosechoicevalue)
-        - [（22）`choices_t` ——> `MultiChoiceValue`](#22choices_t-multichoicevalue)
-        - [（23）`options_t` ——> `MultiChoiceValue`](#23options_t-multichoicevalue)
-        - [（24）`string_list_t` ——> `StringListValue`](#24string_list_t-stringlistvalue)
-        - [（25）`string_list` ——> `StringListValue`](#25string_list-stringlistvalue)
-        - [（26）`str_list` ——> `StringListValue`](#26str_list-stringlistvalue)
-        - [（27）`path_list_t` ——> `PathListValue`](#27path_list_t-pathlistvalue)
-        - [（28）`path_list` ——> `PathListValue`](#28path_list-pathlistvalue)
-        - [（29）`paths_t` ——> `PathListValue`](#29paths_t-pathlistvalue)
-        - [（30）`file_list_t` ——> `FileListValue`](#30file_list_t-filelistvalue)
-        - [（31）`file_list` ——> `FileListValue`](#31file_list-filelistvalue)
-        - [（32）`files_t` ——> `FileListValue`](#32files_t-filelistvalue)
-        - [（33）`dir_list_t` ——> `DirectoryListValue`](#33dir_list_t-directorylistvalue)
-        - [（34）`dir_list` ——> `DirectoryListValue`](#34dir_list-directorylistvalue)
-        - [（35）`dirs_t` ——> `DirectoryListValue`](#35dirs_t-directorylistvalue)
+      - [3.3.2 `PyGUIAdapterLite`支持的参数类型及其对应控件类型、配置类型、常用可配置属性](#332-pyguiadapterlite支持的参数类型及其对应控件类型配置类型常用可配置属性)
     - [3.4 窗口配置](#34-窗口配置)
     - [3.5 可取消的函数](#35-可取消的函数)
     - [3.6 添加多个函数](#36-添加多个函数)
@@ -315,7 +280,7 @@ if __name__ == "__main__":
 
 同时，上述代码还隐藏这一个细节，注意到用户函数`batch_process_files()`中有一行`time.sleep(3)`，这是在模拟耗时操作，当程序在运行到这一行时，我们的界面并没有冻结，这表明，在默认实现中，`PyGUIAdapterLite`将用户函数放在另一个线程中运行，而非在主线程（即UI线程）中，这避免了耗时操作阻塞UI线程。
 
-> 在一些IO密集型的任务中，用户可能仍然会遭遇UI界面卡顿的问题，从我的实践而言，一个可能解决的方法是在用户函数中使用多进程（multiprocessing）。但这超出了本文的讨论范围，感兴趣的读者可以自行研究。
+> 在一些IO密集型的任务中，用户可能仍然会遭遇UI界面卡顿的问题，从我的实践来看，一个可能解决的方法是在用户函数中使用多进程（multiprocessing）。但这超出了本文的讨论范围，感兴趣的读者可以自行研究。
 
 ## 3. 进阶用法
 
@@ -326,15 +291,6 @@ if __name__ == "__main__":
 > 所有扩展类型定义在`pyguiadapterlite.types.extendtype`模块中，并且可以直接从`pyguiadapterlite.types`包导入。
 
 比如，`file_t`类型本质上就是`str`类型，但在语义上它表示文件路径，针对选择文件路径的需求，该类型会提供一个特定的文件选择控件，而非`str`类型默认的单行文本输入框。
-
-> `file_t`的定义如下，可以看到，它只是简单地继承了`str`类型，因此，我说它本质上就是`str`类型：
->
-> ```python
-> class file_t(str):
->     pass
-> ```
->
-> pyguiadapterlite/types/extendtypes.py
 
 ```python
 from pyguiadapterlite import GUIAdapter, uprint
@@ -361,7 +317,7 @@ if __name__ == "__main__":
 
 <img src="./docs/code_snippet_3.gif" 	style="height:auto;width:70%"/>
 
-除了`file_t`类型，`PyGUIAdapterLite`还提供以下扩展类型。
+除了`file_t`类型，`PyGUIAdapterLite`还提供了很多其他扩展类型，可以满足开发者在大多数场景下的需求。
 
 #### 3.1.1 基于int的扩展类型
 
@@ -1243,7 +1199,7 @@ def foo(arg1: int, arg2: float, arg3: str):
     pass
 ```
 
-其参数的控件配置可能是这样的：
+可以像下面这样配置参数控件：
 
 ```python
 
@@ -1307,9 +1263,47 @@ if __name__ == "__main__":
     adapter.run()
 ```
 
-
-
 <img src = "./docs/param_config_2.png"/>
+
+`GUIAdapter.add()`除了支持通过`widget_configs`来配置参数控件，现在也支持如下形式：
+
+```python
+from pyguiadapterlite import GUIAdapter, uprint
+from pyguiadapterlite.types import IntValue, FloatValue, StringValue
+
+
+def foo(arg1: int, arg2: float, arg3: str):
+    uprint(f"arg1: {arg1}, arg2: {arg2}, arg3: {arg3}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        foo,
+        arg1=IntValue(
+            label="Argument 1",
+            description="This is the description of arg1",
+            default_value=10,
+            auto_correct=True,
+        ),
+        arg2=FloatValue(
+            label="Argument 2",
+            description="This is the description of arg2",
+            default_value=20.0,
+        ),
+        arg3=StringValue(
+            label="Argument 3",
+            description="This is the description of arg3",
+            default_value="Hello",
+            echo_char="*",
+            justify="center",
+        ),
+    )
+    adapter.run()
+
+```
+
+相比传递一个`dict`给`widget_configs`，上面这种用法可能看上去更直观一些。
 
 下面是一个更加复杂一些的例子，演示了更多数据类型：
 
@@ -1391,6 +1385,8 @@ if __name__ == "__main__":
     adapter.run()
 
 ```
+
+
 
 <img src = "./docs/param_config_3.gif" style="height:auto;width:75%"/>
 
@@ -1545,778 +1541,18 @@ if __name__ == "__main__":
 
 ##### （5）小结
 
-前面介绍了几种配置参数控件属性的方法，这些方法并无优劣之分，开发者可以根据需要和喜好选择合适的方法来配置函数参数的控件。
+前面介绍了几种配置参数控件属性的方法，有各自适合的场景和限制，并无优劣之分，开发者可以根据需要和喜好选择合适的方法来配置函数参数的控件。
 
-#### 3.3.2 常用数据类型及其对应的输入控件类、配置类、常用可配置属性
+#### 3.3.2 `PyGUIAdapterLite`支持的参数类型及其对应控件类型、配置类型、常用可配置属性
 
-##### （1）`str` ——> `StringValue`
+下面这篇文档列出了`PyGUIAdapterLite`支持的参数类型及其对应控件类型、配置类型、常用可配置属性，同时给出了相应的示例代码。读者可自行查阅。
 
-<img src="docs/str_w.png" style="" />
 
-默认控件类：[`StringValueWidget`](pyguiadapterlite/types/strs/line.py#L43)
 
-默认配置类：[`StringValue`](pyguiadapterlite/types/strs/line.py#L18)
+[__`PyGUIAdapterLite`支持的参数类型及其控件__](docs/types_and_widgets.md)
 
-可配置属性：
 
-| 字段名    | 类型                                        | 默认值   | 描述 |
-| :-------- | :------------------------------------------ | :------- | :--- |
-| echo_char | `str`                                       | ""       |      |
-| justify   | `typing.Literal['left', 'center', 'right']` | `"left"` |      |
 
-
-
-
-
-##### （2）`int` ——> `IntValue`
-
-<img src="docs/int_w.png" style="" />
-
-默认控件类：[`IntValueWidget`](pyguiadapterlite/types/ints/common.py#L87)
-
-默认配置类：[`IntValue`](pyguiadapterlite/types/ints/common.py#L18)
-
-可配置属性：
-
-| 字段名       | 类型   | 默认值  | 描述                                       |
-| :----------- | :----- | :------ | :----------------------------------------- |
-| auto_correct | `bool` | `False` | 用户输入非法值时，是否尝试自动修正为默认值 |
-
-
-
-
-
-##### （3）`bool` ——> `BoolValue`
-
-<img src="docs/bool_w.png" style="" />
-
-默认控件类：[`BoolValueWidget`](pyguiadapterlite/types/booleans/common.py#L67)
-
-默认配置类：[`BoolValue`](pyguiadapterlite/types/booleans/common.py#L17)
-
-可配置属性：
-
-| 字段名      | 类型                                       | 默认值         | 描述 |
-| :---------- | :----------------------------------------- | :------------- | :--- |
-| false_text  | `str`                                      | `"False"`      |      |
-| orientation | `typing.Literal['horizontal', 'vertical']` | `"horizontal"` |      |
-| true_text   | `str`                                      | `"True"`       |      |
-
-
-
-
-
-##### （4）`float` ——> `FloatValue`
-
-<img src="docs/float_w.png" style="" />
-
-默认控件类：[`FloatValueWidget`](pyguiadapterlite/types/floats/common.py#L85)
-
-默认配置类：[`FloatValue`](pyguiadapterlite/types/floats/common.py#L17)
-
-可配置属性：
-
-| 字段名       | 类型   | 默认值  | 描述 |
-| :----------- | :----- | :------ | :--- |
-| auto_correct | `bool` | `False` |      |
-
-
-
-
-
-##### （5）`Literal` ——> `SingleChoiceValue`
-
-<img src="docs/Literal_w.png" style="" />
-
-默认控件类：[`SingleChoiceValueWidget`](pyguiadapterlite/types/choices/singlechoice.py#L28)
-
-默认配置类：[`SingleChoiceValue`](pyguiadapterlite/types/choices/singlechoice.py#L16)
-
-可配置属性：
-
-| 字段名        | 类型                                                         | 默认值 | 描述 |
-| :------------ | :----------------------------------------------------------- | :----- | :--- |
-| choices       | `typing.Union[typing.List[typing.Any], typing.Dict[str, typing.Any]]` | ""     |      |
-| columns       | `int`                                                        | `1`    |      |
-| content_title | `str`                                                        | ""     |      |
-
-
-
-
-
-##### （6）`bool_t` ——> `BoolValue2`
-
-<img src="docs/bool_t_w.png" style="" />
-
-默认控件类：[`BoolValueWidget2`](pyguiadapterlite/types/booleans/boolcheck.py#L53)
-
-默认配置类：[`BoolValue2`](pyguiadapterlite/types/booleans/boolcheck.py#L17)
-
-可配置属性：
-
-| 字段名    | 类型  | 默认值 | 描述 |
-| :-------- | :---- | :----- | :--- |
-| hint_text | `str` | ""     |      |
-
-
-
-
-
-##### （7）`int_r` ——> `RangedIntValue`
-
-<img src="docs/int_r_w.png" style="" />
-
-默认控件类：[`RangedIntValueWidget`](pyguiadapterlite/types/ints/ranged.py#L79)
-
-默认配置类：[`RangedIntValue`](pyguiadapterlite/types/ints/ranged.py#L20)
-
-可配置属性：
-
-| 字段名    | 类型   | 默认值        | 描述 |
-| :-------- | :----- | :------------ | :--- |
-| max_value | `int`  | `2147483647`  |      |
-| min_value | `int`  | `-2147483647` |      |
-| step      | `int`  | `1`           |      |
-| wrap      | `bool` | `False`       |      |
-
-
-
-
-
-##### （8）`int_s` ——> `ScaleIntValue2`
-
-<img src="docs/int_s_w.png" style="" />
-
-默认控件类：[`ScaleIntValueWidget2`](pyguiadapterlite/types/ints/scale.py#L209)
-
-默认配置类：[`ScaleIntValue2`](pyguiadapterlite/types/ints/scale.py#L168)
-
-可配置属性：
-
-| 字段名        | 类型  | 默认值 | 描述 |
-| :------------ | :---- | :----- | :--- |
-| digits        | `int` | `0`    |      |
-| step          | `int` | `1`    |      |
-| tick_interval | `int` | `10`   |      |
-
-
-
-
-
-##### （9）`int_ss` ——> `ScaleIntValue`
-
-<img src="docs/int_ss_w.png" style="" />
-
-默认控件类：[`ScaleIntValueWidget`](pyguiadapterlite/types/ints/scale.py#L112)
-
-默认配置类：[`ScaleIntValue`](pyguiadapterlite/types/ints/scale.py#L79)
-
-可配置属性：
-
-| 字段名     | 类型   | 默认值    | 描述 |
-| :--------- | :----- | :-------- | :--- |
-| cursor     | `str`  | `"hand2"` |      |
-| max_value  | `int`  | `100`     |      |
-| min_value  | `int`  | `0`       |      |
-| show_value | `bool` | `True`    |      |
-
-
-
-
-
-##### （10）`float_r` ——> `RangedFloatValue`
-
-<img src="docs/float_r_w.png" style="" />
-
-默认控件类：[`RangedFloatValueWidget`](pyguiadapterlite/types/floats/ranged.py#L151)
-
-默认配置类：[`RangedFloatValue`](pyguiadapterlite/types/floats/ranged.py#L24)
-
-可配置属性：
-
-| 字段名       | 类型                                                 | 默认值          | 描述 |
-| :----------- | :--------------------------------------------------- | :-------------- | :--- |
-| auto_correct | `bool`                                               | `False`         |      |
-| correct_to   | `typing.Literal['default', 'min', 'max', 'nearest']` | `"nearest"`     |      |
-| decimals     | `int`                                                | `2`             |      |
-| max_value    | `float`                                              | `2147483647.0`  |      |
-| min_value    | `float`                                              | `-2147483647.0` |      |
-| step         | `float`                                              | `0.1`           |      |
-
-
-
-
-
-##### （11）`float_s` ——> `ScaleFloatValue`
-
-<img src="docs/float_s_w.png" style="" />
-
-默认控件类：[`ScaleFloatValueWidget`](pyguiadapterlite/types/floats/ttkscale.py#L89)
-
-默认配置类：[`ScaleFloatValue`](pyguiadapterlite/types/floats/ttkscale.py#L23)
-
-可配置属性：
-
-| 字段名     | 类型    | 默认值    | 描述 |
-| :--------- | :------ | :-------- | :--- |
-| cursor     | `str`   | `"hand2"` |      |
-| digits     | `int`   | `5`       |      |
-| max_value  | `float` | `100.0`   |      |
-| min_value  | `float` | `0.0`     |      |
-| show_value | `bool`  | `True`    |      |
-
-
-
-
-
-##### （12）`float_ss` ——> `ScaleFloatValue2`
-
-<img src="docs/float_ss_w.png" style="" />
-
-默认控件类：[`ScaleFloatValueWidget2`](pyguiadapterlite/types/floats/scale.py#L63)
-
-默认配置类：[`ScaleFloatValue2`](pyguiadapterlite/types/floats/scale.py#L23)
-
-可配置属性：
-
-| 字段名        | 类型    | 默认值 | 描述 |
-| :------------ | :------ | :----- | :--- |
-| step          | `float` | `0.5`  |      |
-| tick_interval | `float` | `10`   |      |
-
-
-
-
-
-##### （13）`text_t` ——> `TextValue`
-
-<img src="docs/text_t_w.png" style="" />
-
-默认控件类：[`TextValueWidget`](pyguiadapterlite/types/strs/text.py#L50)
-
-默认配置类：[`TextValue`](pyguiadapterlite/types/strs/text.py#L17)
-
-可配置属性：
-
-| 字段名       | 类型                                     | 默认值          | 描述 |
-| :----------- | :--------------------------------------- | :-------------- | :--- |
-| default_menu | `bool`                                   | `True`          |      |
-| font         | `tuple`                                  | `('Arial', 11)` |      |
-| height       | `int`                                    | `8`             |      |
-| wrap         | `typing.Literal['none', 'char', 'word']` | `"word"`        |      |
-
-
-
-
-
-##### （14）`directory_t` ——> `DirectoryValue`
-
-<img src="docs/directory_t_w.png" style="" />
-
-默认控件类：[`DirectoryValueWidget`](pyguiadapterlite/types/paths/dirselect.py#L105)
-
-默认配置类：[`DirectoryValue`](pyguiadapterlite/types/paths/dirselect.py#L23)
-
-可配置属性：
-
-| 字段名             | 类型   | 默认值               | 描述 |
-| :----------------- | :----- | :------------------- | :--- |
-| absolutize_path    | `bool` | `False`              |      |
-| allow_backspace    | `bool` | `False`              |      |
-| dialog_title       | `str`  | `"Select Directory"` |      |
-| normalize_path     | `bool` | `False`              |      |
-| readonly           | `bool` | `False`              |      |
-| select_button_text | `str`  | `"Browse"`           |      |
-| start_dir          | `str`  | ""                   |      |
-
-
-
-
-
-##### （15）`dir_t` ——> `DirectoryValue`
-
-<img src="docs/dir_t_w.png" style="" />
-
-默认控件类：[`DirectoryValueWidget`](pyguiadapterlite/types/paths/dirselect.py#L105)
-
-默认配置类：[`DirectoryValue`](pyguiadapterlite/types/paths/dirselect.py#L23)
-
-可配置属性：
-
-| 字段名             | 类型   | 默认值               | 描述 |
-| :----------------- | :----- | :------------------- | :--- |
-| absolutize_path    | `bool` | `False`              |      |
-| allow_backspace    | `bool` | `False`              |      |
-| dialog_title       | `str`  | `"Select Directory"` |      |
-| normalize_path     | `bool` | `False`              |      |
-| readonly           | `bool` | `False`              |      |
-| select_button_text | `str`  | `"Browse"`           |      |
-| start_dir          | `str`  | ""                   |      |
-
-
-
-
-
-##### （16）`file_t` ——> `FileValue`
-
-<img src="docs/file_t_w.png" style="" />
-
-默认控件类：[`FileValueWidget`](pyguiadapterlite/types/paths/fileselect.py#L121)
-
-默认配置类：[`FileValue`](pyguiadapterlite/types/paths/fileselect.py#L24)
-
-可配置属性：
-
-| 字段名             | 类型                                  | 默认值          | 描述 |
-| :----------------- | :------------------------------------ | :-------------- | :--- |
-| absolutize_path    | `bool`                                | `False`         |      |
-| allow_backspace    | `bool`                                | `False`         |      |
-| dialog_title       | `str`                                 | `"Select File"` |      |
-| filters            | `typing.List[typing.Tuple[str, str]]` | `None`          |      |
-| normalize_path     | `bool`                                | `False`         |      |
-| readonly           | `bool`                                | `False`         |      |
-| save_file          | `bool`                                | `False`         |      |
-| select_button_text | `str`                                 | `"Browse"`      |      |
-| start_dir          | `str`                                 | ""              |      |
-
-
-
-
-
-##### （17）`color_hex_t` ——> `HexColorValue`
-
-<img src="docs/color_hex_t_w.png" style="" />
-
-默认控件类：[`HexColorValueWidget`](pyguiadapterlite/types/colors/color.py#L33)
-
-默认配置类：[`HexColorValue`](pyguiadapterlite/types/colors/color.py#L17)
-
-可配置属性：
-
-| 字段名             | 类型                                                         | 默认值                  | 描述 |
-| :----------------- | :----------------------------------------------------------- | :---------------------- | :--- |
-| borderwidth        | `int`                                                        | `1`                     |      |
-| color_picker_title | `str`                                                        | ""                      |      |
-| font               | `typing.Union[tuple, str]`                                   | `('Arial', 13, 'bold')` |      |
-| height             | `typing.Union[int, NoneType]`                                | `1`                     |      |
-| relief             | `typing.Literal['flat', 'raised', 'sunken', 'groove', 'ridge']` | `"flat"`                |      |
-| show_color_code    | `bool`                                                       | `True`                  |      |
-| show_color_picker  | `bool`                                                       | `True`                  |      |
-| width              | `typing.Union[int, NoneType]`                                | `None`                  |      |
-
-
-
-
-
-##### （18）`color_t` ——> `HexColorValue`
-
-<img src="docs/color_t_w.png" style="" />
-
-默认控件类：[`HexColorValueWidget`](pyguiadapterlite/types/colors/color.py#L33)
-
-默认配置类：[`HexColorValue`](pyguiadapterlite/types/colors/color.py#L17)
-
-可配置属性：
-
-| 字段名             | 类型                                                         | 默认值                  | 描述 |
-| :----------------- | :----------------------------------------------------------- | :---------------------- | :--- |
-| borderwidth        | `int`                                                        | `1`                     |      |
-| color_picker_title | `str`                                                        | ""                      |      |
-| font               | `typing.Union[tuple, str]`                                   | `('Arial', 13, 'bold')` |      |
-| height             | `typing.Union[int, NoneType]`                                | `1`                     |      |
-| relief             | `typing.Literal['flat', 'raised', 'sunken', 'groove', 'ridge']` | `"flat"`                |      |
-| show_color_code    | `bool`                                                       | `True`                  |      |
-| show_color_picker  | `bool`                                                       | `True`                  |      |
-| width              | `typing.Union[int, NoneType]`                                | `None`                  |      |
-
-
-
-
-
-##### （19）`choice_t` ——> `SingleChoiceValue`
-
-<img src="docs/choice_t_w.png" style="" />
-
-默认控件类：[`SingleChoiceValueWidget`](pyguiadapterlite/types/choices/singlechoice.py#L28)
-
-默认配置类：[`SingleChoiceValue`](pyguiadapterlite/types/choices/singlechoice.py#L16)
-
-可配置属性：
-
-| 字段名        | 类型                                                         | 默认值 | 描述 |
-| :------------ | :----------------------------------------------------------- | :----- | :--- |
-| choices       | `typing.Union[typing.List[typing.Any], typing.Dict[str, typing.Any]]` | ""     |      |
-| columns       | `int`                                                        | `1`    |      |
-| content_title | `str`                                                        | ""     |      |
-
-
-
-
-
-##### （20）`option_t` ——> `SingleChoiceValue`
-
-<img src="docs/option_t_w.png" style="" />
-
-默认控件类：[`SingleChoiceValueWidget`](pyguiadapterlite/types/choices/singlechoice.py#L28)
-
-默认配置类：[`SingleChoiceValue`](pyguiadapterlite/types/choices/singlechoice.py#L16)
-
-可配置属性：
-
-| 字段名        | 类型                                                         | 默认值 | 描述 |
-| :------------ | :----------------------------------------------------------- | :----- | :--- |
-| choices       | `typing.Union[typing.List[typing.Any], typing.Dict[str, typing.Any]]` | ""     |      |
-| columns       | `int`                                                        | `1`    |      |
-| content_title | `str`                                                        | ""     |      |
-
-
-
-
-
-##### （21）`loose_choice_t` ——> `LooseChoiceValue`
-
-<img src="docs/loose_choice_t_w.png" style="" />
-
-默认控件类：[`LooseChoiceValueWidget`](pyguiadapterlite/types/choices/loosechoice.py#L27)
-
-默认配置类：[`LooseChoiceValue`](pyguiadapterlite/types/choices/loosechoice.py#L15)
-
-可配置属性：
-
-| 字段名         | 类型                                        | 默认值   | 描述 |
-| :------------- | :------------------------------------------ | :------- | :--- |
-| add_user_input | `bool`                                      | `False`  |      |
-| choices        | `typing.List[str]`                          | ""       |      |
-| justify        | `typing.Literal['left', 'center', 'right']` | `"left"` |      |
-| readonly       | `bool`                                      | `False`  |      |
-
-
-
-
-
-##### （22）`choices_t` ——> `MultiChoiceValue`
-
-<img src="docs/choices_t_w.png" style="" />
-
-默认控件类：[`MultiChoiceValueWidget`](pyguiadapterlite/types/choices/multichoice.py#L30)
-
-默认配置类：[`MultiChoiceValue`](pyguiadapterlite/types/choices/multichoice.py#L16)
-
-可配置属性：
-
-| 字段名        | 类型                                                         | 默认值 | 描述 |
-| :------------ | :----------------------------------------------------------- | :----- | :--- |
-| choices       | `typing.Union[typing.Dict[str, typing.Any], typing.Iterable[typing.Any]]` | ""     |      |
-| columns       | `int`                                                        | `2`    |      |
-| content_title | `str`                                                        | ""     |      |
-
-
-
-
-
-##### （23）`options_t` ——> `MultiChoiceValue`
-
-<img src="docs/options_t_w.png" style="" />
-
-默认控件类：[`MultiChoiceValueWidget`](pyguiadapterlite/types/choices/multichoice.py#L30)
-
-默认配置类：[`MultiChoiceValue`](pyguiadapterlite/types/choices/multichoice.py#L16)
-
-可配置属性：
-
-| 字段名        | 类型                                                         | 默认值 | 描述 |
-| :------------ | :----------------------------------------------------------- | :----- | :--- |
-| choices       | `typing.Union[typing.Dict[str, typing.Any], typing.Iterable[typing.Any]]` | ""     |      |
-| columns       | `int`                                                        | `2`    |      |
-| content_title | `str`                                                        | ""     |      |
-
-
-
-
-
-##### （24）`string_list_t` ——> `StringListValue`
-
-<img src="docs/string_list_t_w.png" style="" />
-
-默认控件类：[`StringListValueWidget`](pyguiadapterlite/types/lists/strlist.py#L137)
-
-默认配置类：[`StringListValue`](pyguiadapterlite/types/lists/strlist.py#L26)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                          | 描述 |
-| :-------------------------- | :------------------------------------ | :---------------------------------------------- | :--- |
-| accept_duplicates           | `bool`                                | `True`                                          |      |
-| accept_empty                | `bool`                                | `True`                                          |      |
-| add_button                  | `bool`                                | `True`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                         |      |
-| add_item_dialog_label_text  | `str`                                 | `"Add a new item:"`                             |      |
-| add_item_dialog_title       | `str`                                 | `"Add Item"`                                    |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                      |      |
-| duplicate_message           | `str`                                 | `"An item with the same value already exists!"` |      |
-| edit_item_dialog_label_text | `str`                                 | `"Edit the item:"`                              |      |
-| edit_item_dialog_title      | `str`                                 | `"Edit Item"`                                   |      |
-| empty_string_message        | `str`                                 | `"The string to be added cannot be empty!"`     |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                |      |
-| strip                       | `bool`                                | `False`                                         |      |
-
-
-
-
-
-##### （25）`string_list` ——> `StringListValue`
-
-<img src="docs/string_list_w.png" style="" />
-
-默认控件类：[`StringListValueWidget`](pyguiadapterlite/types/lists/strlist.py#L137)
-
-默认配置类：[`StringListValue`](pyguiadapterlite/types/lists/strlist.py#L26)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                          | 描述 |
-| :-------------------------- | :------------------------------------ | :---------------------------------------------- | :--- |
-| accept_duplicates           | `bool`                                | `True`                                          |      |
-| accept_empty                | `bool`                                | `True`                                          |      |
-| add_button                  | `bool`                                | `True`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                         |      |
-| add_item_dialog_label_text  | `str`                                 | `"Add a new item:"`                             |      |
-| add_item_dialog_title       | `str`                                 | `"Add Item"`                                    |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                      |      |
-| duplicate_message           | `str`                                 | `"An item with the same value already exists!"` |      |
-| edit_item_dialog_label_text | `str`                                 | `"Edit the item:"`                              |      |
-| edit_item_dialog_title      | `str`                                 | `"Edit Item"`                                   |      |
-| empty_string_message        | `str`                                 | `"The string to be added cannot be empty!"`     |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                |      |
-| strip                       | `bool`                                | `False`                                         |      |
-
-
-
-
-
-##### （26）`str_list` ——> `StringListValue`
-
-<img src="docs/str_list_w.png" style="" />
-
-默认控件类：[`StringListValueWidget`](pyguiadapterlite/types/lists/strlist.py#L137)
-
-默认配置类：[`StringListValue`](pyguiadapterlite/types/lists/strlist.py#L26)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                          | 描述 |
-| :-------------------------- | :------------------------------------ | :---------------------------------------------- | :--- |
-| accept_duplicates           | `bool`                                | `True`                                          |      |
-| accept_empty                | `bool`                                | `True`                                          |      |
-| add_button                  | `bool`                                | `True`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                         |      |
-| add_item_dialog_label_text  | `str`                                 | `"Add a new item:"`                             |      |
-| add_item_dialog_title       | `str`                                 | `"Add Item"`                                    |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                      |      |
-| duplicate_message           | `str`                                 | `"An item with the same value already exists!"` |      |
-| edit_item_dialog_label_text | `str`                                 | `"Edit the item:"`                              |      |
-| edit_item_dialog_title      | `str`                                 | `"Edit Item"`                                   |      |
-| empty_string_message        | `str`                                 | `"The string to be added cannot be empty!"`     |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                |      |
-| strip                       | `bool`                                | `False`                                         |      |
-
-
-
-
-
-##### （27）`path_list_t` ——> `PathListValue`
-
-<img src="docs/path_list_t_w.png" style="" />
-
-默认控件类：[`PathListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L185)
-
-默认配置类：[`PathListValue`](pyguiadapterlite/types/lists/pathlist.py#L35)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                           | 描述 |
-| :-------------------------- | :------------------------------------ | :----------------------------------------------- | :--- |
-| absolutize_path             | `bool`                                | `True`                                           |      |
-| accept_duplicates           | `bool`                                | `False`                                          |      |
-| accept_empty                | `bool`                                | `False`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                          |      |
-| add_dir_button_text         | `typing.Union[str, NoneType]`         | `"Folder"`                                       |      |
-| add_file_button_text        | `typing.Union[str, NoneType]`         | `"File"`                                         |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                       |      |
-| add_path_dialog_label_text  | `str`                                 | `"Add a new path:"`                              |      |
-| add_path_dialog_title       | `str`                                 | `"Add Path"`                                     |      |
-| dir_dialog_title            | `str`                                 | `"Select Directory"`                             |      |
-| duplicate_message           | `str`                                 | `"The path has already been added to the list!"` |      |
-| edit_path_dialog_label_text | `str`                                 | `"Edit the path:"`                               |      |
-| edit_path_dialog_title      | `str`                                 | `"Edit Path"`                                    |      |
-| empty_path_message          | `str`                                 | `"The path cannot be empty!"`                    |      |
-| file_dialog_action          | `typing.Literal['open', 'save']`      | `"open"`                                         |      |
-| file_dialog_title           | `str`                                 | `"Select File"`                                  |      |
-| filters                     | `typing.List[typing.Tuple[str, str]]` | ""                                               |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                 |      |
-| normalize_path              | `bool`                                | `True`                                           |      |
-| start_dir                   | `str`                                 | ""                                               |      |
-| strip                       | `bool`                                | `True`                                           |      |
-
-
-
-
-
-##### （28）`path_list` ——> `PathListValue`
-
-<img src="docs/path_list_w.png" style="" />
-
-默认控件类：[`PathListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L185)
-
-默认配置类：[`PathListValue`](pyguiadapterlite/types/lists/pathlist.py#L35)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                           | 描述 |
-| :-------------------------- | :------------------------------------ | :----------------------------------------------- | :--- |
-| absolutize_path             | `bool`                                | `True`                                           |      |
-| accept_duplicates           | `bool`                                | `False`                                          |      |
-| accept_empty                | `bool`                                | `False`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                          |      |
-| add_dir_button_text         | `typing.Union[str, NoneType]`         | `"Folder"`                                       |      |
-| add_file_button_text        | `typing.Union[str, NoneType]`         | `"File"`                                         |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                       |      |
-| add_path_dialog_label_text  | `str`                                 | `"Add a new path:"`                              |      |
-| add_path_dialog_title       | `str`                                 | `"Add Path"`                                     |      |
-| dir_dialog_title            | `str`                                 | `"Select Directory"`                             |      |
-| duplicate_message           | `str`                                 | `"The path has already been added to the list!"` |      |
-| edit_path_dialog_label_text | `str`                                 | `"Edit the path:"`                               |      |
-| edit_path_dialog_title      | `str`                                 | `"Edit Path"`                                    |      |
-| empty_path_message          | `str`                                 | `"The path cannot be empty!"`                    |      |
-| file_dialog_action          | `typing.Literal['open', 'save']`      | `"open"`                                         |      |
-| file_dialog_title           | `str`                                 | `"Select File"`                                  |      |
-| filters                     | `typing.List[typing.Tuple[str, str]]` | ""                                               |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                 |      |
-| normalize_path              | `bool`                                | `True`                                           |      |
-| start_dir                   | `str`                                 | ""                                               |      |
-| strip                       | `bool`                                | `True`                                           |      |
-
-
-
-
-
-##### （29）`paths_t` ——> `PathListValue`
-
-<img src="docs/paths_t_w.png" style="" />
-
-默认控件类：[`PathListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L185)
-
-默认配置类：[`PathListValue`](pyguiadapterlite/types/lists/pathlist.py#L35)
-
-可配置属性：
-
-| 字段名                      | 类型                                  | 默认值                                           | 描述 |
-| :-------------------------- | :------------------------------------ | :----------------------------------------------- | :--- |
-| absolutize_path             | `bool`                                | `True`                                           |      |
-| accept_duplicates           | `bool`                                | `False`                                          |      |
-| accept_empty                | `bool`                                | `False`                                          |      |
-| add_button_text             | `str`                                 | `"Add"`                                          |      |
-| add_dir_button_text         | `typing.Union[str, NoneType]`         | `"Folder"`                                       |      |
-| add_file_button_text        | `typing.Union[str, NoneType]`         | `"File"`                                         |      |
-| add_method                  | `typing.Literal['append', 'prepend']` | `"append"`                                       |      |
-| add_path_dialog_label_text  | `str`                                 | `"Add a new path:"`                              |      |
-| add_path_dialog_title       | `str`                                 | `"Add Path"`                                     |      |
-| dir_dialog_title            | `str`                                 | `"Select Directory"`                             |      |
-| duplicate_message           | `str`                                 | `"The path has already been added to the list!"` |      |
-| edit_path_dialog_label_text | `str`                                 | `"Edit the path:"`                               |      |
-| edit_path_dialog_title      | `str`                                 | `"Edit Path"`                                    |      |
-| empty_path_message          | `str`                                 | `"The path cannot be empty!"`                    |      |
-| file_dialog_action          | `typing.Literal['open', 'save']`      | `"open"`                                         |      |
-| file_dialog_title           | `str`                                 | `"Select File"`                                  |      |
-| filters                     | `typing.List[typing.Tuple[str, str]]` | ""                                               |      |
-| multi_selection_message     | `str`                                 | `"Please select only one item!"`                 |      |
-| normalize_path              | `bool`                                | `True`                                           |      |
-| start_dir                   | `str`                                 | ""                                               |      |
-| strip                       | `bool`                                | `True`                                           |      |
-
-
-
-
-
-##### （30）`file_list_t` ——> `FileListValue`
-
-<img src="docs/file_list_t_w.png" style="" />
-
-默认控件类：[`FileListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L216)
-
-默认配置类：[`FileListValue`](pyguiadapterlite/types/lists/pathlist.py#L208)
-
-可配置属性：
-
-
-
-
-
-##### （31）`file_list` ——> `FileListValue`
-
-<img src="docs/file_list_w.png" style="" />
-
-默认控件类：[`FileListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L216)
-
-默认配置类：[`FileListValue`](pyguiadapterlite/types/lists/pathlist.py#L208)
-
-可配置属性：
-
-
-
-
-
-##### （32）`files_t` ——> `FileListValue`
-
-<img src="docs/files_t_w.png" style="" />
-
-默认控件类：[`FileListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L216)
-
-默认配置类：[`FileListValue`](pyguiadapterlite/types/lists/pathlist.py#L208)
-
-可配置属性：
-
-
-
-
-
-##### （33）`dir_list_t` ——> `DirectoryListValue`
-
-<img src="docs/dir_list_t_w.png" style="" />
-
-默认控件类：[`DirectoryListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L234)
-
-默认配置类：[`DirectoryListValue`](pyguiadapterlite/types/lists/pathlist.py#L226)
-
-可配置属性：
-
-
-
-
-
-##### （34）`dir_list` ——> `DirectoryListValue`
-
-<img src="docs/dir_list_w.png" style="" />
-
-默认控件类：[`DirectoryListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L234)
-
-默认配置类：[`DirectoryListValue`](pyguiadapterlite/types/lists/pathlist.py#L226)
-
-可配置属性：
-
-
-
-
-
-##### （35）`dirs_t` ——> `DirectoryListValue`
-
-<img src="docs/dirs_t_w.png" style="" />
-
-默认控件类：[`DirectoryListValueWidget`](pyguiadapterlite/types/lists/pathlist.py#L234)
-
-默认配置类：[`DirectoryListValue`](pyguiadapterlite/types/lists/pathlist.py#L226)
-
-可配置属性：
 
 ### 3.4 窗口配置
 
