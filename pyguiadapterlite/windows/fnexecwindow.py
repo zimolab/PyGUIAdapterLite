@@ -65,50 +65,111 @@ from pyguiadapterlite.windows.fnvalidationwindow import (
 @dataclasses.dataclass(frozen=True)
 class FnExecuteWindowConfig(BaseWindowConfig):
     title: str = MSG_FUNC_EXEC_WIN_TITLE
+    """窗口标题"""
+
     execute_button_text: str = MSG_EXEC_BUTTON_TEXT
+    """执行按钮文本"""
+
     cancel_button_text: str = MSG_CANCEL_BUTTON_TEXT
+    """取消按钮文本"""
+
     clear_button_text: str = MSG_CLEAR_BUTTON_TEXT
+    """清除按钮文本"""
+
     clear_button_visible: bool = True
+    """是否显示清除按钮。"""
+
     clear_checkbox_text: str = MSG_CLEAR_CHECKBOX_TEXT
+    """清除复选框文本"""
+
     clear_checkbox_visible: bool = True
+    """是否显示清除复选框。"""
+
     clear_checkbox_checked: bool = True
+    """清除复选框默认是否选中。"""
+
     default_parameter_group_name: str = DEFAULT_GROUP_NAME
+    """默认参数分组名称"""
+
     document_tab: bool = True
+    """是否显示函数文档"""
+
     document_tab_title: str = MSG_FUNC_DOC_TAB_TITLE
+    """函数文档Tab页标题"""
+
     document_font: tuple = ("Arial", 12)
+    """函数文档字体"""
+
     output_tab_title: str = MSG_FUNC_OUTPUT_TAB_TITLE
+    """模拟终端区域所在Tab页标题"""
+
     output_font: tuple = ("Consolas", 12)
+    """模拟终端区域字体"""
+
     output_background: str = "black"
-    output_foreground: str = "white"
+    """模拟终端区域背景色"""
+
+    output_foreground: str = "red"
+    """模拟终端区域前景色（即默认输出文本的默认颜色）"""
+
     enable_output_default_menu: bool = True
+    """是否显示默认的模拟终端区域右键菜单"""
+
     disable_widgets_on_execute: bool = False
+    """是否在执行函数时禁用窗口内的所有控件"""
+
     print_function_result: bool = True
+    """是否打印函数的返回值"""
+
     show_function_result: bool = True
+    """是否弹窗显示函数的返回值"""
+
     print_function_error: bool = True
+    """是否打印函数的异常或错误信息"""
+
     show_function_error: bool = True
+    """是否弹窗显示函数的异常或错误信息"""
+
     function_error_traceback: bool = True
+    """是否显示函数的异常或错误的详细堆栈信息"""
+
+    enable_progressbar: bool = False
+    """是否显示进度条"""
+
     error_dialog_title: str = MSG_FUNC_ERR_DIALOG_TITLE
+    """错误对话框标题"""
+
     result_dialog_title: str = MSG_FUNC_RET_DIALOG_TITLE
+    """函数返回值对话框标题"""
+
     parameter_error_message: str = "{}: {}"
     """`ParameterError`类型异常的消息模板，模板第一个变量（`{}`）为`参数名称`，第二个变量(`{}`)为`异常的消息（message）`。"""
+
     function_result_message: str = MSG_FUNC_RET_MSG
     """函数调用结果的消息模板，在模板中可以使用模板变量（`{}`）来捕获函数的返回值。"""
+
     function_error_message: str = "{}: {}\n"
     """函数异常或错误的消息模板，模板第一个变量（`{}`）为`异常的类型`，第二个变量(`{}`)为`异常的消息（message）`。"""
+
     function_executing_message: str = MSG_FUNC_EXECUTING
     """提示消息，用以提示“函数正在执行”。"""
+
     uncancelable_function_message: str = MSG_FUNC_CANCELLABLE
     """提示消息，用以提示“当前函数为不可取消的函数”。"""
+
     function_not_executing_message: str = MSG_FUNC_NOT_EXECUTING
     """提示消息，用以提示“当前函数未处于执行状态”。"""
-    enable_progressbar: bool = False
-    """是否显示进度条。"""
+
     enable_progress_label: bool = False
     """是否显示进度标签。"""
+
     progress_label_font: Optional[tuple] = None
+    """进度标签字体。"""
+
     progress_label_anchor: Literal[
         "nw", "n", "ne", "w", "center", "e", "sw", "s", "se"
     ] = "center"
+    """进度标签文本对齐方式。"""
 
 
 class MainArea(ParameterGroupTabView):

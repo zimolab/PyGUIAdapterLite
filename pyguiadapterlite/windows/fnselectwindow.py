@@ -23,16 +23,33 @@ from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
 @dataclasses.dataclass(frozen=True)
 class FnSelectWindowConfig(BaseWindowConfig):
     title: str = MSG_FUNC_SEL_WIN_TITLE
+    """窗口标题"""
+
     select_button_text: str = MSG_SEL_BUTTON_TEXT
+    """选择按钮文本"""
+
     function_list_title: str = MSG_FUNC_LIST_TITLE
+    """函数列表标题"""
+
     document_view_title: str = MSG_FUNC_DOC_TITLE
+    """文档区域标题"""
+
     label_text_font: tuple = ("Arial", 10, "bold")
+    """标签字体"""
+
     document_font: tuple = ("Arial", 10, "bold")
+    """文档字体"""
+
     # no_match_status_text: str = "未找到匹配项"
     # no_match_document_text: str = "未找到匹配项"
     no_document_text: str = MSG_NO_FUNC_DOC_STATUS
+    """未提供文档时的提示消息"""
+
     no_selection_status_text: str = MSG_SEL_FUNC_FIRST
+    """未选择函数时的提示消息"""
+
     current_view_status_text: str = MSG_CURRENT_FUNC_STATUS
+    """当前视图状态消息"""
 
 
 class FnSelectWindow(BaseWindow):

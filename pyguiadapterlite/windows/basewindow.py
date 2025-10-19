@@ -15,11 +15,22 @@ class ParameterGroupNameNotAvailableError(Exception):
 @dataclasses.dataclass(frozen=True)
 class BaseWindowConfig(object):
     title: str = ""
+    """窗口标题"""
+
     icon: Optional[str] = None
+    """窗口图标路径，ico格式"""
+
     size: Tuple[int, int] = (800, 605)
+    """窗口大小"""
+
     position: Tuple[Optional[int], Optional[int]] = (None, None)
+    """窗口位置"""
+
     always_on_top: bool = False
+    """窗口是否置顶"""
+
     menus: Optional[List[Union[Menu, Separator]]] = None
+    """窗口菜单"""
 
 
 class BaseWindow(object):
