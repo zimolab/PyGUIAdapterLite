@@ -64,10 +64,13 @@ class GUIAdapter(object):
                 menus=window_menus,
                 enable_progressbar=enable_progressbar,
                 enable_progress_label=enable_progress_label,
+                icon=icon,
             )
         else:
             if window_menus is not None:
                 window_config = dataclasses.replace(window_config, menus=window_menus)
+            if window_config.icon is None and icon is not None:
+                window_config = dataclasses.replace(window_config, icon=icon)
 
         fn_info = FnInfo(
             fn=fn,
