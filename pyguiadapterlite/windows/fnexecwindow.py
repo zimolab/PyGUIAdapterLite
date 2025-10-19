@@ -109,7 +109,7 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     output_background: str = "black"
     """模拟终端区域背景色"""
 
-    output_foreground: str = "red"
+    output_foreground: str = "white"
     """模拟终端区域前景色（即默认输出文本的默认颜色）"""
 
     enable_output_default_menu: bool = True
