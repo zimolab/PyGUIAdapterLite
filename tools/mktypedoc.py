@@ -283,5 +283,22 @@ def main():
     make_type_doc(args.action, args.output_file)
 
 
+def main2():
+    from pyguiadapterlite.windows.basewindow import BaseWindowConfig
+    from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindowConfig
+    from pyguiadapterlite.windows.fnselectwindow import FnSelectWindowConfig
+
+    base_info = get_dataclass_info(BaseWindowConfig)
+    fn_exc_info = get_dataclass_info(FnExecuteWindowConfig)
+    fn_sel_info = get_dataclass_info(FnSelectWindowConfig)
+
+    print(to_markdown_table(base_info.attributes))
+    print()
+    print(to_markdown_table(fn_exc_info.attributes))
+    print()
+    print(to_markdown_table(fn_sel_info.attributes))
+
+
 if __name__ == "__main__":
     main()
+    # main2()
