@@ -533,6 +533,9 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
     def after(self, delay: int, func, *args):
         return self.parent.after(delay, func, *args)
 
+    def close(self):
+        self.on_close()
+
     def on_close(self):
         if self._executor.is_executing:
             show_warning(self.config.function_executing_message, parent=self.parent)
