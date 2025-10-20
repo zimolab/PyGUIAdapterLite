@@ -57,9 +57,12 @@
       - [3.3.3 `PyGUIAdapterLite`支持的参数类型及其对应控件类型、配置类型、常用可配置属性](#333-pyguiadapterlite支持的参数类型及其对应控件类型配置类型常用可配置属性)
     - [3.4 添加多个函数](#34-添加多个函数)
     - [3.5 可取消的函数](#35-可取消的函数)
-    - [3.7 进度条](#37-进度条)
-    - [3.6 窗口配置](#36-窗口配置)
+    - [3.6 进度条](#36-进度条)
+    - [3.7 窗口配置](#37-窗口配置)
     - [3.8 窗口菜单](#38-窗口菜单)
+      - [3.8.1 基本用法](#381-基本用法)
+      - [3.8.2 在菜单项的回调函数里可以做什么？](#382-在菜单项的回调函数里可以做什么)
+      - [3.8.3 保存/加载函数参数](#383-保存加载函数参数)
     - [3.9 自定义参数类型及其控件](#39-自定义参数类型及其控件)
     - [3.10 拾遗](#310-拾遗)
   - [打包应用](#打包应用)
@@ -731,7 +734,7 @@ if __name__ == "__main__":
 
 ##### (3) `loose_choice_t`（宽松的单选类型）及其示例
 
-`choice_t`、`Enum`、`Literal`可以被称为__严格的单选类型__，因为用户只能从我们提供的选项中选择其一，有时，我们可能会有这种需求，即用户可以从一组预定义的选项中选择其一，同时，又允许其自行输入自定义的值。为满足这一需求，`PyGUIAdapterLite`提供了一种__宽松的单选类型__——`loose_choice_t`。
+`choice_t`、`Enum`、`Literal`可以被称为**严格的单选类型**，因为用户只能从提供的选项中选择其一。有时，我们可能会有这样的需求，即：允许用户可以从一组预定义的选项中选择其一，同时，又允许其自行输入自定义的值。为满足这一需求，`PyGUIAdapterLite`提供了一种另一种单选类型，我将其称之为**宽松的单选类型**——`loose_choice_t`。
 
 ```python
 from pyguiadapterlite import uprint, GUIAdapter
@@ -790,13 +793,15 @@ if __name__ == "__main__":
 
 ### 3.2 错误处理与参数校验
 
-增强程序健壮性的两个关键方面：一是提前检查用户的输入，发现那些非法的值，尽可能在错误发生之前就阻止它；二是尽可能预见程序可能在哪里失败，捕获可能发生的错误，并从错误中恢复。前者涉及__`参数校验`__的话题，后者则属于__`错误处理`__的内容。`PyGUIAdapterLite`的设计理念是尽可能保持处于可用状态，防止整个应用因用户函数而发生crash，因此，`PyGUIAdapterLite`内建了一些机制，帮助开发者更加轻松的完成__`参数校验`__和__`错误处理`__相关的工作。下面，分别就这两方面进行讨论。
+增强程序健壮性的两个关键方面：一是提前检查用户的输入，发现那些非法的值，尽可能在错误发生之前就阻止它；二是尽可能预见程序可能在哪里失败，捕获可能发生的错误，并从错误中恢复。前者涉及**参数校验**的话题，后者则属于**错误处理**的内容。`PyGUIAdapterLite`的设计理念是尽可能保持程序处于可用状态，防止整个应用因用户函数中的错误而发生crash。因此，`PyGUIAdapterLite`内建了一些机制，帮助开发者更加轻松的完成**参数校验**和**错误处理**相关的工作。下面，分别就这两方面进行讨论。
 
 #### 3.2.1 错误处理
 
 ##### （1）基本策略：尽可能捕获所有异常
 
-在默认情况下，`PyGUIAdapterLite`将尝试捕获用户函数中发生的任何异常/错误。因此，一般情况下，用户函数中发生的异常不会导致整个程序退出。当捕获到用户函数中发生的异常时，默认的做法是，弹出一个对话框提示用户某处发生了异常，同时，在窗口的模块终端区域打印异常的详细信息，包括trackback信息。
+在默认情况下，`PyGUIAdapterLite`将尝试捕获用户函数中发生的任何异常/错误。因此，一般情况下，用户函数中发生的异常不会导致整个程序退出。当捕获到用户函数中发生的异常时，默认的做法是，弹出一个对话框提示用户某处发生了异常（可以通过配置禁止这一默认行为，具体做法参见[3.7 窗口配置](#37-窗口配置)一节），同时在窗口的模块终端区域打印异常的详细信息，包括trackback信息。
+
+下面这段简短的代码尝试引发一个“除零异常”（`ZeroDivisionError`），观察`PyGUIAdapter`如何捕捉和处理这个异常。
 
 ```python
 from pyguiadapterlite import uprint, GUIAdapter
@@ -1701,7 +1706,7 @@ if __name__ == "__main__":
 
 
 
-### 3.7 进度条
+### 3.6 进度条
 
 函数执行窗口的模拟终端区域主要用于支持通过`uprint()`输出的普通文本（plain text），以及通过`ANSI`代码着色的文本。目前没有实现对光标移动、屏幕管理等高级`ANSI`特性的支持，因此，在模拟终端区域，无法显示一些比较fancy的控制台进度条效果。
 
@@ -1881,7 +1886,7 @@ if __name__ == "__main__":
 
 
 
-### 3.6 窗口配置
+### 3.7 窗口配置
 
 除了可以对函数参数的控件进行配置，`PyGUIAdapterLite`也允许开发者对窗口本身进行配置，比如设置窗口的大小、位置、图标、标题、界面上的文本等等。
 
@@ -2035,7 +2040,537 @@ if __name__ == "__main__":
 
 ### 3.8 窗口菜单
 
-> TODO
+`PyGUIAdapterLite`对窗口菜单提供相应的支持，开发者可以向`函数选择窗口`和`函数执行窗口`添加菜单栏，添加菜单、子菜单、菜单项，并为菜单项设置响应函数。
+
+#### 3.8.1 基本用法
+
+`PyGUIAdapterLite`对窗口菜单支持通过以下三个核心类实现：`Aciton`、`Separator`、`Menu`。
+
+<img src = "./docs/menubar.png" />
+
+`Action`：一个`Action`代表一个菜单项。
+
+| 字段名          | 类型                                                        | 默认值  | 描述                                                         |
+| :-------------- | :---------------------------------------------------------- | :------ | :----------------------------------------------------------- |
+| checkable       | `bool`                                                      | `False` | 菜单项是否为**`可选中的`**。`可选中`的菜单项具有`选中`和`未选中`两种状态。 |
+| data            | `Union[object, NoneType]`                                   | `None`  | 用户自定义数据。                                             |
+| enabled         | `bool`                                                      | `True`  | 菜单项是否处于启用状态。                                     |
+| initial_checked | `bool`                                                      | `False` | 菜单项初始是否处于`选中`状态，仅在`checkable`为`True`时有效。 |
+| on_triggered    | `Union[Callable[[BaseWindow, Action], NoneType], NoneType]` | `None`  | 回调函数，在菜单项被触发时回调，被触发一般是指用户点击了菜单项或按下对应的快捷键（仅在指定了快捷键时有效）。 |
+| shortcut        | `Union[str, NoneType]`                                      | `None`  | 菜单项的快捷键，例如：Control+o，若指定了快捷键，将在按下快捷键时触发`on_triggered`回调。 |
+| text            | `str`                                                       | ""      | 菜单项显示的文本。                                           |
+
+
+
+`Separator`：用于分隔两个菜单项。
+
+
+
+`Menu`：用于组织一组菜单项，同时也可以嵌套`Menu`的方式支持子菜单。
+
+| 字段名           | 类型                                   | 默认值  | 描述                                                         |
+| :--------------- | :------------------------------------- | :------ | :----------------------------------------------------------- |
+| actions          | `List[Union[Action, Separator, Menu]]` | []      | 菜单下的菜单项（`Action`）、分隔符（`Separator`）或子菜单（`Menu`） |
+| exclusive        | `bool`                                 | `False` | 是否将菜单下的菜单项（`Action`）添加到一个互斥组中。只有当前菜单下`checkable`属性为`True`的菜单项（`Action`）才会被添加的互斥组中。 |
+| tear_off_enabled | `bool`                                 | `True`  | 菜单可以被“撕下”。为`True`时，菜单将包含一个特殊的“撕下”项（通常显示为菜单顶部的虚线）。 |
+| title            | `str`                                  | ""      | 菜单的标题。                                                 |
+
+下面是一个简单的示例，为函数执行窗口添加了两菜单（`Menu`），并在两个菜单下各自添加了一些菜单项（`Action`），并使用分隔线来分隔两组菜单项。
+
+```python
+from pyguiadapterlite import (
+    uprint,
+    GUIAdapter,
+    Menu,
+    FnExecuteWindow,
+    Action,
+    Separator,
+)
+from pyguiadapterlite.utils import show_information, show_question
+
+
+def _on_action_open(window: FnExecuteWindow, action: Action):
+    print("Action Open triggered")
+    show_information("Action Open triggered", parent=window.parent)
+
+
+def _on_action_save(window: FnExecuteWindow, action: Action):
+    print("Action Save triggered")
+    show_information("Action Save triggered", parent=window.parent)
+
+
+def _on_action_close(window: FnExecuteWindow, action: Action):
+    print("Action Close triggered")
+    ret = show_question("Are you sure to close the window?", parent=window.parent)
+    if ret == "yes":
+        window.close()
+
+
+def _on_action_about(window: FnExecuteWindow, action: Action):
+    print("Action About triggered")
+    show_information("Action About triggered", parent=window.parent)
+
+
+def _on_action_help(window: FnExecuteWindow, action: Action):
+    print("Action Help triggered")
+    show_information("Action Help triggered", parent=window.parent)
+
+
+def foo(arg1: str, arg2: int):
+    uprint(f"arg1 is {arg1} and arg2 is {arg2}")
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        foo,
+        window_menus=[
+            Menu(
+                title="File",
+                actions=[
+                    Action(
+                        text="Open", on_triggered=_on_action_open, shortcut="Control-o"
+                    ),
+                    Action(
+                        text="Save", on_triggered=_on_action_save, shortcut="Control-s"
+                    ),
+                    Separator(),
+                    Action(
+                        text="Close",
+                        on_triggered=_on_action_close,
+                        shortcut="Control-w",
+                    ),
+                ],
+            ),
+            Menu(
+                title="Help",
+                actions=[
+                    Action(text="About", on_triggered=_on_action_about),
+                    Action(text="Help", on_triggered=_on_action_help),
+                ],
+            ),
+        ],
+    )
+    adapter.run()
+```
+
+
+
+>  要为函数选择窗口添加菜单，只需在调用`adapter.run()`方法时将菜单列表传给`select_window_menus`即可。
+
+#### 3.8.2 在菜单项的回调函数里可以做什么？
+
+由于菜单项的回调函数是在主线程（UI）被调用的，因此这个问题的一个正确答案是几乎可以做任何事情，包括直接对UI进行操作，只要不使程序阻塞太久就行。当然，从实践的角度看，开发者在回调函数中做的最常见的事情是调用`pyguiadapterlite.utils`模块中的`show_xxx()`或`ask_xxx()`函数，向用户展示某些信息，或者，询问用户某些问题。当然，由于在回调函数中可以获取当前窗口的实例，开发者也可以通过该对象调用当前窗口的一些方法，包括：
+
+```python
+def get_parameter_values(self) -> Dict[str, Union[Any, InvalidValue]]:
+    pass
+```
+
+从当前界面上获取各参数的值。
+
+
+
+```python
+def set_parameter_values(self, values: Dict[str, Any], ignore_not_exist: bool = True):
+    ...
+```
+
+更新界面上各参数的当前值
+
+
+
+```python
+def save_parameter_values(
+        self,
+        save_path: Union[str, Path, None] = None,
+        serializer: Optional[Callable[[Dict[str, Any]], str]] = None,
+        **filedialog_args,
+):
+    ...
+```
+
+将当前参数值序列化并保存到指定文件中，开发者可以提供自定义的序列化函数，默认采取`json`方式。
+
+
+
+```python
+def load_parameter_values(
+        self,
+        load_path: Union[str, Path, None] = None,
+        ignore_not_exist: bool = True,
+        deserializer: Optional[Callable[[str], Dict[str, Any]]] = None,
+        **filedialog_args,
+):
+    ...
+```
+
+从外部文件加载经过序列化的参数，反序列化后更新到当前界面。
+
+
+
+```python
+def close(self):
+    ...
+```
+
+尝试关闭当前窗口
+
+
+
+```python
+def clear_output(self):
+    ...
+```
+
+清除当前模拟终端区域的内容。
+
+
+
+```python
+def is_function_cancellable(self) -> bool:
+    ...
+```
+
+判断当前函数是否为可取消的函数。
+
+
+
+```python
+def is_function_executing(self) -> bool:
+    ...
+```
+
+判断当前函数是否正在执行。
+
+
+
+```python
+def try_cancel(self):
+    ...
+```
+
+尝试结束当前正在执行的函数。
+
+
+
+```python
+def print(self, *messages: str, sep: str = " ", end: str = "\n"):
+    ...
+```
+
+向模拟终端区域打印内容。
+
+
+
+```python
+def show_function_document(self):
+    ...
+```
+
+弹出窗口展示函数的document。
+
+
+
+```python
+def show_custom_dialog(
+        self, dialog_class: Type[BaseDialog], title: str, **dialog_kwargs
+) -> Any:
+```
+
+> 该方法是实验性的。
+
+弹窗一个自定义的对话框，并获取其结果。第一个参数`dialog_class`指定了要弹出的自定义对话框的类。通过继承该`BaseDialog`，开发者实现任意复杂的对话框界面，因此，这是一个非常强大的方法。`BaseDialog`以及如何通过继承它来实现复杂的窗口界面，可以参考这个文件：[pyguiadapterlite/components/dialog.py](pyguiadapterlite/components/dialog.py)。
+
+
+
+```python
+def show_sub_window(
+        self,
+        window_class: Type["BaseWindow"],
+        config: BaseWindowConfig,
+        modal: bool = False,、
+):
+    ...
+```
+
+> 该方法是实验性的。
+
+显示一个子窗口，`window_class`参数指定了弹出的子窗口类，该类必须是[BaseWindow](pyguiadapterlite/windows/basewindow.py)的子类。`config`参数会在实例化子窗口时作为其构造函数的参数传递它，用于配置子窗口属性，必须为[BaseWindowConfig](pyguiadapterlite/windows/basewindow.py)类（包括其子类）对象。这个方法的灵活性比`show_custom_dialog()`，通过子类化`BaseWindow`用户可以显示任意的tkinter/ttk界面。
+
+下面这个例子展示了如何通过子类化`BaseWindow`实现一个设置窗口（仅实现界面作为演示，未实现实际的功能），并在菜单项的回调函数中使用`show_sub_window()`弹出该窗口。
+
+```python
+import dataclasses
+import tkinter as tk
+from tkinter import Toplevel, Tk, messagebox, ttk
+from typing import Union, Any, Tuple
+
+from pyguiadapterlite import (
+    BaseWindow,
+    BaseWindowConfig,
+    FnExecuteWindow,
+    Action,
+    uprint,
+    GUIAdapter,
+    Menu,
+)
+
+
+class SettingsFrame(ttk.Frame):
+    def __init__(self, parent: "SettingsWindow"):
+        super().__init__(parent.parent, padding="10")
+        self.parent: "SettingsWindow" = parent
+
+        self.theme_var = tk.StringVar(value="light")
+        self.auto_save_var = tk.BooleanVar(value=True)
+        self.font_size_var = tk.IntVar(value=12)
+        self.language_var = tk.StringVar(value="中文")
+
+        self.create_widgets()
+        self.setup_layout()
+
+    def create_widgets(self):
+        """创建所有界面控件"""
+        self.title_label = ttk.Label(self, text="设置", font=("Arial", 16, "bold"))
+
+        self.theme_frame = ttk.LabelFrame(self, text="主题设置", padding="5")
+        self.light_radio = ttk.Radiobutton(
+            self.theme_frame, text="浅色主题", variable=self.theme_var, value="light"
+        )
+        self.dark_radio = ttk.Radiobutton(
+            self.theme_frame, text="深色主题", variable=self.theme_var, value="dark"
+        )
+        self.auto_radio = ttk.Radiobutton(
+            self.theme_frame, text="跟随系统", variable=self.theme_var, value="auto"
+        )
+
+        self.general_frame = ttk.LabelFrame(self, text="常规设置", padding="5")
+        self.auto_save_check = ttk.Checkbutton(
+            self.general_frame, text="自动保存", variable=self.auto_save_var
+        )
+        self.language_combo = ttk.Combobox(
+            self.general_frame,
+            textvariable=self.language_var,
+            values=["中文", "English", "日本語", "Español"],
+            state="readonly",
+        )
+        ttk.Label(self.general_frame, text="界面语言:").grid(
+            row=0, column=0, sticky="w"
+        )
+        self.language_combo.grid(row=0, column=1, sticky="ew", padx=(10, 0))
+
+        self.font_frame = ttk.LabelFrame(self, text="字体设置", padding="5")
+        ttk.Label(self.font_frame, text="字体大小:").grid(row=0, column=0, sticky="w")
+        self.font_scale = ttk.Scale(
+            self.font_frame,
+            from_=8,
+            to=24,
+            variable=self.font_size_var,
+            orient="horizontal",
+        )
+        self.font_value_label = ttk.Label(self.font_frame, text="12")
+        self.font_scale.configure(command=self.update_font_value)
+
+        self.button_frame = ttk.Frame(self)
+        self.save_btn = ttk.Button(
+            self.button_frame, text="保存设置", command=self.save_settings
+        )
+        self.cancel_btn = ttk.Button(
+            self.button_frame, text="取消", command=self.cancel
+        )
+        self.reset_btn = ttk.Button(
+            self.button_frame, text="恢复默认", command=self.reset_settings
+        )
+
+    def setup_layout(self):
+        """设置控件布局"""
+        self.title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+
+        self.theme_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0, 10))
+        self.light_radio.grid(row=0, column=0, sticky="w", padx=(0, 20))
+        self.dark_radio.grid(row=0, column=1, sticky="w", padx=(0, 20))
+        self.auto_radio.grid(row=0, column=2, sticky="w")
+
+        self.general_frame.grid(
+            row=2, column=0, columnspan=2, sticky="ew", pady=(0, 10)
+        )
+        self.auto_save_check.grid(
+            row=1, column=0, columnspan=2, sticky="w", pady=(5, 0)
+        )
+        self.general_frame.columnconfigure(1, weight=1)
+
+        self.font_frame.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(0, 20))
+        self.font_scale.grid(row=0, column=1, sticky="ew", padx=(10, 10))
+        self.font_value_label.grid(row=0, column=2)
+        self.font_frame.columnconfigure(1, weight=1)
+
+        self.button_frame.grid(row=4, column=0, columnspan=2, pady=(10, 0))
+        self.save_btn.grid(row=0, column=0, padx=(0, 10))
+        self.cancel_btn.grid(row=0, column=1, padx=(0, 10))
+        self.reset_btn.grid(row=0, column=2)
+
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+
+    def update_font_value(self, value):
+        """更新字体大小显示"""
+        self.font_value_label.config(text=str(int(float(value))))
+
+    def save_settings(self):
+        """模拟保存设置"""
+        messagebox.showinfo("成功", "设置已保存！", parent=self.parent.parent)
+        self.parent.close()
+
+    def cancel(self):
+        """取消设置"""
+        self.parent.close()
+
+    def reset_settings(self):
+        """恢复默认设置"""
+        self.theme_var.set("light")
+        self.auto_save_var.set(True)
+        self.font_size_var.set(12)
+        self.language_var.set("中文")
+        messagebox.showinfo("提示", "已恢复默认设置", parent=self.parent.parent)
+
+
+@dataclasses.dataclass(frozen=True)
+class SettingsWindowConfig(BaseWindowConfig):
+    title: str = "设置"
+    size: Tuple[int, int] = (400, 600)
+    move_to_center: bool = True
+
+
+class SettingsWindow(BaseWindow):
+    def __init__(self, parent: Union[Tk, Toplevel], config: SettingsWindowConfig):
+        self._center_frame = None
+
+        super().__init__(parent, config)
+
+        if config.move_to_center:
+            self.move_to_center()
+
+    def create_main_area(self) -> Any:
+        self._center_frame = SettingsFrame(self)
+        self._center_frame.pack(fill="both", expand=True)
+
+    def on_close(self):
+        super().on_close()
+        print("SettingsWindow closed")
+
+
+def on_action_settings_window(window: FnExecuteWindow, action: Action):
+    _ = action  # 忽略 action 参数
+    settings_window_config = SettingsWindowConfig()
+    window.show_sub_window(SettingsWindow, settings_window_config, modal=True)
+
+
+def foo(arg1: int, arg2: str, arg3: bool):
+    uprint("arg1:", arg1, "arg2:", arg2, "arg3:", arg3)
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter()
+    adapter.add(
+        foo,
+        window_menus=[
+            Menu("文件", [Action("设置", on_triggered=on_action_settings_window)])
+        ],
+    )
+    adapter.run()
+```
+
+<img src = "./docs/sub_window.gif" style="height:auto;width:75%"/>
+
+
+
+
+
+#### 3.8.3 保存/加载函数参数
+
+有时候，开发者可能希望为用户提供这样的功能：用户可以将当前的参数保存到外部文件中，在下次使用时再从外部文件加载到界面中。这样一来，避免很多重复输入，也便于用户之间交换调试好的参数，可以大大提升用户体验。
+
+`PyGUIAdapterLite`为这一需求提供的内置的支持，核心就是前面提到的`save_parameter_values()`/`load_parameter_values()`，下面，结合窗口菜单实现一个简单的示例。
+
+> `save_parameter_values()`/`load_parameter_values()`默认使用内置的`json`模块实现函数参数的序列化和反序列化，如果遇到一些参数无法序列化的问题，开发者也可以自定义序列化/反序列化方法，通过`serializer`/`deserializer`参数传递给`save_parameter_values`/`load_parameter_values()`。其中`serializer`函数需要满足如下形式：
+>
+> ```python
+> def my_serializer(params: Dict[str, Any]) -> str:
+>     """入参params是用户函数所有参数当前状态，key为参数名称，value为当前值，开发者需返回一个序列化后的字符串"""
+>     ...
+>     return serialized_str
+> 
+> ```
+>
+> `deserializer`函数需要满足如下形式：
+>
+> ```python
+> def my_deserializer(serialized_str: str) -> Dict[str, Any]:
+>     """入参是序列化的用户函数参数字符串，开发者需要返回一个dict，key为用户函数的参数名，value是解析到的用户函数参数的值"""
+>     ...
+>     return params
+> ```
+
+
+
+```python
+from typing import Literal
+
+from pyguiadapterlite import uprint, FnExecuteWindow, Action, Menu, GUIAdapter
+from pyguiadapterlite.types import choices_t, choice_t
+
+
+def load_and_save_demo(
+    arg1: int,
+    arg2: float,
+    arg3: bool,
+    arg4: str,
+    arg5: choices_t = (
+        "apple",
+        "banana",
+        "orange",
+        "pear",
+        "grape",
+        "pineapple",
+        "watermelon",
+        "kiwi",
+    ),
+    arg6: choice_t = ("java", "python", "javascript", "c++", "c#"),
+    arg7: Literal["opt1", "opt2", "opt3"] = "opt2",
+):
+    """
+    This demo shows how to save the parameters to a file and load them back later.
+    """
+    uprint(f"arg1: {arg1}, arg2: {arg2}, arg3: {arg3}, arg4: {arg4}")
+    uprint(f"arg5: {arg5}")
+    uprint(f"arg6: {arg6}")
+    uprint(f"arg7: {arg7}")
+
+
+if __name__ == "__main__":
+
+    def save_params(wind: FnExecuteWindow, action: Action):
+        print("Save current parameters of the window to a file")
+        wind.save_parameter_values()
+
+    def load_params(wind: FnExecuteWindow, action: Action):
+        print("Load parameters from a file and apply to the window")
+        wind.load_parameter_values()
+
+    action_save = Action("Save Parameters", save_params, shortcut="Control-s")
+    action_load = Action("Load Parameters", load_params, shortcut="Control-l")
+
+    menu_file = Menu(title="File", actions=[action_save, action_load])
+
+    adapter = GUIAdapter()
+    adapter.add(load_and_save_demo, window_menus=[menu_file])
+    adapter.run(show_select_window=True)
+```
+
+<img src = "./docs/load_save.gif" style="height:auto;width:75%"/>
+
+
 
 
 
