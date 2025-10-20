@@ -41,10 +41,26 @@ def uprint(*messages: Any, sep=" ", end="\n"):
     if not exec_window:
         print(*messages, sep=sep, end=end)
         return
-    for message in messages:
-        exec_window.output_view.write(f"{message}{sep}")
-    if end:
-        exec_window.output_view.write(end)
+
+    # for message in messages:
+    #     exec_window.output_view.write(f"{message}{sep}")
+    # if end:
+    #     exec_window.output_view.write(end)
+    if len(messages) == 0:
+        exec_window.output_view.write_after(end)
+        return
+
+    if len(messages) == 1:
+        exec_window.output_view.write_after(f"{messages[0]}{end}")
+        return
+
+    def do_print_many():
+        for message in messages:
+            exec_window.output_view.write(f"{message}{sep}")
+        if end:
+            exec_window.output_view.write(end)
+
+    exec_window.parent.after(0, do_print_many)
 
 
 def _call_func(
