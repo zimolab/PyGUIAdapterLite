@@ -2,8 +2,9 @@ import dataclasses
 from pathlib import Path
 from tkinter import Menu as TkMenu, BooleanVar
 from tkinter import Tk, Toplevel
-from typing import Tuple, Optional, Any, Union, List, Dict
+from typing import Tuple, Optional, Any, Union, List, Dict, Type
 
+from pyguiadapterlite.components.dialog import BaseDialog
 from pyguiadapterlite.components.menus import Menu, Separator, Action
 from pyguiadapterlite.utils import _warning, _exception, _error
 
@@ -29,7 +30,9 @@ class BaseWindowConfig(object):
     always_on_top: bool = False
     """窗口是否置顶"""
 
-    menus: Optional[List[Union[Menu, Separator]]] = None
+    menus: Optional[List[Union[Menu, Separator]]] = dataclasses.field(
+        default_factory=list
+    )
     """窗口菜单"""
 
 
@@ -74,6 +77,8 @@ class BaseWindow(object):
 
     @property
     def menus(self) -> List[Menu]:
+        if not self._config.menus:
+            return []
         return [menu for menu in self._config.menus if isinstance(menu, Menu)]
 
     def create_main_area(self) -> Any:
@@ -97,7 +102,8 @@ class BaseWindow(object):
         # 创建主菜单栏
         menu_bar = TkMenu(self._parent)
         # 遍历菜单配置并创建菜单
-        for menu_item in self._config.menus:
+        menus = self._config.menus or []
+        for menu_item in menus:
             if isinstance(menu_item, Separator):
                 # 在菜单栏中添加分隔符（如果有需要的话）
                 # 注意：在顶层菜单栏中通常不直接添加分隔符，所以这里跳过
@@ -248,7 +254,31 @@ class BaseWindow(object):
     def set_always_on_top(self, on: bool):
         self._parent.wm_attributes("-topmost", on)
 
+    def close(self):
+        self.on_close()
+
     def on_close(self):
         if self._parent:
             self._parent.destroy()
             self._parent = None
+
+    def show_custom_dialog(
+        self, dialog_class: Type[BaseDialog], title: str, **dialog_kwargs
+    ) -> Any:
+        dialog = dialog_class(title=title, parent=self.parent, **dialog_kwargs)
+        if dialog.is_cancelled():
+            return None
+        return dialog.result
+
+    def show_sub_window(
+        self,
+        window_class: Type["BaseWindow"],
+        config: BaseWindowConfig,
+        modal: bool = False,
+    ):
+        sub_window_toplevel = Toplevel(self.parent)
+        window = window_class(parent=sub_window_toplevel, config=config)
+        if modal:
+            window.parent.grab_set()
+            self._parent.wait_window(window._parent)
+            return
