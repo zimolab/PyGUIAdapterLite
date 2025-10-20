@@ -13,25 +13,25 @@ ActionToggledCallback = Callable[[BaseWindow_, Action_, bool], None]
 
 @dataclasses.dataclass
 class Action(object):
-    """该类用于创建动作（`Action`），在工具栏（`ToolBar`）中一个`Action`代表一个工具栏按钮，在菜单（`Menu`）中，一个`Action`代表一个菜单项。"""
+    """该类用于创建动作（`Action`），在菜单（`Menu`）中，一个`Action`代表一个菜单项。"""
 
     text: str
-    """动作（`Action`）的描述性文本。"""
+    """菜单项显示的文本。"""
 
     on_triggered: Optional[ActionTriggeredCallback] = None
-    """回调函数，在动作（`Action`）被触发时回调。"""
+    """回调函数，在菜单项被触发时回调，被触发一般是指用户点击了菜单项或按下对应的快捷键（仅在指定了快捷键时有效）。"""
 
     enabled: bool = True
-    """动作（`Action`）是否处于启用状态。"""
+    """菜单项是否处于启用状态。"""
 
     checkable: bool = False
-    """动作（`Action`）是否为**`可选中动作`**。`可选中动作`具有`选中`和`未选中`两种状态，在状态发生切换时，将触发`on_toggled`回调函数。"""
+    """菜单项是否为**`可选中的`**。`可选中`的菜单项具有`选中`和`未选中`两种状态。"""
 
     initial_checked: bool = False
-    """动作（`Action`）初始是否处于`选中`状态。"""
+    """菜单项初始是否处于`选中`状态，仅在`checkable`为`True`时有效。"""
 
     shortcut: Optional[str] = None
-    """动作（`Action`）的快捷键，例如：Control+o。"""
+    """菜单项的快捷键，例如：Control+o，若指定了快捷键，将在按下快捷键时触发`on_triggered`回调。"""
 
     data: Optional[object] = None
     """用户自定义数据。"""
@@ -71,7 +71,7 @@ class Action(object):
 
 @dataclasses.dataclass(frozen=True)
 class Separator(object):
-    """代表了一个分割符，开发者可以用其来分割工具栏上和菜单栏上的动作（`Action`）"""
+    """代表了一个分割符，可以用其来分割菜单栏上的菜单项。"""
 
     pass
 
@@ -87,8 +87,7 @@ class Menu(object):
     """菜单下的菜单项（`Action`）、分隔符（`Separator`）或子菜单（`Menu`）"""
 
     tear_off_enabled: bool = True
-    """菜单可以被“撕下”。为`True`时，菜单将包含一个特殊的“撕下”项（通常显示为菜单顶部的虚线），当触发它时，会创建一个菜单的副本。这个“撕下”的副本
-    会存在于一个单独的窗口中，并且包含与原始菜单相同的菜单项。"""
+    """菜单可以被“撕下”。为`True`时，菜单将包含一个特殊的“撕下”项（通常显示为菜单顶部的虚线）。"""
 
     exclusive: bool = False
     """是否将菜单下的菜单项（`Action`）添加到一个互斥组中。只有当前菜单下`checkable`属性为`True`的菜单项（`Action`）才会被添加的互斥组中。"""
