@@ -9,6 +9,7 @@ from dataclasses import MISSING
 from pathlib import Path
 from typing import Any, Dict, List, Set, Literal
 
+
 DOCS_TEMPLATE = """
 {headings} （{num}）`{typename}` ——> `{conf_class}`
 
@@ -299,6 +300,22 @@ def main2():
     print(to_markdown_table(fn_sel_info.attributes))
 
 
+def main3():
+    from pyguiadapterlite import Menu, Action, Separator
+
+    menu_info = get_dataclass_info(Menu)
+    action_info = get_dataclass_info(Action)
+    separator_info = get_dataclass_info(Separator)
+
+    print(to_markdown_table(menu_info.attributes))
+    print()
+    print(to_markdown_table(action_info.attributes))
+    print()
+    print(to_markdown_table(separator_info.attributes))
+    print()
+
+
 if __name__ == "__main__":
     main()
     # main2()
+    # main3()
