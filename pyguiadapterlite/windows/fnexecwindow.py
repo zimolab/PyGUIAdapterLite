@@ -465,6 +465,14 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         doc_viewer.show()
 
     def print(self, *messages: str, sep: str = " ", end: str = "\n"):
+        if len(messages) == 0:
+            self._main_area.output_view.write(end)
+            return
+
+        if len(messages) == 1:
+            self._main_area.output_view.write(f"{messages[0]}{end}")
+            return
+
         for message in messages:
             self._main_area.output_view.write(f"{message}{sep}")
         if end:
@@ -536,6 +544,18 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
     def close(self):
         self.on_close()
 
+    def clear_output(self):
+        self.on_clear_output()
+
+    def is_function_cancellable(self) -> bool:
+        return self._fn_info.cancelable
+
+    def is_function_executing(self) -> bool:
+        return self._executor.is_executing
+
+    def try_cancel(self):
+        self.on_cancel()
+
     def on_close(self):
         if self._executor.is_executing:
             show_warning(self.config.function_executing_message, parent=self.parent)
@@ -568,12 +588,12 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._close_param_validation_win()
         self._main_area.output_view.clear()
 
-    def get_parameter_values(self) -> Dict[str, Any]:
+    def get_parameter_values(self) -> Dict[str, Union[Any, InvalidValue]]:
         return self._main_area.get_parameter_values()
 
     def set_parameter_values(
         self, values: Dict[str, Any], ignore_not_exist: bool = True
-    ):
+    ) -> Dict[str, Union[Any, InvalidValue]]:
         return self._main_area.update_parameter_values(values, ignore_not_exist)
 
     def save_parameter_values(
