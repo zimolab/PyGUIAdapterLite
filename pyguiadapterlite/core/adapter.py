@@ -61,14 +61,16 @@ class GUIAdapter(object):
 
         if window_config is None:
             window_config = FnExecuteWindowConfig(
-                menus=window_menus,
+                menus=window_menus or [],
                 enable_progressbar=enable_progressbar,
                 enable_progress_label=enable_progress_label,
                 icon=icon,
             )
         else:
             if window_menus is not None:
-                window_config = dataclasses.replace(window_config, menus=window_menus)
+                window_config = dataclasses.replace(
+                    window_config, menus=window_menus or []
+                )
             if window_config.icon is None and icon is not None:
                 window_config = dataclasses.replace(window_config, icon=icon)
 
@@ -138,11 +140,13 @@ class GUIAdapter(object):
         UContext.app_started(root)
         if show_select_window:
             if select_window_config is None:
-                select_window_config = FnSelectWindowConfig(menus=select_window_menus)
+                select_window_config = FnSelectWindowConfig(
+                    menus=select_window_menus or []
+                )
             else:
                 if select_window_menus is not None:
                     select_window_config = dataclasses.replace(
-                        select_window_config, menus=select_window_menus
+                        select_window_config, menus=select_window_menus or []
                     )
             self._show_select_window(select_window_config)
         else:
