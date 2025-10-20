@@ -1,0 +1,13 @@
+{
+  "arg1": 123,
+  "arg2": 3.14,
+  "arg3": true,
+  "arg4": "Hello world",
+  "arg5": [
+    "apple",
+    "pear",
+    "pineapple"
+  ],
+  "arg6": "python",
+  "arg7": "opt1"
+}

@@ -33,7 +33,6 @@ def load_and_save_demo(
 
 if __name__ == "__main__":
 
-    # prepare actions and window menu
     def save_params(wind: FnExecuteWindow, action: Action):
         print("Save current parameters of the window to a file")
         wind.save_parameter_values()
@@ -48,7 +47,5 @@ if __name__ == "__main__":
     menu_file = Menu(title="File", actions=[action_save, action_load])
 
     adapter = GUIAdapter()
-    # add the function and set the window menus of it
     adapter.add(load_and_save_demo, window_menus=[menu_file])
-    # run the adapter
-    adapter.run()
+    adapter.run(show_select_window=True)
