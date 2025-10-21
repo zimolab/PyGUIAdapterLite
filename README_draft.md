@@ -2507,9 +2507,353 @@ if __name__ == "__main__":
 
 
 
-### 3.9 自定义参数类型及其控件
+### 3.9 自定义参数控件
 
-> TODO
+尽管`PyGUIAdapterLite`内建了很多参数控件类型，能够覆盖绝大多少应用场景，但有时开发者可能需要支持更加复杂的自定义类型，对此，`PyGUIAdapterLite`提供了简单扩展机制，使开发者可以轻松地创建自定义参数控件，并像使用内置控件一样使用它。
+
+要创建自定义参数控件，一是需要继承`BaseParameterWidget`创建自己的控件类，二是需要继承`BaseParameterWidgetConfig`创建自定义控件类的配置类。假设我们现在要为如下自定义类型创建参数控件：
+
+```python
+class Point2D(object):
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+```
+
+从其定义可知，`Point2D`包含2个`int`类型的成员对象，因此我们打算创建一个包含2个`Spinbox`控件的自定义参数控件来作为其输入控件，按照习惯，可以将这个类命名为`Point2DValueWidget`，同时，我们要为`Point2DValueWidget`创建对应的配置类，按照习惯，可以将这个配置类命名为`Point2DValue`。
+
+先将两个类的基本框架搭建起来：
+
+```python
+@dataclasses.dataclass(frozen=True)
+class Point2DValue(BaseParameterWidgetConfig):
+    default_value: Point2D = dataclasses.field(default_factory=lambda: Point2D(0, 0))
+
+    @classmethod
+    def target_widget_class(cls) -> Type["BaseParameterWidget"]:
+        return Point2DValueWidget
+
+
+class Point2DValueWidget(BaseParameterWidget):
+
+    ConfigClass = Point2DValue
+
+    def __init__(self, parent: Widget, parameter_name: str, config: Point2DValue):
+        super().__init__(parent, parameter_name, config)
+
+    def get_value(self) -> Union[Point2D, InvalidValue]:
+        pass
+
+    def set_value(self, value: Any) -> Union[Point2D, InvalidValue]:
+
+        pass
+
+    def build(self) -> "BaseParameterWidget":
+        pass
+```
+
+下面是几个需要注意的地方：
+
+- 对于配置类`Point2DValue`，它必须是一个继承自`BaseParameterWidgetConfig`的`dataclass`，并且需要指定`frozen=True`
+- 在配置类`Point2DValue`中，必须override父类的`target_widget_class()`方法，该方法是一个类方法（classmethod），该方法的返回值是其关联的参数控件类，即`Point2DValueWidget`。(注意：这里返回的是参数控件类`Point2DValueWidget`本身，而不是参数控件类的实例！！)
+- 在配置类`Point2DValue`中，通常要覆盖父类中的`default_value`字段，为该字段提供一个合适值，该值将作为参数的默认值，也是控件中显示的初始值。因为`Point2D`是一个对象类型，所以应当`dataclasses.field(default_factory=...)`的方式为其指定值。
+- 自定义参数控件类`Point2DValueWidget`，需要定义一个名为`ConfigClass`的类成员变量，它的值是对应的配置类，也就是`Point2DValue`（再次注意，这里仍然应当将值指定为配置类本身，而非其实例！！）。
+- 在自定义参数控件类`Point2DValueWidget`中，需要实现三个抽象方法：
+  - `get_value()`，该方法用于从参数获取当前值，如果获取失败（比如用户在控件中输入了非法的值），该方法应当返回一个`InvalidValue`对象。
+  - `set_value()`，该方法用于将用户传入的值设置到控件中，如果设置失败（比如用户传入了一个非法的对象），该非法应当返回一个`InvalidValue`对象。
+  - `build()`，该方法用于实际创建输入控件。
+
+接下来，我们逐步完善上述代码框架。首先是配置类`Point2DValue`，可以在其中定义一些后续在`Point2DValueWidget`中用到的属性，比如，定义`x`，`y`对应Spinbox的最大、最小、步进值：
+
+```python
+@dataclasses.dataclass(frozen=True)
+class Point2DValue(BaseParameterWidgetConfig):
+    default_value: Point2D = dataclasses.field(default_factory=lambda: Point2D(0, 0))
+    max_x: int = 100
+    max_y: int = 100
+    min_x: int = -100
+    min_y: int = -100
+    x_step: int = 1
+    y_step: int = 1
+
+    @classmethod
+    def target_widget_class(cls) -> Type["BaseParameterWidget"]:
+        return Point2DValueWidget
+```
+
+接着，分别实现`Point2DValueWidget`类中的三个抽象方法。建议首先实现`build()`，需要在该方法中创建实际的输入控件，也就是代表x、y字段的两个Spinbox：
+
+```python
+    def build(self) -> "BaseParameterWidget":
+        if self._is_build:
+            return self
+        config: Point2DValue = self.config
+        self._x_spinbox = Spinbox(
+            self,
+            from_=config.min_x,
+            to=config.max_x,
+            increment=config.x_step,
+        )
+        self._y_spinbox = Spinbox(
+            self,
+            from_=config.min_y,
+            to=config.max_y,
+            increment=config.y_step,
+        )
+        self._x_spinbox.pack(side="left", padx=5)
+        self._y_spinbox.pack(side="left", padx=5)
+        #将default_value设置x、y控件的初始值
+        if config.default_value is not None:
+            self._x_spinbox.set(config.default_value.x)
+            self._y_spinbox.set(config.default_value.y)
+        self._is_build = True
+        return self
+
+```
+
+几个需注意的点：
+
+- 一般需要定义一个`_is_build`成员变量，该变量用于标记`build()`是否已被调用过，防止重复创建控件。
+- 在自定义控件类的成员方法中，可以使用`self.config`属性来获取其配置类对象
+
+接下来，实现`get_value()`，该方法比较简单，就是从x、y的Spinbox，然后创建并返回一个`Point2D`对象。当然，我们可以视情况返回一个`InvalidValue`，用来表示当前界面上的值是一个非法值，比如可以把下面这几种情况视为值是非法的：‘
+
+- 当前Spinbox上的值无法转换为int
+- 当前Spinbox上的值超出了最大、最小范围
+
+```python
+    def get_value(self) -> Union[Point2D, InvalidValue]:
+        raw_x = self._x_spinbox.get()
+        raw_y = self._y_spinbox.get()
+        try:
+            x = int(raw_x)
+            y = int(raw_y)
+        except BaseException as e:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg="cannot convert x or y to an integer",
+                exception=e,
+            )
+        config: Point2DValue = self.config
+        if x < config.min_x or x > config.max_x:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg=f"x value should be between {config.min_x} and {config.max_x}"
+            )
+        if y < config.min_y or y > config.max_y:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg=f"y value should be between {config.min_y} and {config.max_y}"
+            )
+        return Point2D(x, y)
+```
+
+最后，实现`set_value()`方法，该方法的逻辑同样非常简单，就是要用将用户传入的值更新x、y对应的控件，当然这里不能假定用户传入的就是合法的`Point2D`对象，它可能是任何奇奇怪怪的东西，所以这里最好也做个检查，当接收到非法值后，也返回一个`InvalidValue`对象：
+
+```python
+    def set_value(self, value: Any) -> Union[Point2D, InvalidValue]:
+        if not isinstance(value, Point2D):
+            return InvalidValue(
+                raw_value=value,
+                msg="value should be a Point2D object",
+            )
+        config: Point2DValue = self.config
+        if value.x < config.min_x or value.x > config.max_x:
+            return InvalidValue(
+                raw_value=value,
+                msg=f"x value should be between {config.min_x} and {config.max_x}",
+            )
+        if value.y < config.min_y or value.y > config.max_y:
+            return InvalidValue(
+                raw_value=value,
+                msg=f"y value should be between {config.min_y} and {config.max_y}",
+            )
+        self._x_spinbox.set(value.x)
+        self._y_spinbox.set(value.y)
+        return value
+```
+
+到这里我们就实现了一个自定义参数控件类所要求的必备要素。为了让`PyGUIAdapterLite`可以自动识别`Point2D`类，我们还差最后一步：将`Point2D`与其控件类`Point2DValueWidget`关联起来，为此我们需要调用`ParameterWidgetFactory.register()`方法：
+
+```python
+ParameterWidgetFactory.register(Point2D, Point2DValueWidget)
+```
+
+至此，我们就可以如同使用内置类型一样使用`Point2D`用户函数的参数了：
+
+```python
+def test_point2d(point1: Point2D, point2: Point2D = Point2D(50, 60)):
+    uprint(f"point1:({point1.x},{point1.y}), type: {type(point1)}")
+    uprint(f"point2:({point2.x},{point2.y}), type: {type(point2)}")
+
+
+if __name__ == "__main__":
+    ParameterWidgetFactory.register(Point2D, Point2DValueWidget)
+    adapter = GUIAdapter()
+    adapter.add(
+        test_point2d,
+        point1=Point2DValue(
+            default_value=Point2D(10, 20),
+            min_x=0,
+            max_x=100,
+            min_y=0,
+            max_y=100,
+            x_step=10,
+            y_step=10,
+        ),
+    )
+    adapter.run()
+```
+
+通过`PyGUIAdapterLite`提供的扩展参数控件的机制，开发者可以尽情发挥创意，为任何类型创建专属的输入控件。
+
+下面是完整的示例代码：
+
+```python
+import dataclasses
+from tkinter import Widget
+from tkinter.ttk import Spinbox
+from typing import Type, Any, Union, Optional
+
+from pyguiadapterlite import uprint, GUIAdapter, ParameterWidgetFactory
+from pyguiadapterlite.components.valuewidget import (
+    BaseParameterWidgetConfig,
+    BaseParameterWidget,
+    InvalidValue,
+)
+
+
+class Point2D(object):
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+
+@dataclasses.dataclass(frozen=True)
+class Point2DValue(BaseParameterWidgetConfig):
+    default_value: Point2D = dataclasses.field(default_factory=lambda: Point2D(0, 0))
+    max_x: int = 100
+    max_y: int = 100
+    min_x: int = -100
+    min_y: int = -100
+    x_step: int = 1
+    y_step: int = 1
+
+    @classmethod
+    def target_widget_class(cls) -> Type["BaseParameterWidget"]:
+        return Point2DValueWidget
+
+
+class Point2DValueWidget(BaseParameterWidget):
+
+    ConfigClass = Point2DValue
+
+    def __init__(self, parent: Widget, parameter_name: str, config: Point2DValue):
+        self._x_spinbox: Optional[Spinbox] = None
+        self._y_spinbox: Optional[Spinbox] = None
+        self._is_build = False
+
+        super().__init__(parent, parameter_name, config)
+
+    def get_value(self) -> Union[Point2D, InvalidValue]:
+        raw_x = self._x_spinbox.get()
+        raw_y = self._y_spinbox.get()
+        try:
+            x = int(raw_x)
+            y = int(raw_y)
+        except BaseException as e:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg="cannot convert x or y to an integer",
+                exception=e,
+            )
+        config: Point2DValue = self.config
+        if x < config.min_x or x > config.max_x:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg=f"x value should be between {config.min_x} and {config.max_x}",
+            )
+        if y < config.min_y or y > config.max_y:
+            return InvalidValue(
+                raw_value=(raw_x, raw_y),
+                msg=f"y value should be between {config.min_y} and {config.max_y}",
+            )
+        return Point2D(x, y)
+
+    def set_value(self, value: Any) -> Union[Point2D, InvalidValue]:
+        if not isinstance(value, Point2D):
+            return InvalidValue(
+                raw_value=value,
+                msg="value should be a Point2D object",
+            )
+        config: Point2DValue = self.config
+        if value.x < config.min_x or value.x > config.max_x:
+            return InvalidValue(
+                raw_value=value,
+                msg=f"x value should be between {config.min_x} and {config.max_x}",
+            )
+        if value.y < config.min_y or value.y > config.max_y:
+            return InvalidValue(
+                raw_value=value,
+                msg=f"y value should be between {config.min_y} and {config.max_y}",
+            )
+        self._x_spinbox.set(value.x)
+        self._y_spinbox.set(value.y)
+        return value
+
+    def build(self) -> "BaseParameterWidget":
+        if self._is_build:
+            return self
+        config: Point2DValue = self.config
+        self._x_spinbox = Spinbox(
+            self,
+            from_=config.min_x,
+            to=config.max_x,
+            increment=config.x_step,
+        )
+        self._y_spinbox = Spinbox(
+            self,
+            from_=config.min_y,
+            to=config.max_y,
+            increment=config.y_step,
+        )
+        self._x_spinbox.pack(side="left", padx=5)
+        self._y_spinbox.pack(side="left", padx=5)
+        if config.default_value is not None:
+            self._x_spinbox.set(config.default_value.x)
+            self._y_spinbox.set(config.default_value.y)
+        self._is_build = True
+        return self
+
+
+def test_point2d(point1: Point2D, point2: Point2D = Point2D(50, 60)):
+    uprint(f"point1:({point1.x},{point1.y}), type: {type(point1)}")
+    uprint(f"point2:({point2.x},{point2.y}), type: {type(point2)}")
+
+
+if __name__ == "__main__":
+    ParameterWidgetFactory.register(Point2D, Point2DValueWidget)
+    adapter = GUIAdapter()
+    adapter.add(
+        test_point2d,
+        point1=Point2DValue(
+            default_value=Point2D(10, 20),
+            min_x=0,
+            max_x=100,
+            min_y=0,
+            max_y=100,
+            x_step=10,
+            y_step=10,
+        ),
+    )
+    adapter.run()
+```
+
+效果如下：
+
+<img src = "./docs/custom_param_widget.gif" style="height:auto;width:75%"/>
+
+
 
 
 
