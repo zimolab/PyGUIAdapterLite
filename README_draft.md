@@ -2861,7 +2861,7 @@ if __name__ == "__main__":
 
 #### 关于i18n
 
-`PyGUIAdapterLite`基于python内置的`gettext`实现了简单的国际化机制，并为`PyGUIAdapterLite`内部需要翻译的文本创建了翻译模板文件[`pyguiadapterlite/locales/pyguiadapterlite.pot`](pyguiadapterlite/locales/pyguiadapterlite.pot)文件，并内置了中文翻译文件[`pyguiadapterlite/locales/zh_CN.po`](pyguiadapterlite/locales/zh_CN.pot)，及其预编译的mo文件[`pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo`](pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo)。
+`PyGUIAdapterLite`基于python内置的`gettext`实现了简单的国际化机制，并为`PyGUIAdapterLite`内部需要翻译的文本创建了翻译模板文件[`pyguiadapterlite/locales/pyguiadapterlite.pot`](pyguiadapterlite/locales/pyguiadapterlite.pot)文件，并内置了中文翻译文件[`pyguiadapterlite/locales/zh_CN.po`](pyguiadapterlite/locales/zh_CN.po)，及其预编译的mo文件[`pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo`](pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo)。
 
 默认情况下，`PyGUIAdapterLite`会自动探测当前系统的`locale`，如果该`locale`在指定`localedir`存在对应的翻译文件，则会使用该文件，如果未找到，则使用原始字符串（英文）。`PyGUIAdapterLite`允许开发者指定`localedir`、当前`locale`，以便开发者添加或使用`locales`。
 
