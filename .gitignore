@@ -16,3 +16,4 @@ poetry.lock
 tmp.md
 prof*.py
 pyguiadapterlite/locales/*.mo
+examples/locales/
