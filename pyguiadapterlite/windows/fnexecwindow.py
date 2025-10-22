@@ -32,11 +32,9 @@ from pyguiadapterlite._messages import (
     MSG_SET_PARAMS_FAILED,
     MSG_LOAD_PARAMS_SUCCESS,
     MSG_INVALID_PARAMS_NOT_APPLIED,
+    MSG_DEFAULT_PARAM_GROUP_NAME,
 )
-from pyguiadapterlite.components.paramtabview import (
-    ParameterGroupTabView,
-    DEFAULT_GROUP_NAME,
-)
+from pyguiadapterlite.components.paramtabview import ParameterGroupTabView
 from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
 from pyguiadapterlite.components.termview import TermView
 from pyguiadapterlite.components.textview import TextView, SimpleTextViewer
@@ -88,7 +86,7 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     clear_checkbox_checked: bool = True
     """清除复选框默认是否选中。"""
 
-    default_parameter_group_name: str = DEFAULT_GROUP_NAME
+    default_parameter_group_name: str = MSG_DEFAULT_PARAM_GROUP_NAME
     """默认参数分组名称"""
 
     document_tab: bool = True
