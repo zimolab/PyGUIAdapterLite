@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-21 23:39+0800\n"
+"POT-Creation-Date: 2025-10-22 20:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zimolab@aliyun.com\n"
@@ -46,7 +46,7 @@ msgid "Critical"
 msgstr ""
 
 #: _messages.py:15
-msgid "No function documentation available."
+msgid "No documentation provided."
 msgstr ""
 
 #: _messages.py:17
@@ -425,4 +425,8 @@ msgstr ""
 
 #: _messages.py:134
 msgid "The following parameters are invalid and will not be applied:"
+msgstr ""
+
+#: _messages.py:136
+msgid "Main"
 msgstr ""
