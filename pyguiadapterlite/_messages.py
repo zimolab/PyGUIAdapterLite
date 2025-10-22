@@ -12,7 +12,7 @@ MSG_INFO_TITLE = tr_("Information")
 MSG_QUESTION_TITLE = tr_("Question")
 MSG_CRITICAL_TITLE = tr_("Critical")
 
-MSG_NO_FUNC_DOC = tr_("No function documentation available.")
+MSG_NO_FUNC_DOC = tr_("No documentation provided.")
 
 MSG_COPY = tr_("Copy")
 MSG_CUT = tr_("Cut")
@@ -133,3 +133,4 @@ MSG_LOAD_PARAMS_SUCCESS = tr_("Parameters loaded successfully!")
 MSG_INVALID_PARAMS_NOT_APPLIED = tr_(
     "The following parameters are invalid and will not be applied:"
 )
+MSG_DEFAULT_PARAM_GROUP_NAME = tr_("Main")
