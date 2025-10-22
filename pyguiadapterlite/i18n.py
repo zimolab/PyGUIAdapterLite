@@ -167,10 +167,10 @@ class I18N:
             print(f"exporting built-in locales to {localedir}")
         self._localedir = localedir
 
-        if not (locale_code and locale_code.strip()):
-            locale_code = os.environ.get(ENV_LOCALE, _DEFAULT_LOCALE)
-            if locale_code.lower() == "auto":
-                locale_code = _default_detector.detect()
+        locale_code = os.environ.get(ENV_LOCALE, None)
+        locale_code = (locale_code or "").strip()
+        if locale_code.lower() == "auto" or locale_code == "":
+            locale_code = _default_detector.detect()
         self._current_locale = locale_code
 
         try:
