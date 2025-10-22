@@ -147,7 +147,7 @@ class I18N:
 
     def set_locale(
         self,
-        locale_code: str,
+        locale_code: Optional[str] = None,
         domain: Optional[str] = None,
         localedir: Optional[str] = None,
     ) -> None:
@@ -167,7 +167,7 @@ class I18N:
             print(f"exporting built-in locales to {localedir}")
         self._localedir = localedir
 
-        locale_code = os.environ.get(ENV_LOCALE, None)
+        locale_code = os.environ.get(ENV_LOCALE, locale_code)
         locale_code = (locale_code or "").strip()
         if locale_code.lower() == "auto" or locale_code == "":
             locale_code = _default_detector.detect()
