@@ -6,11 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-21 23:39+0800\n"
-"PO-Revision-Date: 2025-10-22 00:26+0800\n"
+"POT-Creation-Date: 2025-10-22 20:19+0800\n"
+"PO-Revision-Date: 2025-10-22 20:27+0800\n"
 "Last-Translator: \n"
 "Language-Team: zimolab@aliyun.com\n"
-"Language: en_US\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,31 +24,31 @@ msgstr ""
 
 #: _messages.py:7
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: _messages.py:9
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: _messages.py:10 _messages.py:54
 msgid "Error"
-msgstr ""
+msgstr "错误"
 
 #: _messages.py:11
 msgid "Information"
-msgstr ""
+msgstr "信息"
 
 #: _messages.py:12
 msgid "Question"
-msgstr ""
+msgstr "询问"
 
 #: _messages.py:13
 msgid "Critical"
-msgstr ""
+msgstr "严重"
 
 #: _messages.py:15
-msgid "No function documentation available."
-msgstr ""
+msgid "No documentation provided."
+msgstr "未提供说明文档！"
 
 #: _messages.py:17
 msgid "Copy"
@@ -398,32 +398,36 @@ msgstr ""
 
 #: _messages.py:126
 msgid "Parameters saved successfully!"
-msgstr ""
+msgstr "参数保存成功！"
 
 #: _messages.py:127
 msgid "Failed to load parameters from file!"
-msgstr ""
+msgstr "无法从文件中加载参数！"
 
 #: _messages.py:128
 msgid "Failed to deserialize parameters!"
-msgstr ""
+msgstr "无法反序列化参数！"
 
 #: _messages.py:129
 msgid "Failed to set parameters!"
-msgstr ""
+msgstr "设置参数失败！"
 
 #: _messages.py:130
 msgid "Invalid parameters found!"
-msgstr ""
+msgstr "发现无效参数！"
 
 #: _messages.py:131
 msgid "Load File"
-msgstr ""
+msgstr "加载文件"
 
 #: _messages.py:132
 msgid "Parameters loaded successfully!"
-msgstr ""
+msgstr "已成功加载参数！"
 
 #: _messages.py:134
 msgid "The following parameters are invalid and will not be applied:"
-msgstr ""
+msgstr "以下参数未通过校验，请进行检查："
+
+#: _messages.py:136
+msgid "Main"
+msgstr "主参数"
