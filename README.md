@@ -1,6 +1,9 @@
 # PyGUIAdapterLite
 
 
+
+**[English](README_en.md)**
+
 ## 目录
 
 - [PyGUIAdapterLite](#pyguiadapterlite)
@@ -75,7 +78,7 @@
 
 ## 0. 一些背景
 
-`PyGUIAdapterLite`是我另一个开源项目[`PyGUIAdapter`](https://github.com/zimolab/PyGUIAdapterLite)的Lite版本，在保持基本功能一致的情况下，聚焦于“轻量化”这一目标。因此，它去除了`PyGUIAdapter`中最重量级的外部依赖——`Qt`，使用了更轻量级的`tkinter`作为GUI后端。
+`PyGUIAdapterLite`是我另一个开源项目[`PyGUIAdapter`](https://github.com/zimolab/PyGUIAdapter)的Lite版本，在保持基本功能一致的情况下，聚焦于“轻量化”这一目标。因此，它去除了`PyGUIAdapter`中最重量级的外部依赖——`Qt`，使用了更轻量级的`tkinter`作为GUI后端。
 
 使用`tkinter`最大的好处是， 它是Python的标准GUI库，绝大多数情况下随Python一起安装，不需要任何额外的步骤，这也意味着我们基本上无需考虑它与python的版本兼容性以及跨平台问题。
 
@@ -109,7 +112,7 @@
 `PyGUIAdapterLite`的wheel包已经发布到`PyPI`上，可以直接通过pip安装：
 
 ```bash
-> pip install pyguiadapterlite
+pip install pyguiadapterlite
 ```
 
 如果要体验最新功能，可以从GitHub上clone整个项目，然后自行构建:
@@ -117,15 +120,15 @@
 > `PyGUIAdapterLite`使用了`poetry`作为项目管理和构建工具，因此需要先安装`poetry`。
 
 ```bash
-> git clone https://github.com/zimolab/PyGUIAdapterLite.git
-> cd PyGUIAdapterLite/
-> poetry install
-> poetry build
+git clone https://github.com/zimolab/PyGUIAdapterLite.git
+cd PyGUIAdapterLite/
+poetry install
+poetry build
 ```
 
 ## 2. 快速入门
 
-使用`PyGUIAdapterLite`非常简单，首先准备好需要翻译为GUI界面的函数。以下面这个最简单的函数为例：
+使用`PyGUIAdapterLite`非常简单，首先准备好需要翻译为GUI界面的函数。以下面这个简单的函数为例：
 
 ```pycon
 def sum_two_numbers(a: int, b: int) -> int:
@@ -142,7 +145,8 @@ def sum_two_numbers(a: int, b: int) -> int:
     return a + b
 ```
 
-然后，创建`GUIAdapter`示例，调用`GUIAdapter.add()`将上述函数添加到实例中，最后调用`GUIAdapter.run()`将该函数翻译为GUI界面：
+然后，创建`GUIAdapter`实例，调用`GUIAdapter.add()`将上述函数添加到实例中，最后调用`GUIAdapter.run()
+`将该函数翻译为GUI界面：
 
 ```python
 
@@ -186,7 +190,8 @@ if __name__ == "__main__":
 
 - `PyGUIAdapterLite`为函数的每一个参数创建一个输入控件，输入控件的类型取决于参数的类型，而参数的类型通常通过其typing hint进行推导。`PyGUIAdapterLite`会读取和分析函数参数的类型注解信息，并自动匹配适合的输入控件。
 
-> 也可以在不使用类型标准的情况下为参数指定输入控件类型，这涉及到`GUIAdapterLite`的进阶用法。并且，无论在何种情况下，均推荐用户使用类型注解来描述函数参数。事实证明，这样做可以大大提高代码的可读性和可维护性。
+> 也可以在不使用类型标注的情况下为参数指定输入控件类型，这涉及到`GUIAdapterLite
+> `的进阶用法。并且，无论在何种情况下，均推荐用户使用类型注解来描述函数参数。事实证明，这样做可以大大提高代码的可读性和可维护性。
 
 - `PyGUIAdapterLite`也会读取和分析函数的`docstring`，并自动生成对应的帮助信息。帮助信息包含两种类型，一种是函数的描述信息，另一种是函数的每个参数的描述信息。对于函数的描述信息，`PyGUIAdapterLite`会将其显示在单独的Tab页中，而对于参数的描述信息，`PyGUIAdapterLite`会将其显示在每个参数对应的输入控件的旁边，以`tooltip`的形式进行展示。
 
@@ -802,7 +807,9 @@ if __name__ == "__main__":
 
 在默认情况下，`PyGUIAdapterLite`将尝试捕获用户函数中发生的任何异常/错误。因此，一般情况下，用户函数中发生的异常不会导致整个程序退出。当捕获到用户函数中发生的异常时，默认的做法是，弹出一个对话框提示用户某处发生了异常（可以通过配置禁止这一默认行为，具体做法参见[3.7 窗口配置](#37-窗口配置)一节），同时在窗口的模块终端区域打印异常的详细信息，包括trackback信息。
 
+
 下面这段简短的代码尝试引发一个“除零异常”（`ZeroDivisionError`），观察`PyGUIAdapter`如何捕捉和处理这个异常。
+
 
 ```python
 from pyguiadapterlite import uprint, GUIAdapter
@@ -937,8 +944,7 @@ if __name__ == "__main__":
 
 ##### （2）通过参数校验函数进行参数校验
 
-除了上述方法，`PyGUIAdapterLite`还允许开发者定义一个专门的参数校验函数，__在调用用户函数之前__对函数参数进行检查。
-
+除了上述方法，`PyGUIAdapterLite`还允许开发者定义一个专门用于参数校验的函数。`PyGUIAdapterLite`会在实际调用调用用户函数之前，调用该函数来对当前参数值进行检查。
 参数校验函数的定义应当符合如下条件：
 
 - 函数名称任意
@@ -968,7 +974,7 @@ def validate_user_func(func_name: str, **params) -> Dict[str, str]:
   
 ```
 
-或者，不通过关键字参数而是直接获取待校验参数：
+还可以将校验函数定义为如下形式：
 
 ```python
 def validate_user_func(func_name: str, *, param1: int, param2: str, param3: file_t) -> Dict[str, str]:
@@ -1747,8 +1753,7 @@ if __name__ == "__main__":
 
 <img src = "./docs/ANSI_code.png" style="height:auto;width:75%"/>
 
-`PyGUIAdapterLite`为开发者提供了实体进度条，开发者可以在其函数中显示、更新、隐藏进度条。进度条由两个部分组成：一是进度条本体，二是位于进度条本体下方的消息标签。开发者可以在函数中动态更新当前进度和消息标签中的内容。要启用进度条及其消息标签，需要将`GUIAdapter.add()`非法的`enable_progressbar`和`enable_progress_label`指定为`True`。
-
+`PyGUIAdapterLite`为开发者提供了实体进度条，开发者可以在其函数中显示、更新、隐藏进度条。进度条由两个部分组成：一是进度条本体，二是位于进度条本体下方的消息标签。开发者可以在函数中动态更新当前进度和消息标签中的内容。要启用进度条及其消息标签，在调用`GUIAdapter.add()`时将`enable_progressbar`和`enable_progress_label`指定为`True`。
 <img src = "./docs/progressbar.png" style="height:auto;width:75%"/>
 
 
@@ -1910,7 +1915,7 @@ if __name__ == "__main__":
 
 
 
-下面时函数执行窗口的可配置属性：
+下面是函数执行窗口的可配置属性：
 
 | 字段名                         | 类型                                                         | 默认值                                        | 描述                                                         |
 | :----------------------------- | :----------------------------------------------------------- | :-------------------------------------------- | :----------------------------------------------------------- |
@@ -1951,7 +1956,7 @@ if __name__ == "__main__":
 
 
 
-下面时函数选择窗口支持的可配置属性：
+下面是函数选择窗口支持的可配置属性：
 
 | 字段名                   | 类型    | 默认值                        | 描述                   |
 | :----------------------- | :------ | :---------------------------- | :--------------------- |
@@ -2030,8 +2035,6 @@ if __name__ == "__main__":
 对于`convert_pngs()`函数的执行窗口：
 
 <img src = "./docs/exec_config.gif" style="height:auto;width:75%"/>
-
-
 
 
 
