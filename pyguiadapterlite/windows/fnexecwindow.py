@@ -563,6 +563,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._close_param_validation_win()
         UContext.execute_window_closed()
         _info(f"execute window closed(fn={self.fn_info.fn_name})")
+        self._fn_info = None
+        self._main_area.clear_parameters()
+        self._main_area.clear(destroy_content=True)
+        self._main_area = None
+        self._bottom_area = None
         return super().on_close()
 
     def on_execute(self):

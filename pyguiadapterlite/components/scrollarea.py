@@ -190,6 +190,8 @@ class NColumnScrollableArea(Frame):
         """清除所有行"""
         for row_widgets in self._rows:
             for widget in row_widgets:
+                if hasattr(widget, "_current_window"):
+                    widget._current_window = None
                 widget.destroy()
         self._rows.clear()
         self._update_scroll_area()

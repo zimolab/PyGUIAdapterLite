@@ -141,6 +141,7 @@ class ParameterGroupTabView(TabView):
 
     def clear_parameters(self):
         for group_name, group in self.parameter_groups:
+            group._current_window = None
             group.clear_parameters()
 
     def create_parameter_tab(self) -> ParameterWidgetArea:
