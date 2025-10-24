@@ -1,5 +1,5 @@
 import dataclasses
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
 from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union
@@ -209,3 +209,27 @@ class BaseParameterWidget(Frame):
 
 def is_parameter_widget_class(o: Any) -> bool:
     return o is not None and isclass(o) and issubclass(o, BaseParameterWidget)
+
+
+class NonValue(object):
+    pass
+
+
+_NON_VALUE = NonValue()
+
+
+class NonValueParameterWidgetConfig(BaseParameterWidgetConfig):
+
+    hide_label: bool = True
+
+    @classmethod
+    def target_widget_class(cls) -> Type["BaseParameterWidget"]:
+        return NonValueParameterWidget
+
+
+class NonValueParameterWidget(BaseParameterWidget, metaclass=ABCMeta):
+    def get_value(self) -> Union[Any, InvalidValue]:
+        return _NON_VALUE
+
+    def set_value(self, value: Any) -> Union[Any, InvalidValue]:
+        return _NON_VALUE
