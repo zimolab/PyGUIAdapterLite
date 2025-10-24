@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Union
 
 _PACKAGE_NAME = "pyguiadapterlite"
+_ASSETS_DIR_NAME = "_assets"
 _LOCALES_DIR_NAME = "locales"
 _TOOLS_DIR_NAME = "tools"
 _IMAGES_DIR_NAME = "images"
@@ -24,12 +25,14 @@ def assets_dir(path: Union[str, Path, None] = None):
     try:
         from importlib.resources import as_file, files
 
-        with as_file(files(_PACKAGE_NAME).joinpath(path)) as path:
+        with as_file(files(_PACKAGE_NAME).joinpath(_ASSETS_DIR_NAME, path)) as path:
             return path
     except ImportError:
         import pkg_resources
 
-        return Path(pkg_resources.resource_filename(_PACKAGE_NAME, path))
+        return Path(
+            pkg_resources.resource_filename(_PACKAGE_NAME, _ASSETS_DIR_NAME)
+        ).joinpath(path)
 
 
 def tools_dir() -> Path:
