@@ -218,8 +218,9 @@ class NonValue(object):
 _NON_VALUE = NonValue()
 
 
+@dataclasses.dataclass(frozen=True)
 class NonValueParameterWidgetConfig(BaseParameterWidgetConfig):
-
+    default_value: Any = _NON_VALUE
     hide_label: bool = True
 
     @classmethod
