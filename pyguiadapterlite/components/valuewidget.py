@@ -137,6 +137,8 @@ class BaseParameterWidget(Frame):
 
         self._color_flash_effect = ColorFlashEffect(self, "red", 800, 3)
 
+        self._current_window: Optional["FnExecuteWindow"] = None
+
     @property
     def parameter_name(self) -> str:
         return self._parameter_name
@@ -160,6 +162,10 @@ class BaseParameterWidget(Frame):
     @description.setter
     def description(self, value: str):
         self._description = value
+
+    @property
+    def current_window(self) -> Optional["FnExecuteWindow"]:
+        return self._current_window
 
     @property
     def color_flash_effect(self) -> ColorFlashEffect:
@@ -188,8 +194,11 @@ class BaseParameterWidget(Frame):
         parent: Widget,
         parameter_name: str,
         config: _T,
+        window: Optional["FnExecuteWindow"] = None,
     ):
-        return cls(parent, parameter_name, config).build()
+        instance = cls(parent, parameter_name, config).build()
+        instance._current_window = window
+        return instance
 
     def start_invalid_value_effect(self):
         self._color_flash_effect.start()

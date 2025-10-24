@@ -285,10 +285,12 @@ class ParameterWidgetArea(NColumnScrollableArea):
         label_anchor: str = E + W,
         parameter_anchor: str = E + W,
         parameter_infos: Optional[Dict[str, ParameterInfo]] = None,
+        window: Optional["FnExecuteWindow"] = None,
         **kwargs,
     ):
         self._tooltips: Dict[str, ToolTip] = {}
         self._parameter_infos = parameter_infos or {}
+        self._current_window = window
 
         super().__init__(
             parent,
@@ -317,7 +319,10 @@ class ParameterWidgetArea(NColumnScrollableArea):
             )
 
         input_widget = cls.new(
-            parent=self._inner_frame, parameter_name=parameter_name, config=config
+            parent=self._inner_frame,
+            parameter_name=parameter_name,
+            config=config,
+            window=self._current_window,
         )
         param_name_label = Label(self._inner_frame, text=input_widget.label)
         if config.description:

@@ -19,9 +19,11 @@ class ParameterGroupTabView(TabView):
         self,
         parent: Union[Widget, Tk, Toplevel],
         default_group_name: str = MSG_DEFAULT_PARAM_GROUP_NAME,
+        window: Optional["FnExecuteWindow"] = None,
         **kwargs,
     ):
         self._default_group_name = default_group_name
+        self._current_window = window
         super().__init__(parent, **kwargs)
 
     def _create_parameter_group(self, group_name: str) -> ParameterWidgetArea:
@@ -142,4 +144,4 @@ class ParameterGroupTabView(TabView):
             group.clear_parameters()
 
     def create_parameter_tab(self) -> ParameterWidgetArea:
-        return ParameterWidgetArea(self._notebook)
+        return ParameterWidgetArea(self._notebook, window=self._current_window)

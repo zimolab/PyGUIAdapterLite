@@ -203,7 +203,9 @@ class MainArea(ParameterGroupTabView):
 
     def create_parameter_tab(self) -> ParameterWidgetArea:
         return ParameterWidgetArea(
-            self._notebook, parameter_infos=self._fn_info.parameter_infos
+            self._notebook,
+            parameter_infos=self._fn_info.parameter_infos,
+            window=self._parent_window,
         )
 
     def _add_function_parameters(self):
