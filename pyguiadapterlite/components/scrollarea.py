@@ -9,6 +9,8 @@ from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
     InvalidValue,
+    NonValueParameterWidget,
+    NonValue,
 )
 from pyguiadapterlite.core.fn import ParameterInfo
 
@@ -385,7 +387,9 @@ class ParameterWidgetArea(NColumnScrollableArea):
                 return w
         return None
 
-    def get_parameter_value(self, parameter_name: str) -> Union[Any, InvalidValue]:
+    def get_parameter_value(
+        self, parameter_name: str
+    ) -> Union[Any, NonValue, InvalidValue]:
         widget = self.get_parameter_widget(parameter_name)
         if widget is None:
             raise ParameterNotFound(f"parameter {parameter_name} not found")
@@ -393,11 +397,17 @@ class ParameterWidgetArea(NColumnScrollableArea):
 
     def get_parameter_values(self) -> Dict[str, Union[Any, InvalidValue]]:
         widgets: Tuple[BaseParameterWidget, ...] = self.select_column(1)
-        return {w.parameter_name: w.get_value() for w in widgets}
+        return {
+            w.parameter_name: w.get_value()
+            for w in widgets
+            # 过滤掉NonValueParameterWidget控件
+            # 因为该类控件并不是用于表示参数的值的控件
+            if not isinstance(w, NonValueParameterWidget)
+        }
 
     def set_parameter_value(
         self, parameter_name: str, value: Any
-    ) -> Union[Any, InvalidValue]:
+    ) -> Union[Any, NonValue, InvalidValue]:
         widget = self.get_parameter_widget(parameter_name)
         if widget is None:
             raise ParameterNotFound(f"parameter {parameter_name} not found")
@@ -414,6 +424,10 @@ class ParameterWidgetArea(NColumnScrollableArea):
                     continue
                 raise ParameterNotFound(f"parameter {parameter_name} not found")
             else:
+                # 过滤掉NonValueParameterWidget控件
+                # 因为该类控件并不是用于表示参数的值的控件
+                if isinstance(widget, NonValueParameterWidget):
+                    continue
                 ret_value = widget.set_value(value)
                 ret[parameter_name] = ret_value
         return ret
