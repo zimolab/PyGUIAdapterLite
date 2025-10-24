@@ -406,7 +406,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._param_validation_win_parent: Optional[Toplevel] = None
         self._param_validation_win: Optional[ParameterValidationWindow] = None
 
-        super().__init__(parent, config or FnExecuteWindowConfig())
+        super().__init__(parent, config)
 
         executor_cls = fn_info.executor or ThreadedExecutor
         self._executor = executor_cls(listener=self)
