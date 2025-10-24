@@ -307,11 +307,12 @@ class ParameterWidgetArea(NColumnScrollableArea):
         # 某些类的些控件可能需在实例化前对config进行一些处理
         # 因此需调用on_post_process_config()类方法
         parameter_info = self._parameter_infos.get(parameter_name, None)
-        config = cls.on_post_process_config(
-            config,
-            parameter_name,
-            parameter_info,
-        )
+        if parameter_info:
+            config = cls.on_post_process_config(
+                config,
+                parameter_name,
+                parameter_info,
+            )
 
         input_widget = cls.new(
             parent=self._inner_frame, parameter_name=parameter_name, config=config
