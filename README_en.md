@@ -2890,7 +2890,11 @@ if __name__ == "__main__":
 
 #### About i18n
 
-`PyGUIAdapterLite` implements a simple i18n mechanism based on `gettext` module. It has created a translation template file [`pyguiadapterlite/locales/pyguiadapterlite.pot`](https://pyguiadapterlite/locales/pyguiadapterlite.pot) ，provide built-in Chinese translation file [`pyguiadapterlite/locales/zh_CN.po`](https://pyguiadapterlite/locales/zh_CN.po) and the pre-compiled mo file of it [`pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo`](https://pyguiadapterlite/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo).
+`PyGUIAdapterLite` implements a simple i18n mechanism based on `gettext` 
+module. It has created a translation template file 
+[`pyguiadapterlite/_assets/locales/pyguiadapterlite.pot`](pyguiadapterlite/_assets/locales/pyguiadapterlite.pot) ，provide built-in 
+Chinese translation file [`pyguiadapterlite/_assets/locales/zh_CN.po`](pyguiadapterlite/_assets/locales/zh_CN.po) and the pre-compiled mo file of 
+it [`pyguiadapterlite/_assets/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo`](pyguiadapterlite/_assets/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo).
 
 By default, `PyGUIAdapterLite` automatically detects the current `locale` of the system. If a corresponding translation file exists in the specified `localedir` for the `locale`, it will use that file. If not found, it falls back to the original strings (English). `PyGUIAdapterLite` allows developers to specify the `localedir` and current `locale`, enabling them to add or use custom `locales`.
 
