@@ -23,6 +23,7 @@ MSG_REDO = tr_("Redo")
 MSG_BROWSE_BUTTON_TEXT = tr_("Browse")
 
 MSG_SELECT_FILE_DIALOG_TITLE = tr_("Select File")
+MSG_OPEN_FILE_DIALOG_TITLE = tr_("Open File")
 MSG_SAVE_FILE_DIALOG_TITLE = tr_("Save File")
 MSG_SELECT_DIR_DIALOG_TITLE = tr_("Select Directory")
 MSG_FILE_FILTER_ALL = tr_("All Files")
