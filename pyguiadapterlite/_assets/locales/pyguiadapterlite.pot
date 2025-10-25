@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-25 20:28+0800\n"
+"POT-Creation-Date: 2025-10-26 00:09+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zimolab@aliyun.com\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
-#: ../_messages.py:10 ../_messages.py:55
+#: ../_messages.py:10 ../_messages.py:56
 msgid "Error"
 msgstr ""
 
@@ -93,156 +93,160 @@ msgstr ""
 msgid "All Files"
 msgstr ""
 
-#: ../_messages.py:31
+#: ../_messages.py:30
+msgid "Text Files"
+msgstr ""
+
+#: ../_messages.py:32
 msgid "Select All"
 msgstr ""
 
-#: ../_messages.py:32 ../_messages.py:53
+#: ../_messages.py:33 ../_messages.py:54
 msgid "Clear Output"
 msgstr ""
 
-#: ../_messages.py:33
+#: ../_messages.py:34
 msgid "Scroll to Top"
 msgstr ""
 
-#: ../_messages.py:34
+#: ../_messages.py:35
 msgid "Scroll to Bottom"
 msgstr ""
 
-#: ../_messages.py:35
+#: ../_messages.py:36
 msgid "Save to File"
 msgstr ""
 
-#: ../_messages.py:36
+#: ../_messages.py:37
 msgid "Zoom"
 msgstr ""
 
-#: ../_messages.py:37
+#: ../_messages.py:38
 msgid "Zoom In"
 msgstr ""
 
-#: ../_messages.py:38
+#: ../_messages.py:39
 msgid "Zoom Out"
 msgstr ""
 
-#: ../_messages.py:39
+#: ../_messages.py:40
 msgid "Zoom Reset"
 msgstr ""
 
-#: ../_messages.py:40
+#: ../_messages.py:41
 msgid "Navigation"
 msgstr ""
 
-#: ../_messages.py:41
+#: ../_messages.py:42
 msgid "Top"
 msgstr ""
 
-#: ../_messages.py:42
+#: ../_messages.py:43
 msgid "Bottom"
 msgstr ""
 
-#: ../_messages.py:43
+#: ../_messages.py:44
 msgid "Page Up"
 msgstr ""
 
-#: ../_messages.py:44
+#: ../_messages.py:45
 msgid "Page Down"
 msgstr ""
 
-#: ../_messages.py:45
+#: ../_messages.py:46
 msgid "Arrow Keys/PageUp/PageDown"
 msgstr ""
 
-#: ../_messages.py:47
+#: ../_messages.py:48
 msgid "Function Execution"
 msgstr ""
 
-#: ../_messages.py:48 ../_messages.py:66
+#: ../_messages.py:49 ../_messages.py:67
 msgid "Function Document"
 msgstr ""
 
-#: ../_messages.py:49
+#: ../_messages.py:50
 msgid "Function Output"
 msgstr ""
 
-#: ../_messages.py:50
+#: ../_messages.py:51
 msgid "Execute"
 msgstr ""
 
-#: ../_messages.py:51 ../_messages.py:78
+#: ../_messages.py:52 ../_messages.py:79
 msgid "Cancel"
 msgstr ""
 
-#: ../_messages.py:54
+#: ../_messages.py:55
 msgid "clear output before execution"
 msgstr ""
 
-#: ../_messages.py:56
+#: ../_messages.py:57
 msgid "Result"
 msgstr ""
 
-#: ../_messages.py:57
+#: ../_messages.py:58
 msgid "The function is executing, please wait..."
 msgstr ""
 
-#: ../_messages.py:58
+#: ../_messages.py:59
 msgid "The function is not executing."
 msgstr ""
 
-#: ../_messages.py:59
+#: ../_messages.py:60
 msgid "The function is not cancellable."
 msgstr ""
 
-#: ../_messages.py:60
+#: ../_messages.py:61
 msgid "An exception occurred during function execution:"
 msgstr ""
 
-#: ../_messages.py:61
+#: ../_messages.py:62
 #, python-brace-format
 msgid "The function returned: {}"
 msgstr ""
 
-#: ../_messages.py:63
+#: ../_messages.py:64
 msgid "Select Function"
 msgstr ""
 
-#: ../_messages.py:64
+#: ../_messages.py:65
 msgid "Select"
 msgstr ""
 
-#: ../_messages.py:65
+#: ../_messages.py:66
 msgid "Function List"
 msgstr ""
 
-#: ../_messages.py:67
+#: ../_messages.py:68
 msgid "No documentation provided"
 msgstr ""
 
-#: ../_messages.py:68
+#: ../_messages.py:69
 msgid "Select a function first!"
 msgstr ""
 
-#: ../_messages.py:69
+#: ../_messages.py:70
 msgid "Current function: "
 msgstr ""
 
-#: ../_messages.py:71
+#: ../_messages.py:72
 msgid "Validation Errors"
 msgstr ""
 
-#: ../_messages.py:72
+#: ../_messages.py:73
 msgid "Parameters"
 msgstr ""
 
-#: ../_messages.py:73
+#: ../_messages.py:74
 msgid "Please check the following parameters:"
 msgstr ""
 
-#: ../_messages.py:74
+#: ../_messages.py:75
 msgid "Detail"
 msgstr ""
 
-#: ../_messages.py:75
+#: ../_messages.py:76
 #, python-brace-format
 msgid ""
 "Parameter:\n"
@@ -251,186 +255,186 @@ msgid ""
 "  {}"
 msgstr ""
 
-#: ../_messages.py:77
+#: ../_messages.py:78
 msgid "OK"
 msgstr ""
 
-#: ../_messages.py:79
+#: ../_messages.py:80
 msgid "Input:"
 msgstr ""
 
-#: ../_messages.py:80
+#: ../_messages.py:81
 msgid "Input"
 msgstr ""
 
-#: ../_messages.py:81
+#: ../_messages.py:82
 msgid "Select a file:"
 msgstr ""
 
-#: ../_messages.py:82
+#: ../_messages.py:83
 msgid "Select a directory:"
 msgstr ""
 
-#: ../_messages.py:83
+#: ../_messages.py:84
 msgid "Select a path:"
 msgstr ""
 
-#: ../_messages.py:86 ../_messages.py:108
+#: ../_messages.py:87 ../_messages.py:109
 msgid "File"
 msgstr ""
 
-#: ../_messages.py:87 ../_messages.py:109
+#: ../_messages.py:88 ../_messages.py:110
 msgid "Folder"
 msgstr ""
 
-#: ../_messages.py:89
+#: ../_messages.py:90
 msgid "Add Item"
 msgstr ""
 
-#: ../_messages.py:90
+#: ../_messages.py:91
 msgid "Add a new item:"
 msgstr ""
 
-#: ../_messages.py:91
+#: ../_messages.py:92
 msgid "Edit Item"
 msgstr ""
 
-#: ../_messages.py:92
+#: ../_messages.py:93
 msgid "Edit the item:"
 msgstr ""
 
-#: ../_messages.py:93
+#: ../_messages.py:94
 msgid "An item with the same value already exists!"
 msgstr ""
 
-#: ../_messages.py:94
+#: ../_messages.py:95
 msgid "Please select only one item!"
 msgstr ""
 
-#: ../_messages.py:95
+#: ../_messages.py:96
 msgid "The string to be added cannot be empty!"
 msgstr ""
 
-#: ../_messages.py:97
+#: ../_messages.py:98
 msgid "↑"
 msgstr ""
 
-#: ../_messages.py:98
+#: ../_messages.py:99
 msgid "↓"
 msgstr ""
 
-#: ../_messages.py:99
+#: ../_messages.py:100
 msgid "Remove"
 msgstr ""
 
-#: ../_messages.py:100
+#: ../_messages.py:101
 msgid "Clear"
 msgstr ""
 
-#: ../_messages.py:101
+#: ../_messages.py:102
 msgid "Edit"
 msgstr ""
 
-#: ../_messages.py:102
+#: ../_messages.py:103
 msgid "Add"
 msgstr ""
 
-#: ../_messages.py:103
+#: ../_messages.py:104
 msgid "Are you sure to remove selected items from the list?"
 msgstr ""
 
-#: ../_messages.py:104
+#: ../_messages.py:105
 msgid "Are you sure to remove all items from the list?"
 msgstr ""
 
-#: ../_messages.py:105
+#: ../_messages.py:106
 msgid "There are no items in the list!"
 msgstr ""
 
-#: ../_messages.py:106
+#: ../_messages.py:107
 msgid "No item is selected!"
 msgstr ""
 
-#: ../_messages.py:110
+#: ../_messages.py:111
 msgid "Edit Path"
 msgstr ""
 
-#: ../_messages.py:111
+#: ../_messages.py:112
 msgid "Edit the path:"
 msgstr ""
 
-#: ../_messages.py:112
+#: ../_messages.py:113
 msgid "Add Path"
 msgstr ""
 
-#: ../_messages.py:113
+#: ../_messages.py:114
 msgid "Add a new path:"
 msgstr ""
 
-#: ../_messages.py:114
+#: ../_messages.py:115
 msgid "The path cannot be empty!"
 msgstr ""
 
-#: ../_messages.py:115
+#: ../_messages.py:116
 msgid "The path has already been added to the list!"
 msgstr ""
 
-#: ../_messages.py:116
+#: ../_messages.py:117
 msgid "There are no paths in the list!"
 msgstr ""
 
-#: ../_messages.py:117
+#: ../_messages.py:118
 msgid "No path is selected!"
 msgstr ""
 
-#: ../_messages.py:119
+#: ../_messages.py:120
 msgid "Are you sure to remove the selected path from the list?"
 msgstr ""
 
-#: ../_messages.py:122
+#: ../_messages.py:123
 msgid "Are you sure to remove all paths from the list?"
 msgstr ""
 
-#: ../_messages.py:125
+#: ../_messages.py:126
 msgid "Failed to serialize parameters!"
 msgstr ""
 
-#: ../_messages.py:126
+#: ../_messages.py:127
 msgid "Failed to save parameters to file!"
 msgstr ""
 
-#: ../_messages.py:127
+#: ../_messages.py:128
 msgid "Parameters saved successfully!"
 msgstr ""
 
-#: ../_messages.py:128
+#: ../_messages.py:129
 msgid "Failed to load parameters from file!"
 msgstr ""
 
-#: ../_messages.py:129
+#: ../_messages.py:130
 msgid "Failed to deserialize parameters!"
 msgstr ""
 
-#: ../_messages.py:130
+#: ../_messages.py:131
 msgid "Failed to set parameters!"
 msgstr ""
 
-#: ../_messages.py:131
+#: ../_messages.py:132
 msgid "Invalid parameters found!"
 msgstr ""
 
-#: ../_messages.py:132
+#: ../_messages.py:133
 msgid "Load File"
 msgstr ""
 
-#: ../_messages.py:133
+#: ../_messages.py:134
 msgid "Parameters loaded successfully!"
 msgstr ""
 
-#: ../_messages.py:135
+#: ../_messages.py:136
 msgid "The following parameters are invalid and will not be applied:"
 msgstr ""
 
-#: ../_messages.py:137
+#: ../_messages.py:138
 msgid "Main"
 msgstr ""

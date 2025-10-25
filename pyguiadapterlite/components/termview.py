@@ -22,6 +22,8 @@ from pyguiadapterlite._messages import (
     MSG_SCROLL_TO_TOP,
     MSG_SCROLL_TO_BOTTOM,
     MSG_SAVE_TO_FILE,
+    MSG_FILE_FILTER_ALL,
+    MSG_FILE_FILTER_TEXT,
 )
 from pyguiadapterlite.utils import _warning
 
@@ -183,7 +185,7 @@ class TermView(Frame):
         # 选择保存文件
         file_path = filedialog.asksaveasfilename(
             defaultextension=".txt",
-            filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            filetypes=[(MSG_FILE_FILTER_TEXT, "*.txt"), (MSG_FILE_FILTER_ALL, "*.*")],
             title=MSG_SAVE_TO_FILE,
         )
 
