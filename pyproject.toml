@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyguiadapterlite"
-version = "0.5.1"
+version = "0.6.1"
 description = "Turn your python functions into GUI-based applications just in a few lines of code."
 authors = ["zimolab <zimolab@aliyun.com>"]
 readme = "README.md"
