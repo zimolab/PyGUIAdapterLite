@@ -169,6 +169,12 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     ] = "center"
     """进度标签文本对齐方式。"""
 
+    after_window_create_callback: Optional[Callable[["FnExecuteWindow"], None]] = None
+    """窗口创建后回调此函数。"""
+
+    before_window_close_callback: Optional[Callable[["FnExecuteWindow"], bool]] = None
+    """窗口关闭前回调此函数，如果返回`True`则表示允许关闭窗口，否则不允许关闭窗口。"""
+
 
 class MainArea(ParameterGroupTabView):
 
@@ -415,6 +421,8 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
         UContext.execute_window_created(self)
         _info(f"execute window created(fn={fn_info.fn_name})")
+        if config.after_window_create_callback:
+            config.after_window_create_callback(self)
 
     @property
     def config(self) -> FnExecuteWindowConfig:
@@ -562,14 +570,19 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         if self._executor.is_executing:
             show_warning(self.config.function_executing_message, parent=self.parent)
             return False
+
+        if self.config.before_window_close_callback:
+            if not self.config.before_window_close_callback(self):
+                return False
+
         self._close_param_validation_win()
         UContext.execute_window_closed()
-        _info(f"execute window closed(fn={self.fn_info.fn_name})")
-        self._fn_info = None
         self._main_area.clear_parameters()
         self._main_area.clear(destroy_content=True)
         self._main_area = None
         self._bottom_area = None
+        _info(f"execute window closed(fn={self.fn_info.fn_name})")
+        self._fn_info = None
         return super().on_close()
 
     def on_execute(self):

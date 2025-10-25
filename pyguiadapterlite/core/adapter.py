@@ -61,6 +61,12 @@ class GUIAdapter(object):
         after_execute_callback: Optional[
             Callable[["FnExecuteWindow", Any, Optional[Exception]], None]
         ] = None,
+        after_window_create_callback: Optional[
+            Callable[[FnExecuteWindow], None]
+        ] = None,
+        before_window_close_callback: Optional[
+            Callable[[FnExecuteWindow], bool]
+        ] = None,
         **extra_widget_configs,
     ) -> None:
         doc, params = self._fn_parser.parse(fn, ignore_self_param=ignore_self_parameter)
@@ -71,6 +77,8 @@ class GUIAdapter(object):
                 enable_progressbar=enable_progressbar,
                 enable_progress_label=enable_progress_label,
                 icon=icon,
+                after_window_create_callback=after_window_create_callback,
+                before_window_close_callback=before_window_close_callback,
             )
         else:
             if window_menus is not None:
@@ -79,6 +87,24 @@ class GUIAdapter(object):
                 )
             if window_config.icon is None and icon is not None:
                 window_config = dataclasses.replace(window_config, icon=icon)
+
+            if (
+                after_window_create_callback is not None
+                and window_config.after_window_create_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    after_window_create_callback=after_window_create_callback,
+                )
+
+            if (
+                before_window_close_callback is not None
+                and window_config.before_window_close_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    before_window_close_callback=before_window_close_callback,
+                )
 
         fn_info = FnInfo(
             fn=fn,
@@ -139,6 +165,12 @@ class GUIAdapter(object):
         after_execute_callback: Optional[
             Callable[["FnExecuteWindow", Any, Optional[Exception]], None]
         ] = None,
+        after_window_create_callback: Optional[
+            Callable[[FnExecuteWindow], None]
+        ] = None,
+        before_window_close_callback: Optional[
+            Callable[[FnExecuteWindow], bool]
+        ] = None,
         **extra_parameter_configs,
     ):
         doc, _ = self._fn_parser.parse(fn, ignore_self_param=True)
@@ -149,6 +181,8 @@ class GUIAdapter(object):
                 enable_progressbar=enable_progressbar,
                 enable_progress_label=enable_progress_label,
                 icon=icon,
+                after_window_create_callback=after_window_create_callback,
+                before_window_close_callback=before_window_close_callback,
             )
         else:
             if window_menus is not None:
@@ -157,6 +191,24 @@ class GUIAdapter(object):
                 )
             if window_config.icon is None and icon is not None:
                 window_config = dataclasses.replace(window_config, icon=icon)
+
+            if (
+                after_window_create_callback is not None
+                and window_config.after_window_create_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    after_window_create_callback=after_window_create_callback,
+                )
+
+            if (
+                before_window_close_callback is not None
+                and window_config.before_window_close_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    before_window_close_callback=before_window_close_callback,
+                )
 
         parameter_infos = parameter_infos or {}
 
