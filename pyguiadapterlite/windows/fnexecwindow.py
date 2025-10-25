@@ -537,6 +537,8 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             self._handle_function_exception(exception)
         else:
             self._handle_function_result(return_value)
+        if self._fn_info.after_execute_callback:
+            self._fn_info.after_execute_callback(self, return_value, exception)
 
     def after(self, delay: int, func, *args):
         return self.parent.after(delay, func, *args)
@@ -576,8 +578,17 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             return
         self._close_param_validation_win()
         parameter_values = self.get_parameter_values()
+
+        if self._fn_info.before_execute_callback:
+            result = self._fn_info.before_execute_callback(
+                self, parameter_values.copy()
+            )
+            if isinstance(result, dict):
+                parameter_values = result
+
         if not self.validate_parameter_values(parameter_values):
             return
+
         self._executor.execute(fn_info=self._fn_info, arguments=parameter_values)
 
     def on_cancel(self):

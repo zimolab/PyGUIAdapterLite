@@ -2,7 +2,7 @@ import dataclasses
 from abc import abstractmethod
 from typing import Callable, Any, Type, Dict, Optional, List
 
-from pyguiadapterlite.windows.basewindow import BaseWindowConfig
+from pyguiadapterlite.windows.basewindow import BaseWindowConfig, BaseWindow
 from pyguiadapterlite.components.valuewidget import BaseParameterWidgetConfig
 
 
@@ -79,6 +79,12 @@ class FnInfo(object):
         Callable[[str, Dict[str, object]], Optional[Dict[str, str]]]
     ] = None
     parameter_infos: Dict[str, ParameterInfo] = dataclasses.field(default_factory=dict)
+    before_execute_callback: Optional[
+        Callable[[BaseWindow, Dict[str, Any]], Optional[Dict[str, Any]]]
+    ] = None
+    after_execute_callback: Optional[
+        Callable[[BaseWindow, Any, Optional[Exception]], None]
+    ] = None
 
     def get_function_name(self) -> str:
         if self.fn_name:

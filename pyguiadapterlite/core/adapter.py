@@ -2,7 +2,7 @@ import dataclasses
 import platform
 from collections import OrderedDict
 from tkinter import Tk
-from typing import Callable, Optional, Dict, Union, Tuple, Type, List
+from typing import Callable, Optional, Dict, Union, Tuple, Type, List, Any
 
 from pyguiadapterlite.components.menus import Menu, Separator
 from pyguiadapterlite.core.fn import FnInfo, ParameterInfo, BaseFunctionExecutor
@@ -55,6 +55,12 @@ class GUIAdapter(object):
         ignore_self_parameter: bool = True,
         enable_progressbar: bool = False,
         enable_progress_label: bool = False,
+        before_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Dict[str, Any]], Optional[Dict[str, Any]]]
+        ] = None,
+        after_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Any, Optional[Exception]], None]
+        ] = None,
         **extra_widget_configs,
     ) -> None:
         doc, params = self._fn_parser.parse(fn, ignore_self_param=ignore_self_parameter)
@@ -86,6 +92,8 @@ class GUIAdapter(object):
             executor=function_executor_class,
             parameters_validator=parameters_validator,
             parameter_infos=params,
+            before_execute_callback=before_execute_callback,
+            after_execute_callback=after_execute_callback,
         )
         user_widget_configs = widget_configs or {}
         if extra_widget_configs:
@@ -125,6 +133,12 @@ class GUIAdapter(object):
         function_executor_class: Type[BaseFunctionExecutor] = ThreadedExecutor,
         enable_progressbar: bool = False,
         enable_progress_label: bool = False,
+        before_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Dict[str, Any]], Optional[Dict[str, Any]]]
+        ] = None,
+        after_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Any, Optional[Exception]], None]
+        ] = None,
         **extra_parameter_configs,
     ):
         doc, _ = self._fn_parser.parse(fn, ignore_self_param=True)
@@ -163,6 +177,8 @@ class GUIAdapter(object):
             executor=function_executor_class,
             parameters_validator=parameters_validator,
             parameter_infos=parameter_infos.copy(),
+            before_execute_callback=before_execute_callback,
+            after_execute_callback=after_execute_callback,
         )
         self._functions[fn] = fn_info
 
