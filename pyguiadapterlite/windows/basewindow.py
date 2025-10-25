@@ -12,6 +12,7 @@ from pyguiadapterlite._messages import (
     MSG_OPEN_FILE_DIALOG_TITLE,
     MSG_SAVE_FILE_DIALOG_TITLE,
     MSG_SELECT_DIR_DIALOG_TITLE,
+    MSG_FILE_FILTER_ALL,
 )
 from pyguiadapterlite.components.dialog import BaseDialog
 from pyguiadapterlite.components.menus import Menu, Separator, Action
@@ -350,6 +351,7 @@ class BaseWindow(object):
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
     ) -> Optional[str]:
+        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
         path = filedialog.askopenfilename(
             parent=self.parent,
             title=title,
@@ -364,13 +366,14 @@ class BaseWindow(object):
 
     def select_save_file(
         self,
-        title: str = MSG_OPEN_FILE_DIALOG_TITLE,
+        title: str = MSG_SAVE_FILE_DIALOG_TITLE,
         filetypes: Optional[list] = None,
         initialdir: Optional[str] = None,
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
         confirmoverwrite: bool = True,
     ) -> Optional[str]:
+        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
         path = filedialog.asksaveasfilename(
             parent=self.parent,
             title=title,
@@ -392,6 +395,7 @@ class BaseWindow(object):
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
     ) -> Tuple[str, ...]:
+        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
 
         paths = filedialog.askopenfilenames(
             parent=self.parent,
