@@ -16,7 +16,7 @@ from pathlib import Path
 CLEAN_MO_FILES = True
 
 BASE_DIR = Path(__file__).parent.parent
-LOCALES_DIR = BASE_DIR / "pyguiadapterlite/locales"
+LOCALES_DIR = BASE_DIR / "pyguiadapterlite/_assets/locales"
 DOMAIN = "pyguiadapterlite"
 
 MSGFMT_ARGS = []
