@@ -592,12 +592,17 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._close_param_validation_win()
         parameter_values = self.get_parameter_values()
 
-        if self._fn_info.before_execute_callback:
-            result = self._fn_info.before_execute_callback(
-                self, parameter_values.copy()
-            )
-            if isinstance(result, dict):
-                parameter_values = result
+        try:
+            if self._fn_info.before_execute_callback:
+                result = self._fn_info.before_execute_callback(
+                    self, parameter_values.copy()
+                )
+                if isinstance(result, dict):
+                    parameter_values = result
+        except BaseException as e:
+            _exception(e, "failed to execute before_execute_callback")
+            show_error(str(e), parent=self.parent)
+            return
 
         if not self.validate_parameter_values(parameter_values):
             return
