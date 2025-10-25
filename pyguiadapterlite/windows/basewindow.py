@@ -389,7 +389,7 @@ class BaseWindow(object):
 
     def select_open_files(
         self,
-        title: str = MSG_SAVE_FILE_DIALOG_TITLE,
+        title: str = MSG_OPEN_FILE_DIALOG_TITLE,
         filetypes: List[str] = None,
         initialdir: Optional[str] = None,
         initialfile: Optional[str] = None,
