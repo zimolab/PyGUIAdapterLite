@@ -19,10 +19,13 @@ def before_execute(
     print(params)
     params["b"] = 2.0
     params["c"] = "modified"
-    # do something modification to the parameters about to used to execute the function
-    # do it with caution.
-    # if you don't know what you are doing, better not to modify the parameters.
+
+    # you can modify the parameters before the execution actually starts.
+    # the original parameters values dict will be modified, you should return the modified dict.
+    # DO IT WITH CAUTION!!! If you don't know what you are doing, better not to modify the parameters.
     return params
+
+    # return None in this callback will cancel the execution.
     # return None
 
 
