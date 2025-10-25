@@ -597,6 +597,10 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 result = self._fn_info.before_execute_callback(
                     self, parameter_values.copy()
                 )
+                if result is None:
+                    _info("execution cancelled by before_execute_callback")
+                    return
+
                 if isinstance(result, dict):
                     parameter_values = result
         except BaseException as e:
