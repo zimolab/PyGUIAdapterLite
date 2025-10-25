@@ -11,6 +11,10 @@ def callback_example(a: int, b: float, c: str, d: bool):
 def before_execute(
     window: FnExecuteWindow, params: Dict[str, Any]
 ) -> Optional[Dict[str, Any]]:
+
+    # raise an exception will cancel the execution
+    # raise Exception("Execution cancelled by user")
+
     print(f"Before execute callback, in thread: {threading.current_thread()}")
     print(params)
     params["b"] = 2.0
