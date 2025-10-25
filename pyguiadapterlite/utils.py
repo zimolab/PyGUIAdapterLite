@@ -87,7 +87,7 @@ def show_question(
     return messagebox.askquestion(title, message, **options)
 
 
-def ask_yes_or_no(
+def ask_yes_no(
     message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
 ) -> bool:
     options = options or {}
@@ -96,13 +96,31 @@ def ask_yes_or_no(
     return messagebox.askyesno(title, message, **options)
 
 
-def ask_ok_or_cancel(
+def ask_ok_cancel(
     message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
 ) -> bool:
     options = options or {}
     if parent:
         options["parent"] = parent
     return messagebox.askokcancel(title, message, **options)
+
+
+def ask_retry_cancel(
+    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+) -> bool:
+    options = options or {}
+    if parent:
+        options["parent"] = parent
+    return messagebox.askretrycancel(title, message, **options)
+
+
+def ask_yes_no_cancel(
+    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+) -> Optional[bool]:
+    options = options or {}
+    if parent:
+        options["parent"] = parent
+    return messagebox.askyesnocancel(title, message, **options)
 
 
 # noinspection PyUnresolvedReferences
