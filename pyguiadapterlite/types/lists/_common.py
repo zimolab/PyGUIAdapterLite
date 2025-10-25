@@ -22,7 +22,7 @@ from pyguiadapterlite.components.valuewidget import (
     InvalidValue,
     SetValueError,
 )
-from pyguiadapterlite.utils import _error, show_warning, ask_yes_or_no
+from pyguiadapterlite.utils import _error, show_warning, ask_yes_no
 
 
 @dataclasses.dataclass(frozen=True)
@@ -227,7 +227,7 @@ class BaseStringListBox(LabelFrame):
             )
             return
         if self._config.confirm_remove:
-            reply = ask_yes_or_no(
+            reply = ask_yes_no(
                 self._config.remove_confirm_message, parent=self.winfo_toplevel()
             )
             if not reply:
@@ -239,7 +239,7 @@ class BaseStringListBox(LabelFrame):
             show_warning(self._config.no_item_message, parent=self.winfo_toplevel())
             return
         if self._config.confirm_clear:
-            reply = ask_yes_or_no(
+            reply = ask_yes_no(
                 self._config.clear_confirm_message, parent=self.winfo_toplevel()
             )
             if not reply:
