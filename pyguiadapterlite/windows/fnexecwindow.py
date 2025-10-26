@@ -513,6 +513,15 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
     def hide_progressbar(self):
         self._main_area.hide_progressbar()
 
+    def show_output_tab(self):
+        self._main_area.show_output_tab()
+
+    def show_document_tab(self):
+        self._main_area.show_document_tab()
+
+    def show_parameter_group_tab(self, group_name: str) -> bool:
+        return self._main_area.show_parameter_group(group_name)
+
     def before_execute(self, fn_info: "FnInfo", arguments: Dict[str, Any]) -> None:
         super().before_execute(fn_info, arguments)
         # 切换到输出tab页，方便查看执行结果

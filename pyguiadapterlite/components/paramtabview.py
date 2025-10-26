@@ -116,6 +116,13 @@ class ParameterGroupTabView(TabView):
     def has_parameter(self, parameter_name: str) -> bool:
         return bool(self.find_parameter_group(parameter_name))
 
+    def show_parameter_group(self, group_name: str) -> bool:
+        group = self.get_parameter_group(group_name)
+        if not group:
+            return False
+        self._notebook.select(group)
+        return True
+
     def show_error_effect(self, parameter_name: str):
         group = self.find_parameter_group(parameter_name)
         if not group:
