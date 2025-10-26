@@ -1,3 +1,4 @@
+from pyguiadapterlite.components.valuewidget import InvalidValue
 from pyguiadapterlite.core.adapter import GUIAdapter
 from pyguiadapterlite.core.fn import ParameterError
 from pyguiadapterlite.core.registry import ParameterWidgetFactory
