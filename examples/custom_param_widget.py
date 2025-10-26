@@ -3,8 +3,10 @@ from tkinter import Widget
 from tkinter.ttk import Spinbox
 from typing import Type, Any, Union, Optional
 
-from pyguiadapterlite import uprint, GUIAdapter, ParameterWidgetFactory
-from pyguiadapterlite.components.valuewidget import (
+from pyguiadapterlite import (
+    uprint,
+    GUIAdapter,
+    ParameterWidgetFactory,
     BaseParameterWidgetConfig,
     BaseParameterWidget,
     InvalidValue,
