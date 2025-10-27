@@ -639,9 +639,17 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         return self._main_area.get_parameter_values()
 
     def set_parameter_values(
-        self, values: Dict[str, Any], ignore_not_exist: bool = True
+        self,
+        values: Dict[str, Any],
+        ignore_not_exist: bool = True,
+        check_invalid_values: bool = True,
     ) -> Dict[str, Union[Any, InvalidValue]]:
-        return self._main_area.update_parameter_values(values, ignore_not_exist)
+        ret = self._main_area.update_parameter_values(values, ignore_not_exist)
+        if check_invalid_values:
+            self._close_param_validation_win()
+            self._check_invalid_parameters(result=ret)
+            return ret
+        return ret
 
     def save_parameter_values(
         self,
@@ -692,6 +700,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         deserializer: Optional[Callable[[str], Dict[str, Any]]] = None,
         **filedialog_args,
     ):
+        self._close_param_validation_win()
         if not load_path:
             filedialog_args.pop("parent", None)
             filedialog_args.setdefault("title", MSG_LOAD_FILE_DIALOG_TITLE)
