@@ -584,7 +584,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             if not self.config.before_window_close_callback(self):
                 return False
 
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         UContext.execute_window_closed()
         self._main_area.clear_parameters()
         self._main_area.clear(destroy_content=True)
@@ -598,7 +598,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         if self._executor.is_executing:
             show_warning(self.config.function_executing_message, parent=self.parent)
             return
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         parameter_values = self.get_parameter_values()
 
         try:
@@ -632,7 +632,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         self._executor.try_cancel()
 
     def on_clear_output(self):
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         self._main_area.output_view.clear()
 
     def get_parameter_values(self) -> Dict[str, Union[Any, InvalidValue]]:
@@ -646,8 +646,8 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
     ) -> Dict[str, Union[Any, InvalidValue]]:
         ret = self._main_area.update_parameter_values(values, ignore_not_exist)
         if check_invalid_values:
-            self._close_param_validation_win()
-            self._check_invalid_parameters(result=ret)
+            self.close_param_validation_win()
+            self.check_invalid_parameters(result=ret)
             return ret
         return ret
 
@@ -657,7 +657,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         serializer: Optional[Callable[[Dict[str, Any]], str]] = None,
         **filedialog_args,
     ):
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         current_values = self.get_parameter_values()
         if not self.validate_parameter_values(current_values):
             return
@@ -700,7 +700,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         deserializer: Optional[Callable[[str], Dict[str, Any]]] = None,
         **filedialog_args,
     ):
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         if not load_path:
             filedialog_args.pop("parent", None)
             filedialog_args.setdefault("title", MSG_LOAD_FILE_DIALOG_TITLE)
@@ -733,7 +733,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 param_values, ignore_not_exist=ignore_not_exist
             )
 
-            if not self._check_invalid_parameters(result=ret):
+            if not self.check_invalid_parameters(result=ret):
                 return
         except BaseException as e:
             _exception(e, "failed to set parameter values")
@@ -745,7 +745,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 parent=self.parent,
             )
 
-    def _check_invalid_parameters(self, result: Dict[str, Union[Any, InvalidValue]]):
+    def check_invalid_parameters(self, result: Dict[str, Union[Any, InvalidValue]]):
         invalid_params = {}
         for param_name, value in result.items():
             if isinstance(value, InvalidValue):
@@ -760,7 +760,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             invalid_params_label_text=MSG_INVALID_PARAMS_NOT_APPLIED,
         )
 
-        self._show_validation_window(invalid_params, validation_wind_config)
+        self.show_validation_window(invalid_params, validation_wind_config)
         return False
 
     def validate_parameter_values(
@@ -787,7 +787,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         del param_values
 
         if validation_errors:
-            self._show_validation_window(
+            self.show_validation_window(
                 invalid_params=validation_errors,
                 validation_wind_config=ParameterValidationWindowConfig(
                     font=self.config.document_font
@@ -812,12 +812,12 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             return True
         return False
 
-    def _show_validation_window(
+    def show_validation_window(
         self,
         invalid_params: Dict[Any, Any],
         validation_wind_config: ParameterValidationWindowConfig,
     ):
-        self._close_param_validation_win()
+        self.close_param_validation_win()
         self._param_validation_win_parent = Toplevel(self._parent)
         self._param_validation_win = ParameterValidationWindow(
             self._param_validation_win_parent,
@@ -871,7 +871,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         if isinstance(exception, ParameterError):
             self._main_area.show_error_effect(exception.parameter_name)
 
-    def _close_param_validation_win(self):
+    def close_param_validation_win(self):
         if self._param_validation_win:
             self._param_validation_win.on_close()
 
