@@ -1,12 +1,16 @@
 import ast
 import inspect
 import logging
+import os
 import re
 import sys
 import traceback
 import warnings
 from tkinter import messagebox, Tk
 from typing import Any, Optional, Tuple, Union, List, Set
+
+
+_DISABLE_LOGGING_FLAG = os.getenv("PYGUIADAPTERLITE_LOGGING_MESSAGE", "1") == "0"
 
 from pyguiadapterlite._messages import (
     MSG_INFO_TITLE,
@@ -27,23 +31,32 @@ _logger = logging.getLogger("__main__")
 
 
 def _info(msg: str):
+    if _DISABLE_LOGGING_FLAG:
+        return
     _logger.info(msg)
 
 
 def _warning(msg: str):
+    if _DISABLE_LOGGING_FLAG:
+        return
     _logger.warning(msg)
 
 
 def _fatal(msg: str):
-    _logger.critical(msg)
+    if not _DISABLE_LOGGING_FLAG:
+        _logger.critical(msg)
     sys.exit(1)
 
 
 def _error(msg: str):
+    if _DISABLE_LOGGING_FLAG:
+        return
     _logger.error(msg)
 
 
 def _debug(msg: str):
+    if _DISABLE_LOGGING_FLAG:
+        return
     _logger.debug(msg)
 
 
