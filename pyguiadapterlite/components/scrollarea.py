@@ -326,7 +326,17 @@ class ParameterWidgetArea(NColumnScrollableArea):
             config=config,
             window=self._current_window,
         )
-        param_name_label = Label(self._inner_frame, text=input_widget.label)
+
+        if config.label_justify == "left":
+            anchor = "w"
+        elif config.label_justify == "right":
+            anchor = "e"
+        else:
+            anchor = "center"
+
+        param_name_label = Label(
+            self._inner_frame, text=input_widget.label, anchor=anchor
+        )
         if config.description:
             global _DESCRIPTION_ICON
             if _DESCRIPTION_ICON is None:

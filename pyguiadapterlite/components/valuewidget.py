@@ -2,7 +2,7 @@ import dataclasses
 from abc import abstractmethod, ABCMeta
 from inspect import isclass
 from tkinter import Frame, Widget
-from typing import Any, TypeVar, Type, Optional, Union
+from typing import Any, TypeVar, Type, Optional, Union, Literal
 
 from pyguiadapterlite.utils import _warning
 
@@ -101,6 +101,9 @@ class BaseParameterWidgetConfig(object):
 
     hide_label: bool = False
     """是否隐藏参数标签"""
+
+    label_justify: Literal["left", "right", "center"] = "center"
+    """参数标签的对齐方式"""
 
     # noinspection PyAbstractClass
     @classmethod
