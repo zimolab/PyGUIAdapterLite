@@ -6,7 +6,16 @@ from typing import Any, TypeVar, Type, Optional, Union, Literal
 
 from pyguiadapterlite.utils import _warning
 
-_DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY = "center"
+_DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY: Literal["left", "right", "center"] = "center"
+
+
+def set_default_parameter_label_justify(justify: Literal["left", "right", "center"]):
+    global _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
+    _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY = justify
+
+
+def get_default_parameter_label_justify() -> Literal["left", "right", "center"]:
+    return _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
 
 
 class SetValueError(Exception):
@@ -85,11 +94,6 @@ class ColorFlashEffect(object):
             self._target.configure(background=self._original_bg)
 
 
-def set_default_parameter_label_justify(justify: Literal["left", "right", "center"]):
-    global _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
-    _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY = justify
-
-
 @dataclasses.dataclass(frozen=True)
 class BaseParameterWidgetConfig(object):
     """值控件配置基类"""
@@ -109,8 +113,8 @@ class BaseParameterWidgetConfig(object):
     hide_label: bool = False
     """是否隐藏参数标签"""
 
-    label_justify: Literal["left", "right", "center"] = (
-        _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
+    label_justify: Literal["left", "right", "center"] = dataclasses.field(
+        default_factory=get_default_parameter_label_justify
     )
     """参数标签的对齐方式"""
 
