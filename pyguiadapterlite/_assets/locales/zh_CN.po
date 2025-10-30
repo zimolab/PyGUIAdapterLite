@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-26 00:09+0800\n"
-"PO-Revision-Date: 2025-10-26 00:10+0800\n"
+"POT-Creation-Date: 2025-10-30 22:29+0800\n"
+"PO-Revision-Date: 2025-10-30 22:30+0800\n"
 "Last-Translator: \n"
 "Language-Team: zimolab@aliyun.com\n"
 "Language: zh_CN\n"
@@ -139,7 +139,6 @@ msgid "Navigation"
 msgstr "导航"
 
 #: ../_messages.py:42
-#, fuzzy
 msgid "Top"
 msgstr "到开头"
 
@@ -149,11 +148,11 @@ msgstr "到结尾"
 
 #: ../_messages.py:44
 msgid "Page Up"
-msgstr ""
+msgstr "向上翻页"
 
 #: ../_messages.py:45
 msgid "Page Down"
-msgstr ""
+msgstr "向下翻译"
 
 #: ../_messages.py:46
 msgid "Arrow Keys/PageUp/PageDown"
@@ -192,12 +191,10 @@ msgid "The function is executing, please wait..."
 msgstr "函数正在执行，请等待执行完毕……"
 
 #: ../_messages.py:59
-#, fuzzy
 msgid "The function is not executing."
 msgstr "函数未处于执行状态！"
 
 #: ../_messages.py:60
-#, fuzzy
 msgid "The function is not cancellable."
 msgstr "该函数为不可取消函数！"
 
