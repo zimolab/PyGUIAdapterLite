@@ -1,5 +1,5 @@
 from tkinter import Widget
-from tkinter.ttk import Frame, Combobox, Button
+from tkinter.ttk import Frame, Combobox
 from typing import List, Literal, Optional, Iterable
 
 from pyguiadapterlite.utils import _warning
