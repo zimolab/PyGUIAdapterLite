@@ -22,6 +22,10 @@ class TabView(object):
     def pack(self, **kwargs):
         self._notebook.pack(**kwargs)
 
+    @property
+    def internal(self) -> Notebook:
+        return self._notebook
+
     def add_tab(self, tab_id: str, tab_name: str, content: Widget, **kwargs):
         if tab_id in self._tabs:
             raise TabIdAlreadyExistsError(f"tab id `{tab_id}` already exists")
