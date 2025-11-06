@@ -2946,16 +2946,83 @@ if __name__ == "__main__":
 
 
 
-## Packaging
+## Packaging with PyInstaller
 
-> TODO
 
+Here is an example of how to use `PyInstaller` to package your project using `PyGUIAdapterLite`.
+
+Because `PyGUIAdapterLite` contains some resource files, they must be included in the final executable file to avoid runtime errors.
+
+
+Here we use the so-called pyinstaller hooks mechanism to automatically collect teh resources files required by `PyGUIAdapterLite`, and include them in the final executable file.
+
+Assume we need to package an app named `foo-app`, its directory structure is as follows:
+
+```text
+foo-app 
+├── foo_app/
+│   ├── __init__.py
+│   ├── ...
+├── main.py
+├── ...
+```
+
+First of all, we need to install `pyinstaller` (assuming you use `pip`):
+
+```bash
+pip install pyinstaller
+```
+
+
+> Note: Make sure all the dependencies (including `pyguiadapterlite`) your project needs are installed 
+> properly before packaging. Otherwise, the packaging may be successful, but the resulting 
+> executable may not work properly.
+
+
+Then, create a file named `hook-pyguiadapterlite.py` in the root directory 
+of your project, 
+and add the following codes to it:
+
+```python
+from PyInstaller.utils.hooks import collect_data_files
+datas = collect_data_files("pyguiadapterlite")
+```
+
+This file tells `PyInstaller` to collect all the resource files required by `pyguiadapterlite` and include them in the final executable file.
+
+Finally, we can run the following command to package the app:
+
+```bash
+pyinstaller --additional-hooks-dir=. ./main.py
+```
+
+If everything goes well, a `build` directory and a `dist` directory will be 
+generated in the root directory of your project, the executable file and its
+runtime dependencies will be placed in the `dist` directory.
+
+```text
+foo-app 
+├── foo_app/
+│   ├── __init__.py
+│   ├── ...
+├── main.py
+├── build/
+└── dist/
+    ├── main
+        ├── _internal
+        ├── main.exe
+```
+
+If the  `dist/main/_internal/pyguiadapterlite/_assets` directory is present, 
+it means the resource files have been collected successfully.
+
+Here is a minimal example of this topic: [examples/foo-app](examples/foo-app/)
 
 
 ## License
 
-本项目使用MIT许可证，完整的许可证文本见`LICENSE`文件。 请在遵守相关法律法规的前提下使用本项目。
-
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) 
+file for details.
 
 
 ## Licenses of Third-party libs

@@ -2981,12 +2981,74 @@ if __name__ == "__main__":
 ```
 
 
-
-
-
 ## 打包应用
 
-> TODO
+下面演示如何使用`PyInstaller`将`PyGUIAdapterLite`应用打包为可执行文件。
+
+因为`PyGUIAdapterLite`内部包含一些资源文件，因此必须将这些文件打包到最终的可执行文件中，否则运行时会因为找不到这些资源文件而报错。
+
+这里我们使用`PyInstaller`提供的hook机制来自动收集`PyGUIAdapterLite`所需的资源文件，并将它们打包到最终的可执行文件中。
+
+假设，我们需要对一个名为`foo-app`的应用进行打包，其目录结构如下：
+
+```text
+foo-app 
+├── foo_app/
+│   ├── __init__.py
+│   ├── ...
+├── main.py
+├── ...
+```
+
+其中，`main.py`是该应用的入口文件。
+
+首先，安装`PyInstaller`：
+
+```bash
+pip install pyinstaller
+```
+
+> 当然别忘了安装`pyguiadapterlite`以及其他所有用到的依赖库。请务必确保在打包之前，所有依赖库都已经正确安装。
+> 如何依赖安装不全的话，打包也许不会失败，但打包出来的应用很可能无法正常运行。
+
+然后，在`foo-app`项目的根目录下创建一个`hook-pyguiadapterlite.py`文件，其内容非常简单：
+
+```python
+from PyInstaller.utils.hooks import collect_data_files
+datas = collect_data_files("pyguiadapterlite")
+```
+
+该文件告诉`PyInstaller`收集`pyguiadapterlite`包所需的资源文件，并将它们打包到最终的可执行文件中。
+
+接下来，在`foo-app`项目的根目录下，运行以下命令：
+
+```bash
+pyinstaller --additional-hooks-dir=. ./main.py
+```
+
+如果顺利的话，会在`foo-app/dist`目录下生成`build`以及`dist`目录，其中`dist`目录下存放着打包好的可执行文件。
+由于上述没有指定输出文件名，因此`PyInstaller`默认会将可执行文件名设置与 `main.py`文件名相同，在windows下，该文件名可能是`main.exe`。
+
+打包成功后的目录结构如下：
+
+```text
+foo-app 
+├── foo_app/
+│   ├── __init__.py
+│   ├── ...
+├── main.py
+├── build/
+└── dist/
+    ├── main
+        ├── _internal
+        ├── main.exe
+```
+
+如果在`dist/main/_internal`目录下出现了`pyguiadapterlite/_assets`，则表明已经成功将`pyguiadapterlite`包所需的资源文件打包到最终的可执行文件中。
+
+打包成功的基础上，用户可以尝试`PyInstaller`其他选项，当然，这属于`PyInstaller`这个工具的使用范畴，不在本文的讨论范围。用户可以自行参考`PyInstaller`的官方文档。
+
+在本仓库[examples/foo-app/](examples/foo-app/)目录下，提供了一个最小化的示例，用户如果使用`PyInstaller`打包自己的应用，可以参考该示例。
 
 
 
