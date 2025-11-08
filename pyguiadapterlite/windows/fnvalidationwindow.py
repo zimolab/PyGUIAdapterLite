@@ -18,9 +18,9 @@ from pyguiadapterlite.components.textview import TextView
 @dataclasses.dataclass(frozen=True)
 class ParameterValidationWindowConfig(BaseWindowConfig):
     title: str = MSG_PARAM_VALIDATION_WIN_TITLE
-    invalid_params_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
+    invalid_params_group_title: str = MSG_INVALID_PARAMS_GROUP_TITLE
     invalid_params_label_text: str = MSG_INVALID_PARAMS_LABEL_TEXT
-    description_group_title: str = MSG_INVALID_PARAMS_GROUP_TITLE
+    description_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
     invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
     size: tuple = (400, 450)
     font: tuple = ("Arial", 11)
