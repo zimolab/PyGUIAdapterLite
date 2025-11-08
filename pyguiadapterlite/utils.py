@@ -1,19 +1,12 @@
 import ast
-import atexit
 import inspect
 import logging
 import os
 import re
-import shutil
-import sys
 import traceback
 import warnings
-import zipfile
-from pathlib import Path
-from threading import Event
 from tkinter import messagebox, Tk
-from typing import Any, Optional, Tuple, Union, List, Set
-from typing import Callable
+from typing import Any, Tuple, List, Set, Union
 
 _DISABLE_LOGGING_FLAG = os.getenv("PYGUIADAPTERLITE_LOGGING_MESSAGE", "1") == "0"
 
@@ -23,6 +16,8 @@ from pyguiadapterlite._messages import (
     MSG_ERROR_TITLE,
     MSG_QUESTION_TITLE,
 )
+
+from pyguiadapterlite.pathutils import *
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -279,132 +274,3 @@ def get_contrast_color(hex_color: str) -> str:
 
     luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
     return "#000000" if luminance > 0.5 else "#FFFFFF"
-
-
-def extract_from_zip(
-    zip_file: Union[str, Path],
-    target_dir: Union[str, Path],
-    filename_prefix: str,
-    overwrite: bool = False,
-):
-    zip_file = Path(zip_file)
-    target_dir = Path(target_dir)
-
-    if not zip_file.is_file():
-        raise FileNotFoundError(f"zip file not found: {zip_file}")
-
-    if target_dir.is_dir():
-        if not overwrite:
-            raise FileExistsError(f"target directory already exists: {target_dir}")
-        else:
-            shutil.rmtree(target_dir, ignore_errors=True)
-    else:
-        target_dir.mkdir(parents=True, exist_ok=True)
-
-    with zipfile.ZipFile(zip_file, "r") as zf:
-        for file_info in zf.infolist():
-            filename = file_info.filename
-            if not filename.startswith(filename_prefix):
-                continue
-            relpath = filename[len(filename_prefix) :]
-            if not relpath:
-                continue
-            target_file = target_dir / relpath
-            if not target_file.parent.is_dir():
-                target_file.parent.mkdir(parents=True, exist_ok=True)
-            zf.extract(file_info, target_dir)
-
-
-# 跟踪已注册的回调，避免重复注册
-_registered_callbacks = set()
-
-
-def _hook_uncaught_exceptions(
-    callback: Callable, keep_original_excepthook: bool = True
-):
-    original_excepthook = sys.excepthook
-
-    def excepthook_wrapper(exc_type, exc_value, exc_traceback):
-        # 先执行回调
-        try:
-            callback()
-        except Exception as callback_error:
-            # 避免递归，只打印错误
-            print(
-                f"a error occurred in exit callback: {callback_error}", file=sys.stderr
-            )
-
-        # 然后调用原始异常钩子
-        if callable(original_excepthook) and keep_original_excepthook:
-            original_excepthook(exc_type, exc_value, exc_traceback)
-        else:
-            # 使用系统默认的异常钩子
-            sys.__excepthook__(exc_type, exc_value, exc_traceback)
-
-    sys.excepthook = excepthook_wrapper
-
-
-def _hook_exit_signals(callback: Callable, keep_original_handlers: bool = True):
-    import signal
-
-    original_handlers = {
-        signal.SIGINT: signal.getsignal(signal.SIGINT),
-        signal.SIGTERM: signal.getsignal(signal.SIGTERM),
-    }
-
-    def signal_wrapper(signum, frame):
-        # 执行回调
-        try:
-            callback()
-        except Exception as e:
-            print(f"an error occurred in exit callback: {e}", file=sys.stderr)
-
-        # 调用原始信号处理器
-        original_handler = original_handlers.get(signum)
-        if keep_original_handlers and callable(original_handler):
-            return original_handler(signum, frame)
-
-        # 如果没有原始处理器，使用标准退出
-        sys.exit(128 + signum)
-
-    signal.signal(signal.SIGINT, signal_wrapper)
-    signal.signal(signal.SIGTERM, signal_wrapper)
-
-
-def try_callback_on_exit(
-    callback: Callable,
-    called_once: bool = True,
-    hook_exceptions: bool = True,
-    keep_original_excepthook: bool = True,
-    hook_exit_signals: bool = True,
-    keep_original_sig_handlers: bool = True,
-):
-    if not callable(callback):
-        raise TypeError("callback must be a callable object")
-
-    # 避免重复注册
-    callback_id = id(callback)
-    if callback_id in _registered_callbacks:
-        raise ValueError("callback has already been registered")
-
-    _registered_callbacks.add(callback_id)
-
-    is_called = Event()
-
-    def wrapper():
-        nonlocal is_called
-        if is_called.is_set() and called_once:
-            return
-        is_called.set()
-        try:
-            callback()
-        except Exception as e:
-            print(f"an error occurred in exit callback: {e}", file=sys.stderr)
-
-    atexit.register(wrapper)
-
-    if hook_exceptions:
-        _hook_uncaught_exceptions(wrapper, keep_original_excepthook)
-
-    if hook_exit_signals:
-        _hook_exit_signals(wrapper, keep_original_sig_handlers)
