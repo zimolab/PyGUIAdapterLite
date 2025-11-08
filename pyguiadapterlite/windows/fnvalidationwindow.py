@@ -23,7 +23,7 @@ class ParameterValidationWindowConfig(BaseWindowConfig):
     description_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
     invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
     size: tuple = (400, 450)
-    font: tuple = ("Arial", 11)
+    font: tuple = ("Monospace", 10)
     bell: bool = True
 
 

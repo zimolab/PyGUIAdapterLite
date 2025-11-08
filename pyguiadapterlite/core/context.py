@@ -151,7 +151,7 @@ def show_toast(
     position: Literal["top", "bottom", "center"] = "top",
     background: str = "#323232",
     foreground: str = "#FFFFFF",
-    font: tuple = ("Arial", 10),
+    font: tuple = ("Monospace", 10),
     pad_x: int = 20,
     pad_y: int = 20,
     alpha: float = 0.0,
@@ -481,7 +481,7 @@ def get_text_input(
     textview_height: int = 20,
     default_menu: bool = True,
     wrap: Literal["none", "char", "word"] = "word",
-    font: tuple = ("Arial", 10),
+    font: tuple = ("Monospace", 10),
 ):
     return show_custom_dialog(
         TextViewDialog,

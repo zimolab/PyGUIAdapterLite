@@ -13,7 +13,7 @@ class ToolTip(object):
         background: str = "#ffffe0",
         foreground: str = "black",
         relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
-        font: tuple = ("Arial", 10),
+        font: tuple = ("Monospace", 10),
         wrap_length: Optional[int] = None,
     ):
         self._destroyed = False
@@ -174,7 +174,7 @@ class SimpleHtmlToolTip(ToolTip):
         x_offset: int = 20,
         y_offset: int = 10,
         relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
-        font: tuple = ("Arial", 10),
+        font: tuple = ("Monospace", 10),
         wrap_length: Optional[int] = None,
     ):
         super().__init__(
@@ -247,7 +247,7 @@ class SimpleHtmlToolTip(ToolTip):
                     text=content,
                     bg="#ffffff",
                     fg="#2c3e50",
-                    font=("Arial", 11, "bold"),
+                    font=("Monospace", 11, "bold"),
                     justify="left",
                 )
                 label.pack(anchor="w")
@@ -258,7 +258,7 @@ class SimpleHtmlToolTip(ToolTip):
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
-                    font=("Arial", 10, "bold"),
+                    font=("Monospace", 10, "bold"),
                     justify="left",
                 )
                 label.pack(anchor="w")
@@ -269,7 +269,7 @@ class SimpleHtmlToolTip(ToolTip):
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
-                    font=("Arial", 10, "italic"),
+                    font=("Monospace", 10, "italic"),
                     justify="left",
                 )
                 label.pack(anchor="w")
@@ -280,7 +280,7 @@ class SimpleHtmlToolTip(ToolTip):
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
-                    font=("Arial", 10, "underline"),
+                    font=("Monospace", 10, "underline"),
                     justify="left",
                 )
                 label.pack(anchor="w")
@@ -291,7 +291,7 @@ class SimpleHtmlToolTip(ToolTip):
                     text=content,
                     bg="#ffffff",
                     fg="#34495e",
-                    font=("Arial", 10),
+                    font=("Monospace", 10),
                     justify="left",
                 )
                 label.pack(anchor="w")

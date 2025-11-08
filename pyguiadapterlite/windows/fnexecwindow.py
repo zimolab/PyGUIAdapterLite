@@ -95,13 +95,13 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     document_tab_title: str = MSG_FUNC_DOC_TAB_TITLE
     """函数文档Tab页标题"""
 
-    document_font: tuple = ("Arial", 12)
+    document_font: tuple = ("Monospace", 10)
     """函数文档字体"""
 
     output_tab_title: str = MSG_FUNC_OUTPUT_TAB_TITLE
     """模拟终端区域所在Tab页标题"""
 
-    output_font: tuple = ("Consolas", 12)
+    output_font: tuple = ("Monospace", 10)
     """模拟终端区域字体"""
 
     output_background: str = "black"

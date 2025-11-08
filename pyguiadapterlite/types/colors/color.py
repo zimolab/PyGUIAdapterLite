@@ -38,7 +38,7 @@ class HexColorValue(BaseParameterWidgetConfig):
     relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "flat"
     """颜色标签的边框样式"""
 
-    font: Union[tuple, str] = ("Arial", 13, "bold")
+    font: Union[tuple, str] = ("Monospace", 13, "bold")
     """颜色标签的字体"""
 
     @classmethod

@@ -34,10 +34,10 @@ class FnSelectWindowConfig(BaseWindowConfig):
     document_view_title: str = MSG_FUNC_DOC_TITLE
     """文档区域标题"""
 
-    label_text_font: tuple = ("Arial", 10, "bold")
+    label_text_font: tuple = ("Monospace", 10, "bold")
     """标签字体"""
 
-    document_font: tuple = ("Arial", 10, "bold")
+    document_font: tuple = ("Monospace", 10, "bold")
     """文档字体"""
 
     # no_match_status_text: str = "未找到匹配项"

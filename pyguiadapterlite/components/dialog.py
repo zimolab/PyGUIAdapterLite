@@ -328,7 +328,7 @@ class TextViewDialog(BaseSimpleDialog):
         editable: bool = True,
         default_menu: bool = True,
         wrap: Literal["none", "char", "word"] = "word",
-        font: tuple = ("Arial", 10),
+        font: tuple = ("Monospace", 10),
         label_text: str = "",
     ):
         self._initial_text: str = text

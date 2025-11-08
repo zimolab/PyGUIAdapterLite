@@ -32,7 +32,7 @@ class TextView(object):
     def __init__(
         self,
         parent: Union[Widget, Toplevel, Tk],
-        font: tuple = ("Arial", 14),
+        font: tuple = ("Monospace", 10),
         wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,
@@ -342,7 +342,7 @@ class SimpleTextViewer(Toplevel):
         title="文本查看器",
         width=850,
         height=600,
-        font: tuple = ("Arial", 14),
+        font: tuple = ("Monospace", 10),
         wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,

@@ -12,7 +12,7 @@ class ColorLabel(Label):
         color_picker: bool = True,
         color_picker_title: str = "",
         show_color_code: bool = True,
-        font: tuple = ("Arial", 12, "bold"),
+        font: tuple = ("Monospace", 10, "bold"),
         width: Optional[int] = None,
         height: Optional[int] = 2,
         borderwidth: int = 1,

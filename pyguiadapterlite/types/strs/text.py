@@ -22,7 +22,7 @@ class TextValue(BaseParameterWidgetConfig):
     default_menu: bool = True
     """是否显示默认菜单"""
 
-    font: tuple = ("Arial", 11)
+    font: tuple = ("Monospace", 10)
     """字体"""
 
     height: int = 8

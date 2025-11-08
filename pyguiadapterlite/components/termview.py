@@ -55,7 +55,7 @@ class TermView(Frame):
         background: str = "black",
         foreground: str = "white",
         select_background: str = "lightgray",
-        font: tuple = ("Courier", 10),
+        font: tuple = ("Monospace", 10),
         default_context_menu=False,
         colormap: Optional[dict] = None,
         **kwargs,

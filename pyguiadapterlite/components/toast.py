@@ -13,7 +13,7 @@ class Toast:
         position: Literal["top", "bottom", "center"] = "top",
         background: str = "#323232",
         foreground: str = "#FFFFFF",
-        font: tuple = ("Arial", 10),
+        font: tuple = ("Monospace", 10),
         pad_x: int = 20,
         pad_y: int = 20,
         alpha: float = 0.0,
