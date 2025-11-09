@@ -131,7 +131,7 @@ def read(
                 return p.read_text(encoding=encoding, errors=errors)
         except FileNotFoundError as e:
             raise e
-        except (ImportError, BaseException):
+        except BaseException:
             p = _dir_path(package, file_path)
             if not p:
                 raise RuntimeError(f"cannot find file {file_path} in package {package}")
@@ -183,6 +183,8 @@ def copytree(
             import pkg_resources
 
             src_path = Path(pkg_resources.resource_filename(package, src))
+            if not src_path.exists():
+                raise FileNotFoundError(f"directory not found: {src_path.as_posix()}")
             shutil.copytree(
                 src=src_path,
                 dst=dst_path,
@@ -192,7 +194,9 @@ def copytree(
                 ignore_dangling_symlinks=ignore_dangling_symlinks,
                 dirs_exist_ok=dirs_exist_ok,
             )
-        except (ImportError, BaseException):
+        except FileNotFoundError as e:
+            raise e
+        except BaseException:
             src_path = _dir_path(package, src)
             if not p:
                 raise RuntimeError(f"cannot find file {p} in package {package}")
