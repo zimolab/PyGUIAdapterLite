@@ -152,11 +152,6 @@ class I18N:
 
         self.set_locale(locale_code, domain, localedir)
 
-    def set_locale_dir(self, localedir: str) -> None:
-        if localedir and not os.path.exists(localedir):
-            os.makedirs(localedir, exist_ok=True)
-        self._localedir = localedir
-
     def get_locale_dir(self) -> str:
         return self._localedir
 
