@@ -129,6 +129,8 @@ def read(
                 return p.read_bytes()
             else:
                 return p.read_text(encoding=encoding, errors=errors)
+        except FileNotFoundError as e:
+            raise e
         except (ImportError, BaseException):
             p = _dir_path(package, file_path)
             if not p:
