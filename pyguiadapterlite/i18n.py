@@ -22,15 +22,6 @@ ENV_LOCALE_DIR = "PYGUIADAPTERLITE_LOCALE_DIR"
 ENV_DOMAIN = "PYGUIADAPTERLITE_DOMAIN"
 
 
-def export_locale_dir(target_dir: str, overwrite: bool = False) -> None:
-    """导出翻译文件到指定目录"""
-    target_dir = Path(target_dir)
-    if target_dir.is_dir() and not overwrite:
-        return
-    target_dir.mkdir(parents=True, exist_ok=True)
-    copy_assets_tree(LOCALES_DIR_NAME, target_dir.as_posix(), dirs_exist_ok=True)
-
-
 class SystemLocaleDetector(object):
     _system = platform.system().lower()
 
@@ -175,36 +166,44 @@ class I18N:
         domain: Optional[str] = None,
         localedir: Optional[str] = None,
     ) -> None:
-        if not (domain and domain.strip()):
-            domain = os.environ.get(ENV_DOMAIN, _DEFAULT_DOMAIN)
+        domain = (domain or "").strip()
+        if not domain:
+            domain = self.get_domain_from_env().strip()
         self._domain = domain
+        if not self._domain:
+            raise ValueError("unable to determine domain")
 
-        locale_code = os.environ.get(ENV_LOCALE, locale_code)
         locale_code = (locale_code or "").strip()
+        if not locale_code:
+            locale_code = self.get_locale_code_from_env().strip()
         if locale_code.lower() == "auto" or locale_code == "":
             locale_code = detect_system_locale()
         self._current_locale = locale_code
 
         localedir = (localedir or "").strip()
         if not localedir:
-            localedir = os.environ.get(ENV_LOCALE_DIR, _DEFAULT_LOCALE_DIR).strip()
-
-        localefile = None
+            localedir = self.get_locales_dir_from_env().strip()
+        locale_file = None
         if not localedir:
+            # 如果没有指定locales目录，则使用内置的locales中查找匹配domain和locale_code的翻译文件
             self._localedir = ""
-            localefile = self.load_builtin_locale_file(domain, locale_code)
+            locale_file = self.load_builtin_locale_file(domain, locale_code)
         else:
+            # 如果指定了locales目录，则将该目录作为locales文件查找目录
+
+            # 如果locales目录不存在，则创建目录
             if not os.path.isdir(localedir):
-                # 如果翻译文件目录不存在，则创建目录
                 os.makedirs(localedir, exist_ok=True)
-            # 如果翻译文件目录不为空，且环境变量要求自动导出，则导出内置翻译文件
-            export_locales = os.environ.get(ENV_AUTO_EXPORT, "false").lower() == "true"
+
+            # 如果locales目录不为空，且要求自动导出，则导出内置locales文件到该目录
+            export_locales = self.should_export_locales()
             if export_locales and not os.listdir(localedir):
-                export_locale_dir(localedir, overwrite=True)
-                print(f"exporting built-in locales to {localedir}")
+                self.export_builtin_locales(localedir, overwrite=True)
+                # print(f"exporting built-in locales to {localedir}")
             self._localedir = localedir
 
         try:
+            # 如果指定了locales目录，则将该目录作为查找目录
             if self._localedir:
                 self._translation = gettext.translation(
                     self._domain,
@@ -213,13 +212,20 @@ class I18N:
                     fallback=True,
                 )
             else:
-                if not localefile:
+                # 如果没有指定locales目录，则使用内置的locales中查找匹配domain和locale_code的翻译文件
+                # 如果没有匹配到对应的翻译文件，则使用空翻译
+                if not locale_file:
                     self._translation = gettext.NullTranslations()
                 else:
-                    self._translation = GNUTranslations(fp=localefile)
+                    # 加载翻译文件
+                    self._translation = GNUTranslations(fp=locale_file)
             # self._translation.install()
-        except FileNotFoundError:
-            # 如果找不到翻译文件，使用空翻译
+        except BaseException as e:
+            # 如果找不到翻译文件或者加载翻译文件出错，则使用空翻译
+            print(
+                f"failed to create translation for {self._domain}@{self._current_locale}': {e}",
+                file=sys.stderr,
+            )
             self._translation = gettext.NullTranslations()
             # self._translation.install()
 
@@ -237,10 +243,36 @@ class I18N:
     def load_builtin_locale_file(
         self, domain: str, locale_code: str
     ) -> Optional[io.BytesIO]:
+        """加载内部locale文件"""
         locale_file_data = load_locale_file(domain, locale_code)
         if not locale_file_data:
             return None
         return io.BytesIO(locale_file_data)
+
+    # noinspection PyMethodMayBeStatic
+    def export_builtin_locales(self, target_dir: str, overwrite: bool = False) -> None:
+        """导出locales文件到指定目录"""
+        target_dir = Path(target_dir)
+        if target_dir.is_dir() and not overwrite:
+            return
+        target_dir.mkdir(parents=True, exist_ok=True)
+        copy_assets_tree(LOCALES_DIR_NAME, target_dir.as_posix(), dirs_exist_ok=True)
+
+    # noinspection PyMethodMayBeStatic
+    def get_domain_from_env(self, default: str = _DEFAULT_DOMAIN) -> str:
+        return os.environ.get(ENV_DOMAIN, default)
+
+    # noinspection PyMethodMayBeStatic
+    def get_locale_code_from_env(self, default: str = "") -> str:
+        return os.environ.get(ENV_LOCALE, default).strip()
+
+    # noinspection PyMethodMayBeStatic
+    def get_locales_dir_from_env(self, default: str = _DEFAULT_LOCALE_DIR) -> str:
+        return os.environ.get(ENV_LOCALE_DIR, default).strip()
+
+    # noinspection PyMethodMayBeStatic
+    def should_export_locales(self) -> bool:
+        return os.environ.get(ENV_AUTO_EXPORT, "false").lower() == "true"
 
     # 简化方法别名
     def _(self, message: str) -> str:
