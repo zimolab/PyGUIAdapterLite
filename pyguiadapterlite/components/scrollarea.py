@@ -3,7 +3,7 @@ from tkinter import Widget, Canvas, Scrollbar, Label, N, S, E, W, PhotoImage
 from tkinter.ttk import Frame
 from typing import Optional, Tuple, List, Dict, Any, Union
 
-from pyguiadapterlite.assets import image_file
+from pyguiadapterlite.assets import read_assets_binary, image_file
 from pyguiadapterlite.components.tooltip import ToolTip
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
@@ -340,7 +340,9 @@ class ParameterWidgetArea(NColumnScrollableArea):
         if config.description:
             global _DESCRIPTION_ICON
             if _DESCRIPTION_ICON is None:
-                _DESCRIPTION_ICON = PhotoImage(file=_DESCRIPTION_ICON_FILE)
+                _DESCRIPTION_ICON = PhotoImage(
+                    data=read_assets_binary(_DESCRIPTION_ICON_FILE)
+                )
             description_label = Label(
                 self._inner_frame,
                 # borderwidth=1,

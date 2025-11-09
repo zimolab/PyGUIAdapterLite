@@ -1,9 +1,10 @@
 import atexit
+import shutil
 import signal
 import sys
 from pathlib import Path
 from threading import Event
-from typing import Optional, Callable
+from typing import Optional, Callable, Union
 
 
 class ExitHook(object):
@@ -56,7 +57,7 @@ class ExitHook(object):
     def _do_hook_uncaught_exception(self, callback: Callable):
         old_excepthook = sys.excepthook
 
-        def wrapped_excepthook(type, value, traceback):
+        def wrapped_excepthook(type_, value, traceback):
             try:
                 callback()
             except Exception as e:
@@ -66,9 +67,9 @@ class ExitHook(object):
                 )
 
             if callable(old_excepthook) and self._wrap_old_excepthook:
-                old_excepthook(type, value, traceback)
+                old_excepthook(type_, value, traceback)
             else:
-                sys.__excepthook__(type, value, traceback)
+                sys.__excepthook__(type_, value, traceback)
 
         sys.excepthook = wrapped_excepthook
 
@@ -96,60 +97,6 @@ class ExitHook(object):
         signal.signal(signal.SIGTERM, wrapped_signal_handler)
 
 
-def _is_zipimporter(module_name) -> bool:
-    module = sys.modules.get(module_name)
-    if not module:
-        return False
-
-    if not hasattr(module, "__loader__"):
-        return False
-
-    try:
-        import zipimport
-
-        if isinstance(module.__loader__, zipimport.zipimporter):
-            return True
-        return False
-    except ImportError:
-        return False
-
-
-def is_in_zipapp():
-    print(f"self={sys.argv[0]}")
-    print(f"__file__={__file__}")
-
-    if getattr(sys, "frozen", False):
-        return False
-
-    if hasattr(sys, "_MEIPASS"):
-        return False
-
-    path = Path(sys.argv[0])
-    if path.suffix in (".pyz", ".pyzw", ".zip"):
-        return True
-    return _is_zipimporter(__name__)
-
-
-def _importlib_path(package: str, path: str) -> Optional[Path]:
-    try:
-        from importlib.resources import as_file, files
-
-        with as_file(files(package).joinpath(path)) as p:
-            return Path(p)
-    except ImportError:
-        return None
-
-
-def _pkg_resources_path(package: str, path: str) -> Optional[Path]:
-    try:
-        import pkg_resources
-
-        return Path(pkg_resources.resource_filename(package, path))
-
-    except (ImportError, BaseException):
-        return None
-
-
 def _dir_path(package: str, path: str) -> Optional[Path]:
     pkg = sys.modules.get(package, None)
     if pkg and hasattr(pkg, "__path__") and pkg.__path__:
@@ -157,12 +104,102 @@ def _dir_path(package: str, path: str) -> Optional[Path]:
     return None
 
 
-def package_path(package: str, dir_path: str, *paths):
-    base_path = (
-        _importlib_path(package, dir_path)
-        or _pkg_resources_path(package, dir_path)
-        or _dir_path(package, dir_path)
-    )
-    if not base_path:
-        raise RuntimeError(f"cannot find directory {dir_path} in package {package}")
-    return base_path.joinpath(*paths)
+def read(
+    package: str,
+    file_path: str,
+    binary: bool,
+    encoding: str = "utf-8",
+    errors: Optional[str] = None,
+) -> Union[str, bytes]:
+    try:
+        from importlib.resources import as_file, files
+
+        with as_file(files(package).joinpath(file_path)) as p:
+            p = Path(p)
+            if binary:
+                return p.read_bytes()
+            else:
+                return p.read_text(encoding=encoding, errors=errors)
+    except ImportError:
+        try:
+            import pkg_resources
+
+            p = Path(pkg_resources.resource_filename(package, file_path))
+            if binary:
+                return p.read_bytes()
+            else:
+                return p.read_text(encoding=encoding, errors=errors)
+        except (ImportError, BaseException):
+            p = _dir_path(package, file_path)
+            if not p:
+                raise RuntimeError(f"cannot find file {file_path} in package {package}")
+            if binary:
+                return p.read_bytes()
+            else:
+                return p.read_text(encoding=encoding, errors=errors)
+
+
+def read_text(
+    package: str, file_path: str, encoding: str = "utf-8", errors: Optional[str] = None
+) -> str:
+    return read(package, file_path, False, encoding=encoding, errors=errors)
+
+
+def read_binary(package: str, file_path: str) -> bytes:
+    return read(package, file_path, True)
+
+
+def copytree(
+    package: str,
+    src: str,
+    dst: str,
+    symlinks: bool = False,
+    ignore=None,
+    copy_function=shutil.copy2,
+    ignore_dangling_symlinks=False,
+    dirs_exist_ok=True,
+):
+    dst_path = Path(dst)
+
+    try:
+        from importlib.resources import as_file, files
+
+        with as_file(files(package).joinpath(src)) as p:
+            src_path = Path(p)
+            shutil.copytree(
+                src=src_path,
+                dst=dst_path,
+                symlinks=symlinks,
+                ignore=ignore,
+                copy_function=copy_function,
+                ignore_dangling_symlinks=ignore_dangling_symlinks,
+                dirs_exist_ok=dirs_exist_ok,
+            )
+
+    except ImportError:
+        try:
+            import pkg_resources
+
+            src_path = Path(pkg_resources.resource_filename(package, src))
+            shutil.copytree(
+                src=src_path,
+                dst=dst_path,
+                symlinks=symlinks,
+                ignore=ignore,
+                copy_function=copy_function,
+                ignore_dangling_symlinks=ignore_dangling_symlinks,
+                dirs_exist_ok=dirs_exist_ok,
+            )
+        except (ImportError, BaseException):
+            src_path = _dir_path(package, src)
+            if not p:
+                raise RuntimeError(f"cannot find file {p} in package {package}")
+            shutil.copytree(
+                src=src_path,
+                dst=dst_path,
+                symlinks=symlinks,
+                ignore=ignore,
+                copy_function=copy_function,
+                ignore_dangling_symlinks=ignore_dangling_symlinks,
+                dirs_exist_ok=dirs_exist_ok,
+            )
