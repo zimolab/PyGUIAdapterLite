@@ -69,6 +69,7 @@
     - [3.9 自定义参数控件](#39-自定义参数控件)
     - [3.10 拾遗](#310-拾遗)
       - [关于i18n](#关于i18n)
+  - [示例](#示例)
   - [打包应用](#打包应用)
   - [许可证](#许可证)
   - [第三方库许可](#第三方库许可)
@@ -3050,7 +3051,14 @@ foo-app
 
 在本仓库[examples/foo-app/](examples/foo-app/)目录下，提供了一个最小化的示例，用户如果使用`PyInstaller`打包自己的应用，可以参考该示例。
 
+## 示例
 
+下面是使用`PyGUIAdapterLite`开发的真实项目，开发者可以参考这些项目，了解使用`PyGUIAdapterLite`开发一个完整GUI
+程序的各种细节。
+
+- [ico-converter](https://github.com/zimolab/ico-converter)
+- [amake](https://github.com/zimolab/amake)
+- [zipapp-creator](https://github.com/zimolab/zipapp-creator)
 
 ## 许可证
 

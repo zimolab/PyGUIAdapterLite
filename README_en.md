@@ -3018,6 +3018,17 @@ it means the resource files have been collected successfully.
 
 Here is a minimal example of this topic: [examples/foo-app](examples/foo-app/)
 
+## Showcase
+
+Here are some real-world projects using `PyGUIAdapterLite`, you can learn 
+every detail of developing a complete GUI program using `PyGUIAdapterLite` 
+from them:
+
+- [ico-converter](https://github.com/zimolab/ico-converter)
+- [amake](https://github.com/zimolab/amake)
+- [zipapp-creator](https://github.com/zimolab/zipapp-creator)
+
+
 
 ## License
 
