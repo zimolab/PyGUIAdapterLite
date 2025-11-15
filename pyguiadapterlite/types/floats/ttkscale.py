@@ -1,6 +1,6 @@
 import dataclasses
-from tkinter import Widget, Label, Frame
-from tkinter import ttk
+from tkinter import Widget
+from tkinter import ttk, Frame, Label
 from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.components.valuewidget import (

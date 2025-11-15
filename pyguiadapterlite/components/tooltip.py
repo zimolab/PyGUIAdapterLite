@@ -1,4 +1,5 @@
-from tkinter import Widget, Toplevel, Frame, Label
+from tkinter import Widget, Toplevel, Label
+from tkinter.ttk import Frame
 from typing import Tuple, Optional, List, Literal
 
 

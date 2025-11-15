@@ -2,24 +2,6 @@ from tkinter import Widget, StringVar
 from tkinter.ttk import Frame, Radiobutton
 from typing import Dict, Any, List, Union, Optional
 
-
-# class ChoiceByIndex(object):
-#     def __init__(self, index: int):
-#         self.index = index
-#
-#     @classmethod
-#     def first(cls):
-#         return cls(0)
-#
-#     @classmethod
-#     def last(cls):
-#         return cls(-1)
-#
-#     @classmethod
-#     def of(cls, index: int):
-#         return cls(index)
-
-
 FIRST_CHOICE = None
 LAST_CHOICE = object()
 

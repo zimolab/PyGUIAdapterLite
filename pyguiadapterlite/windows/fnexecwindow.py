@@ -1,8 +1,8 @@
 import dataclasses
 import json
 from pathlib import Path
-from tkinter import Tk, Toplevel, Frame, messagebox, BooleanVar, filedialog
-from tkinter.ttk import Button, Checkbutton, Progressbar, Label
+from tkinter import Tk, Toplevel, messagebox, BooleanVar, filedialog
+from tkinter.ttk import Button, Checkbutton, Progressbar, Label, Frame
 from typing import Union, Optional, Any, cast, Dict, Literal, Callable
 
 from pyguiadapterlite._messages import (

@@ -1,6 +1,6 @@
 import dataclasses
-from tkinter import Widget, Frame, IntVar
-from tkinter.ttk import Checkbutton
+from tkinter import Widget, IntVar
+from tkinter.ttk import Checkbutton, Frame
 from typing import Type, Any, Optional, Union
 
 from pyguiadapterlite.components.valuewidget import (

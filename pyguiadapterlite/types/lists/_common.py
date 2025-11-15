@@ -1,5 +1,5 @@
 import dataclasses
-from tkinter import Widget, Frame
+from tkinter import Widget
 from tkinter.ttk import LabelFrame, Scrollbar, Frame, Button
 from typing import Type, Any, Optional, Union, List, Literal, TypeVar
 

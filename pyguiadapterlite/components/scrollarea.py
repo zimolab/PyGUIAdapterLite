@@ -1,6 +1,6 @@
 import dataclasses
-from tkinter import Widget, Canvas, Scrollbar, Label, N, S, E, W, PhotoImage
-from tkinter.ttk import Frame
+from tkinter import Widget, Canvas, N, S, E, W, PhotoImage
+from tkinter.ttk import Frame, Label, Scrollbar
 from typing import Optional, Tuple, List, Dict, Any, Union
 
 from pyguiadapterlite.assets import read_assets_binary, image_file

@@ -1,6 +1,6 @@
 import os
-from tkinter import Toplevel, Tk, Widget, Frame, filedialog
-from tkinter.ttk import Button, Entry, Label, Separator
+from tkinter import Toplevel, Tk, Widget, filedialog
+from tkinter.ttk import Button, Entry, Label, Separator, Frame
 from typing import Union, Any, Optional, List, Tuple, Literal
 
 from pyguiadapterlite._messages import (

@@ -1,8 +1,6 @@
 import re
 from tkinter import (
     filedialog,
-    Frame,
-    Scrollbar,
     Text,
     Menu,
     SEL_FIRST,
@@ -13,6 +11,7 @@ from tkinter import (
     INSERT,
     messagebox,
 )
+from tkinter.ttk import Scrollbar, Frame
 from typing import Optional
 
 from pyguiadapterlite._messages import (

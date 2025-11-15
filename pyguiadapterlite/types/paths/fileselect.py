@@ -1,7 +1,7 @@
 import dataclasses
 import os
-from tkinter import Widget, Frame, filedialog
-from tkinter.ttk import Entry, Button
+from tkinter import Widget, filedialog
+from tkinter.ttk import Entry, Button, Frame
 from typing import Type, Any, Optional, Union, List, Tuple
 
 from pyguiadapterlite._messages import (

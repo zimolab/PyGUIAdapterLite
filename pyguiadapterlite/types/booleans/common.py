@@ -1,6 +1,6 @@
 import dataclasses
-from tkinter import Widget, Frame, IntVar
-from tkinter.ttk import Radiobutton
+from tkinter import Widget, IntVar
+from tkinter.ttk import Radiobutton, Frame
 from typing import Type, Any, Optional, Union, Literal
 
 from pyguiadapterlite.components.valuewidget import (
