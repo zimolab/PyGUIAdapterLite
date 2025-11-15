@@ -2,6 +2,7 @@ import dataclasses
 from tkinter import Widget
 from typing import Type, Any, Optional, Union, Literal
 
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.textview import TextView
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
@@ -22,7 +23,7 @@ class TextValue(BaseParameterWidgetConfig):
     default_menu: bool = True
     """是否显示默认菜单"""
 
-    font: tuple = ("Monospace", 10)
+    font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """字体"""
 
     height: int = 8

@@ -20,6 +20,7 @@ from pyguiadapterlite._messages import (
     MSG_INPUT_DIR_PROMPT,
 )
 from pyguiadapterlite.components import toast
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.dialog import (
     BaseDialog,
     StringInputDialog,
@@ -42,10 +43,6 @@ def uprint(*messages: Any, sep=" ", end="\n"):
         print(*messages, sep=sep, end=end)
         return
 
-    # for message in messages:
-    #     exec_window.output_view.write(f"{message}{sep}")
-    # if end:
-    #     exec_window.output_view.write(end)
     if len(messages) == 0:
         exec_window.output_view.write_after(end)
         return
@@ -151,7 +148,7 @@ def show_toast(
     position: Literal["top", "bottom", "center"] = "top",
     background: str = "#323232",
     foreground: str = "#FFFFFF",
-    font: tuple = ("Monospace", 10),
+    font: tuple = get_default_widget_font(),
     pad_x: int = 20,
     pad_y: int = 20,
     alpha: float = 0.0,
@@ -481,7 +478,7 @@ def get_text_input(
     textview_height: int = 20,
     default_menu: bool = True,
     wrap: Literal["none", "char", "word"] = "word",
-    font: tuple = ("Monospace", 10),
+    font: tuple = get_default_widget_font(),
 ):
     return show_custom_dialog(
         TextViewDialog,

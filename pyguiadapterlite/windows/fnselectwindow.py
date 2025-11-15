@@ -12,6 +12,7 @@ from pyguiadapterlite._messages import (
     MSG_SEL_FUNC_FIRST,
     MSG_CURRENT_FUNC_STATUS,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textview import TextView
 from pyguiadapterlite.utils import show_warning, _info, _exception
@@ -34,10 +35,10 @@ class FnSelectWindowConfig(BaseWindowConfig):
     document_view_title: str = MSG_FUNC_DOC_TITLE
     """文档区域标题"""
 
-    label_text_font: tuple = ("Monospace", 10, "bold")
+    label_text_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """标签字体"""
 
-    document_font: tuple = ("Monospace", 10, "bold")
+    document_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """文档字体"""
 
     # no_match_status_text: str = "未找到匹配项"
@@ -137,19 +138,6 @@ class FnSelectWindow(BaseWindow):
         )
         select_button.pack(fill="x")
 
-    # def _setup_search_entry(self):
-    #     """设置搜索功能"""
-    #     search_frame = Frame(self._left_frame)
-    #     search_frame.pack(fill="x", pady=(5, 5))
-    #
-    #     search_label = Label(search_frame, text=self.config.search_entry_title)
-    #     search_label.pack(side="left", padx=(0, 5))
-    #
-    #     self._search_entry = Entry(search_frame, textvariable=self._search_var)
-    #     self._search_entry.pack(side="left", fill="x", expand=True)
-    #     # 绑定搜索事件
-    #     self._search_var.trace("w", self._on_search)
-
     def create_right_area(self) -> Any:
         self._right_frame = Frame(self._main_pane)
         self._main_pane.add(self._right_frame, weight=2)
@@ -200,35 +188,6 @@ class FnSelectWindow(BaseWindow):
             self._status_bar.config(
                 text=f"{self.config.current_view_status_text}{info.get_function_name()}"
             )
-
-    # def _on_search(self, *args):
-    #     _ = args
-    #     """处理搜索事件"""
-    #     search_term = self._search_var.get().lower()
-    #     if not search_term.strip():
-    #         self._fill_listview(list(self._function_list.values()))
-    #         return
-    #     print("搜索词:", search_term)
-    #     # 清空列表
-    #     self._listview.clear()
-    #     # 根据搜索词过滤并重新填充列表
-    #     result = []
-    #     for index, fn_info in self._function_list.items():
-    #         if (
-    #             search_term in fn_info.display_name.lower()
-    #             or search_term in fn_info.fn_name.lower()
-    #         ):
-    #             print("匹配项:", fn_info.display_name, fn_info.fn_name)
-    #             result.append(fn_info)
-    #     print("搜索结果:", result)
-    #     self._fill_listview(result)
-    #     # 如果有匹配项，选中第一个
-    #     if self._listview.size() > 0:
-    #         self._listview.selection_set(0)
-    #         self._on_select(None)
-    #     else:
-    #         self._doc_view.set_text(self.config.no_match_document_text)
-    #         self._status_bar.config(text=self.config.no_match_status_text)
 
     def _on_select_button_clicked(self):
         selection = self._listview.curselection()

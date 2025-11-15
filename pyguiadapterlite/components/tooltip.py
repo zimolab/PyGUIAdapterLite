@@ -1,6 +1,6 @@
-from tkinter import Widget, Toplevel, Label
-from tkinter.ttk import Frame
+from tkinter import Widget, Toplevel, Label, Frame
 from typing import Tuple, Optional, List, Literal
+from pyguiadapterlite.components.common import get_default_widget_font
 
 
 class ToolTip(object):
@@ -14,7 +14,7 @@ class ToolTip(object):
         background: str = "#ffffe0",
         foreground: str = "black",
         relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         wrap_length: Optional[int] = None,
     ):
         self._destroyed = False
@@ -175,7 +175,7 @@ class SimpleHtmlToolTip(ToolTip):
         x_offset: int = 20,
         y_offset: int = 10,
         relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "solid",
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         wrap_length: Optional[int] = None,
     ):
         super().__init__(

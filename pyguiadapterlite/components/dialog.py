@@ -13,6 +13,7 @@ from pyguiadapterlite._messages import (
     MSG_SELECT_FILE_DIALOG_TITLE,
     MSG_SELECT_DIR_DIALOG_TITLE,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.textview import TextView
 
 
@@ -328,7 +329,7 @@ class TextViewDialog(BaseSimpleDialog):
         editable: bool = True,
         default_menu: bool = True,
         wrap: Literal["none", "char", "word"] = "word",
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         label_text: str = "",
     ):
         self._initial_text: str = text

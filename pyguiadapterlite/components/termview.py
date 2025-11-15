@@ -24,6 +24,7 @@ from pyguiadapterlite._messages import (
     MSG_FILE_FILTER_ALL,
     MSG_FILE_FILTER_TEXT,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.utils import _warning
 
 
@@ -54,7 +55,7 @@ class TermView(Frame):
         background: str = "black",
         foreground: str = "white",
         select_background: str = "lightgray",
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         default_context_menu=False,
         colormap: Optional[dict] = None,
         **kwargs,

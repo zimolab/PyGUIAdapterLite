@@ -3,19 +3,8 @@ from abc import abstractmethod, ABCMeta
 from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union, Literal
-
+from pyguiadapterlite.components.common import get_default_parameter_label_justify
 from pyguiadapterlite.utils import _warning
-
-_DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY: Literal["left", "right", "center"] = "center"
-
-
-def set_default_parameter_label_justify(justify: Literal["left", "right", "center"]):
-    global _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
-    _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY = justify
-
-
-def get_default_parameter_label_justify() -> Literal["left", "right", "center"]:
-    return _DEFAULT_PARAMETER_NAME_LABEL_JUSTIFY
 
 
 class SetValueError(Exception):

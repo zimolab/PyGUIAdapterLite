@@ -3,6 +3,7 @@ from tkinter import Widget
 from typing import Type, Any, Optional, Union, Literal
 
 from pyguiadapterlite.components.colorlabel import ColorLabel
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
@@ -38,7 +39,7 @@ class HexColorValue(BaseParameterWidgetConfig):
     relief: Literal["flat", "raised", "sunken", "groove", "ridge"] = "flat"
     """颜色标签的边框样式"""
 
-    font: Union[tuple, str] = ("Monospace", 13, "bold")
+    font: Union[tuple, str] = dataclasses.field(default_factory=get_default_widget_font)
     """颜色标签的字体"""
 
     @classmethod

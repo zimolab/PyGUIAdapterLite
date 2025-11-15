@@ -10,6 +10,7 @@ from pyguiadapterlite._messages import (
     MSG_INVALID_PARAM_DETAIL_GROUP_TITLE,
     MSG_INVALID_PARAM_DETAIL_TEMPLATE,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textview import TextView
@@ -23,7 +24,7 @@ class ParameterValidationWindowConfig(BaseWindowConfig):
     description_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
     invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
     size: tuple = (400, 450)
-    font: tuple = ("Monospace", 10)
+    font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     bell: bool = True
 
 

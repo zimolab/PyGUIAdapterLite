@@ -48,4 +48,7 @@ from pyguiadapterlite.components.dialog import (
     PathInputDialog,
 )
 
-from pyguiadapterlite.components.valuewidget import set_default_parameter_label_justify
+from pyguiadapterlite.components.common import (
+    set_default_parameter_label_justify,
+    set_default_widget_font,
+)

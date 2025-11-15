@@ -34,6 +34,7 @@ from pyguiadapterlite._messages import (
     MSG_INVALID_PARAMS_NOT_APPLIED,
     MSG_DEFAULT_PARAM_GROUP_NAME,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.paramtabview import ParameterGroupTabView
 from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
 from pyguiadapterlite.components.termview import TermView
@@ -95,13 +96,13 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     document_tab_title: str = MSG_FUNC_DOC_TAB_TITLE
     """函数文档Tab页标题"""
 
-    document_font: tuple = ("Monospace", 10)
+    document_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """函数文档字体"""
 
     output_tab_title: str = MSG_FUNC_OUTPUT_TAB_TITLE
     """模拟终端区域所在Tab页标题"""
 
-    output_font: tuple = ("Monospace", 10)
+    output_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """模拟终端区域字体"""
 
     output_background: str = "black"

@@ -1,6 +1,7 @@
 from tkinter import Label, Widget, colorchooser
 from typing import Optional, Literal
 
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.utils import get_contrast_color
 
 
@@ -12,7 +13,7 @@ class ColorLabel(Label):
         color_picker: bool = True,
         color_picker_title: str = "",
         show_color_code: bool = True,
-        font: tuple = ("Monospace", 10, "bold"),
+        font: tuple = get_default_widget_font(),
         width: Optional[int] = None,
         height: Optional[int] = 2,
         borderwidth: int = 1,
@@ -58,6 +59,7 @@ class ColorLabel(Label):
                 text=f"#{current_color[1:]}", fg=get_contrast_color(current_color)
             )
 
+    # noinspection PyUnusedLocal
     def _pick_color(self, event):
         color_code = colorchooser.askcolor(
             parent=self,
@@ -67,17 +69,3 @@ class ColorLabel(Label):
         if color_code[0] is None:
             return
         self.current_color = color_code[1]
-
-
-if __name__ == "__main__":
-    from tkinter import Tk
-
-    root = Tk()
-    color_label = ColorLabel(
-        root,
-        initial_color="#FF0000",
-        color_picker=True,
-        show_color_code=True,
-    )
-    color_label.pack()
-    root.mainloop()

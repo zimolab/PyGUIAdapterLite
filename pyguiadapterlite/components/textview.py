@@ -21,6 +21,7 @@ from pyguiadapterlite._messages import (
     MSG_UNDO,
     MSG_REDO,
 )
+from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.utils import _exception
 
 NAV_KEYS = ("Up", "Down", "Left", "Right", "Prior", "Next", "Home", "End")
@@ -32,7 +33,7 @@ class TextView(object):
     def __init__(
         self,
         parent: Union[Widget, Toplevel, Tk],
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,
@@ -342,7 +343,7 @@ class SimpleTextViewer(Toplevel):
         title="文本查看器",
         width=850,
         height=600,
-        font: tuple = ("Monospace", 10),
+        font: tuple = get_default_widget_font(),
         wrap: Literal["none", "char", "word"] = "word",
         background: str = None,
         foreground: str = None,
