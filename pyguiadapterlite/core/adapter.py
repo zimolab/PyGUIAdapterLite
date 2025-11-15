@@ -26,13 +26,20 @@ from pyguiadapterlite.components.valuewidget import (
 
 
 class GUIAdapter(object):
-    def __init__(self, *, hdpi_mode: bool = False, scale_factor_divisor: int = 100):
+    def __init__(
+        self,
+        *,
+        hdpi_mode: bool = False,
+        scale_factor_divisor: int = 100,
+        before_mainloop_callback: Callable[[Tk], None] = None,
+    ):
         self._hdpi_mode = hdpi_mode
         self._scale_factor_divisor = scale_factor_divisor
         self._functions: Dict[Callable, FnInfo] = {}
         self._fn_parser = FnParser()
         self._select_window: Optional[FnSelectWindow] = None
         self._execute_window: Optional[FnExecuteWindow] = None
+        self._before_mainloop_callback = before_mainloop_callback
 
     def add(
         self,
@@ -282,6 +289,10 @@ class GUIAdapter(object):
         else:
             self._show_execute_window(list(self._functions.values())[0])
         root.deiconify()
+
+        if self._before_mainloop_callback:
+            self._before_mainloop_callback(root)
+
         root.mainloop()
         self._select_window = None
         self._execute_window = None
