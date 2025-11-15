@@ -64,7 +64,7 @@ class SystemLocaleDetector(object):
         for var in env_vars:
             value = os.environ.get(var)
             if value and value != "C" and value != "POSIX":
-                return value
+                return value.split(".")[0]
         # 使用locale命令
         try:
             result = subprocess.run(["locale"], capture_output=True, text=True)
@@ -73,7 +73,7 @@ class SystemLocaleDetector(object):
             for line in result.stdout.split("\n"):
                 line = line.strip()
                 if line.startswith("LANG=") or line.startswith("LC_CTYPE="):
-                    return line.split("=")[1].strip().strip('"')
+                    return line.split("=")[1].strip().strip('"').split(".")[0]
             return None
         except BaseException as e:
             print(f"failed to detect system locale on Linux: {e}", file=sys.stderr)
