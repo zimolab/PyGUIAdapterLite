@@ -794,20 +794,6 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                     font=self.config.document_font
                 ),
             )
-            # self._close_param_validation_win()
-            # self._param_validation_win_parent = Toplevel(self._parent)
-            # self._param_validation_win = ParameterValidationWindow(
-            #     self._param_validation_win_parent,
-            #     validation_errors,
-            #     config=validation_window_config
-            #     or ParameterValidationWindowConfig(font=self.config.document_font),
-            # )
-            # self._param_validation_win.set_on_close_handler(
-            #     self._on_param_validation_win_close
-            # )
-            # self._param_validation_win.set_item_clicked_handler(
-            #     self._on_param_validation_win_item_clicked
-            # )
 
         if not validation_errors:
             return True
