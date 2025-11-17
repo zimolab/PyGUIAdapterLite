@@ -3,6 +3,7 @@ from tkinter import Widget, Canvas, N, S, E, W, PhotoImage
 from tkinter.ttk import Frame, Label, Scrollbar
 from typing import Optional, Tuple, List, Dict, Any, Union
 
+from pyguiadapterlite.windows.basewindow import BaseWindow
 from pyguiadapterlite.assets import read_assets_binary, image_file
 from pyguiadapterlite.components.tooltip import ToolTip
 from pyguiadapterlite.components.valuewidget import (
@@ -287,7 +288,7 @@ class ParameterWidgetArea(NColumnScrollableArea):
         label_anchor: str = E + W,
         parameter_anchor: str = E + W,
         parameter_infos: Optional[Dict[str, ParameterInfo]] = None,
-        window: Optional["FnExecuteWindow"] = None,
+        window: Optional[BaseWindow] = None,
         **kwargs,
     ):
         self._tooltips: Dict[str, ToolTip] = {}
