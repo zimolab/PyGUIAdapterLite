@@ -832,11 +832,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             self._on_param_validation_win_item_clicked
         )
 
-    def _get_label_for_parameter(self, fn_name: str) -> str:
-        for fn_name1, config in self._fn_info.parameter_configs.items():
-            if fn_name == fn_name1:
-                return config.label or fn_name
-        return fn_name
+    def _get_label_for_parameter(self, param_name: str) -> str:
+        for param_name1, config in self._fn_info.parameter_configs.items():
+            if param_name == param_name1:
+                return config.label or param_name
+        return param_name
 
     def _handle_function_result(self, return_value: Any):
         if not (self.config.show_function_result or self.config.print_function_result):
