@@ -3,6 +3,8 @@ from abc import abstractmethod, ABCMeta
 from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union, Literal
+
+from pyguiadapterlite.windows.basewindow import BaseWindow
 from pyguiadapterlite.components.common import get_default_parameter_label_justify
 from pyguiadapterlite.utils import _warning
 
@@ -142,7 +144,7 @@ class BaseParameterWidget(Frame):
 
         self._color_flash_effect = ColorFlashEffect(self, "red", 800, 3)
 
-        self._current_window: Optional["FnExecuteWindow"] = None
+        self._current_window: Optional[BaseWindow] = None
 
     @property
     def parameter_name(self) -> str:
@@ -169,7 +171,7 @@ class BaseParameterWidget(Frame):
         self._description = value
 
     @property
-    def current_window(self) -> Optional["FnExecuteWindow"]:
+    def current_window(self) -> Optional[BaseWindow]:
         return self._current_window
 
     @property
@@ -199,7 +201,7 @@ class BaseParameterWidget(Frame):
         parent: Widget,
         parameter_name: str,
         config: _T,
-        window: Optional["FnExecuteWindow"] = None,
+        window: Optional[BaseWindow] = None,
     ):
         instance = cls(parent, parameter_name, config).build()
         instance._current_window = window
