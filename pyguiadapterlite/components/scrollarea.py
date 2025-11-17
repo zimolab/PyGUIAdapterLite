@@ -345,10 +345,8 @@ class ParameterWidgetArea(NColumnScrollableArea):
                 )
             description_label = Label(
                 self._inner_frame,
-                # borderwidth=1,
                 relief="flat",
                 takefocus=False,
-                # bg="lightyellow",
                 image=_DESCRIPTION_ICON,
             )
             tooltip = ToolTip(description_label, input_widget.description)
