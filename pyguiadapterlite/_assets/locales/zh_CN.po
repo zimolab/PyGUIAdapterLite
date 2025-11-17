@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-30 22:29+0800\n"
-"PO-Revision-Date: 2025-10-30 22:30+0800\n"
+"POT-Creation-Date: 2025-11-18 00:18+0800\n"
+"PO-Revision-Date: 2025-11-18 00:19+0800\n"
 "Last-Translator: \n"
 "Language-Team: zimolab@aliyun.com\n"
 "Language: zh_CN\n"
@@ -174,7 +174,7 @@ msgstr "函数输出"
 msgid "Execute"
 msgstr "执行"
 
-#: ../_messages.py:52 ../_messages.py:79
+#: ../_messages.py:52 ../_messages.py:79 ../_messages.py:148
 msgid "Cancel"
 msgstr "取消"
 
@@ -231,7 +231,7 @@ msgstr "请选择一个需要执行的函数！"
 msgid "Current function: "
 msgstr "当前函数："
 
-#: ../_messages.py:72
+#: ../_messages.py:72 ../_messages.py:140
 msgid "Validation Errors"
 msgstr "参数校验错误"
 
@@ -243,7 +243,7 @@ msgstr "参数"
 msgid "Please check the following parameters:"
 msgstr "请检查下列参数："
 
-#: ../_messages.py:75
+#: ../_messages.py:75 ../_messages.py:145
 msgid "Detail"
 msgstr "细节"
 
@@ -252,11 +252,13 @@ msgstr "细节"
 msgid ""
 "Parameter:\n"
 "  {}\n"
+"\n"
 "Reason:\n"
 "  {}"
 msgstr ""
 "参数:\n"
 "  {}\n"
+"\n"
 "原因:\n"
 "  {}"
 
@@ -443,3 +445,30 @@ msgstr "以下参数未通过校验，请进行检查："
 #: ../_messages.py:138
 msgid "Main"
 msgstr "主参数"
+
+#: ../_messages.py:141
+msgid "Invalid Values"
+msgstr "非法的值"
+
+#: ../_messages.py:143
+msgid "The following values are invalid and will not be applied:"
+msgstr "存在非法的值："
+
+#: ../_messages.py:146
+#, python-brace-format
+msgid ""
+"Key:\n"
+"  {}\n"
+"\n"
+"Reason:\n"
+"  {}"
+msgstr ""
+"字段:\n"
+"  {}\n"
+"\n"
+"原因:\n"
+"  {}"
+
+#: ../_messages.py:147
+msgid "Confirm"
+msgstr "确认"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-10-30 22:30+0800\n"
+"POT-Creation-Date: 2025-11-18 00:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: zimolab@aliyun.com\n"
@@ -173,7 +173,7 @@ msgstr ""
 msgid "Execute"
 msgstr ""
 
-#: ../_messages.py:52 ../_messages.py:79
+#: ../_messages.py:52 ../_messages.py:79 ../_messages.py:148
 msgid "Cancel"
 msgstr ""
 
@@ -230,7 +230,7 @@ msgstr ""
 msgid "Current function: "
 msgstr ""
 
-#: ../_messages.py:72
+#: ../_messages.py:72 ../_messages.py:140
 msgid "Validation Errors"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Please check the following parameters:"
 msgstr ""
 
-#: ../_messages.py:75
+#: ../_messages.py:75 ../_messages.py:145
 msgid "Detail"
 msgstr ""
 
@@ -251,6 +251,7 @@ msgstr ""
 msgid ""
 "Parameter:\n"
 "  {}\n"
+"\n"
 "Reason:\n"
 "  {}"
 msgstr ""
@@ -437,4 +438,26 @@ msgstr ""
 
 #: ../_messages.py:138
 msgid "Main"
+msgstr ""
+
+#: ../_messages.py:141
+msgid "Invalid Values"
+msgstr ""
+
+#: ../_messages.py:143
+msgid "The following values are invalid and will not be applied:"
+msgstr ""
+
+#: ../_messages.py:146
+#, python-brace-format
+msgid ""
+"Key:\n"
+"  {}\n"
+"\n"
+"Reason:\n"
+"  {}"
+msgstr ""
+
+#: ../_messages.py:147
+msgid "Confirm"
 msgstr ""
