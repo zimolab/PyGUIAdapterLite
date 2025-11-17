@@ -73,7 +73,7 @@ MSG_PARAM_VALIDATION_WIN_TITLE = tr_("Validation Errors")
 MSG_INVALID_PARAMS_GROUP_TITLE = tr_("Parameters")
 MSG_INVALID_PARAMS_LABEL_TEXT = tr_("Please check the following parameters:")
 MSG_INVALID_PARAM_DETAIL_GROUP_TITLE = tr_("Detail")
-MSG_INVALID_PARAM_DETAIL_TEMPLATE = tr_("Parameter:\n  {}\nReason:\n  {}")
+MSG_INVALID_PARAM_DETAIL_TEMPLATE = tr_("Parameter:\n  {}\n\nReason:\n  {}")
 
 MSG_DIALOG_BUTTON_OK = tr_("OK")
 MSG_DIALOG_BUTTON_CANCEL = tr_("Cancel")
@@ -136,3 +136,13 @@ MSG_INVALID_PARAMS_NOT_APPLIED = tr_(
     "The following parameters are invalid and will not be applied:"
 )
 MSG_DEFAULT_PARAM_GROUP_NAME = tr_("Main")
+
+MSG_OBJ_VALIDATION_WIN_TITLE = tr_("Validation Errors")
+MSG_INVALID_KEYS_GROUP_TITLE = tr_("Invalid Values")
+MSG_INVALID_KEY_LABEL_TEXT = tr_(
+    "The following values are invalid and will not be applied:"
+)
+MSG_INVALID_KEY_DETAIL_GROUP_TITLE = tr_("Detail")
+MSG_INVALID_KEY_DETAIL_TEMPLATE = tr_("Key:\n  {}\n\nReason:\n  {}")
+MSG_OBJ_WIN_CONFIRM_BUTTON_TEXT = tr_("Confirm")
+MSG_OBJ_WIN_CANCEL_BUTTON_TEXT = tr_("Cancel")
