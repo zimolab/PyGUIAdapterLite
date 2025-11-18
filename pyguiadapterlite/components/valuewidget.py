@@ -4,9 +4,9 @@ from inspect import isclass
 from tkinter import Frame, Widget
 from typing import Any, TypeVar, Type, Optional, Union, Literal
 
-from pyguiadapterlite.windows.basewindow import BaseWindow
 from pyguiadapterlite.components.common import get_default_parameter_label_justify
 from pyguiadapterlite.utils import _warning
+from pyguiadapterlite.windows.basewindow import BaseWindow
 
 
 class SetValueError(Exception):
