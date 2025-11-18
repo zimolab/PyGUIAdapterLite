@@ -47,7 +47,7 @@ class BaseWindowConfig(object):
 
 
 class BaseWindow(object):
-    def __init__(self, parent: Union[Tk, Toplevel], config: BaseWindowConfig):
+    def __init__(self, parent: Union[Tk, Toplevel], config: BaseWindowConfig, **kwargs):
         self._parent = parent
         self._config = config
         size = config.size
@@ -285,9 +285,10 @@ class BaseWindow(object):
         window_class: Type["BaseWindow"],
         config: BaseWindowConfig,
         modal: bool = False,
+        **kwargs,
     ):
         sub_window_toplevel = Toplevel(self.parent)
-        window = window_class(parent=sub_window_toplevel, config=config)
+        window = window_class(parent=sub_window_toplevel, config=config, **kwargs)
         if modal:
             window.parent.grab_set()
             self._parent.wait_window(window._parent)
