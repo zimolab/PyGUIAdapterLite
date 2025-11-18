@@ -283,7 +283,7 @@ class BaseWindow(object):
     def show_sub_window(
         self,
         window_class: Type["BaseWindow"],
-        config: BaseWindowConfig,
+        config: Optional[BaseWindowConfig],
         modal: bool = False,
         **kwargs,
     ):
