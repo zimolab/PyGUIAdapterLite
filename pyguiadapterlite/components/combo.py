@@ -51,6 +51,7 @@ class ComboBox(Frame):
 
     @current_value.setter
     def current_value(self, value: str):
+        value = str(value)
         if value not in self._choices:
             _warning(f"choice not found: {value}")
         if self._add_user_input and value not in self._choices:

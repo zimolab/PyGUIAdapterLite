@@ -60,6 +60,8 @@ class LooseChoiceValueWidget(BaseParameterWidget):
 
     def set_value(self, value: Any) -> Union[Any, InvalidValue]:
         try:
+            if value is None:
+                value = self._value_widget.current_value
             self._value_widget.current_value = value
         except Exception as e:
             return InvalidValue(raw_value=value, exception=e)
