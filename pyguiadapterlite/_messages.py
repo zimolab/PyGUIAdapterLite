@@ -146,3 +146,14 @@ MSG_INVALID_KEY_DETAIL_GROUP_TITLE = tr_("Detail")
 MSG_INVALID_KEY_DETAIL_TEMPLATE = tr_("Key:\n  {}\n\nReason:\n  {}")
 MSG_OBJ_WIN_CONFIRM_BUTTON_TEXT = tr_("Confirm")
 MSG_OBJ_WIN_CANCEL_BUTTON_TEXT = tr_("Cancel")
+MSG_OBJ_WIN_TITLE = tr_("Object Editor")
+MSG_OBJ_WIN_CONTENT_TITLE = tr_("Fields")
+
+MSG_SETTINGS_WIN_TITLE = tr_("Settings")
+MSG_SETTINGS_WIN_CONTENT_TITLE = tr_("Options")
+MSG_SETTINGS_WIN_CONFIRM_BUTTON_TEXT = tr_("Save")
+MSG_SETTINGS_WIN_CANCEL_BUTTON_TEXT = tr_("Cancel")
+MSG_SETTINGS_WIN_RESTORE_DEFAULT_BUTTON_TEXT = tr_("Restore Defaults")
+MSG_SETTINGS_WIN_RESTORE_DEFAULT_CONFIRM_MSG = tr_(
+    "Are you sure to restore default settings?"
+)
