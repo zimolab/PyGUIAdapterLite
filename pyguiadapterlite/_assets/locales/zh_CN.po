@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pyguiadapterlite\n"
-"POT-Creation-Date: 2025-11-18 00:18+0800\n"
-"PO-Revision-Date: 2025-11-18 00:19+0800\n"
+"POT-Creation-Date: 2025-11-19 21:11+0800\n"
+"PO-Revision-Date: 2025-11-19 21:12+0800\n"
 "Last-Translator: \n"
 "Language-Team: zimolab@aliyun.com\n"
 "Language: zh_CN\n"
@@ -175,6 +175,7 @@ msgid "Execute"
 msgstr "执行"
 
 #: ../_messages.py:52 ../_messages.py:79 ../_messages.py:148
+#: ../_messages.py:155
 msgid "Cancel"
 msgstr "取消"
 
@@ -472,3 +473,31 @@ msgstr ""
 #: ../_messages.py:147
 msgid "Confirm"
 msgstr "确认"
+
+#: ../_messages.py:149
+msgid "Object Editor"
+msgstr "对象编辑器"
+
+#: ../_messages.py:150
+msgid "Fields"
+msgstr "字段列表"
+
+#: ../_messages.py:152
+msgid "Settings"
+msgstr "设置"
+
+#: ../_messages.py:153
+msgid "Options"
+msgstr "选项"
+
+#: ../_messages.py:154
+msgid "Save"
+msgstr "保存设置"
+
+#: ../_messages.py:156
+msgid "Restore Defaults"
+msgstr "恢复默认值"
+
+#: ../_messages.py:158
+msgid "Are you sure to restore default settings?"
+msgstr "是否将所有设置项恢复到默认值？"
