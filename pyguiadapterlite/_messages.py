@@ -3,16 +3,51 @@
 """
 
 from typing import Optional
+from pyguiadapterlite.i18n import I18N
+
+
+DEFAULT_LOCALE_DIR = ""
+DEFAULT_DOMAIN = "pyguiadapterlite"
 
 _messages: Optional["Messages"] = None
+
+_custom_domain: str = DEFAULT_DOMAIN
+_custom_locales_dir: str = DEFAULT_LOCALE_DIR
+_custom_export_locale: bool = False
+_custom_locale_code: str = ""
+
+
+def set_locale_domain(domain: str) -> None:
+    global _custom_domain
+    _custom_domain = domain
+
+
+def set_locales_dir(dir_path: str) -> None:
+    global _custom_locales_dir
+    _custom_locales_dir = dir_path
+
+
+def set_export_locales_dir(enabled: bool) -> None:
+    global _custom_export_locale
+    _custom_export_locale = enabled
+
+
+def set_locale_code(code: str) -> None:
+    global _custom_locale_code
+    _custom_locale_code = code
 
 
 class Messages(object):
     def __init__(self):
 
-        from pyguiadapterlite.i18n import I18N
+        global _custom_domain, _custom_locales_dir, _custom_export_locale, _custom_locale_code
 
-        self._i18n = I18N()
+        self._i18n = I18N(
+            domain=_custom_domain,
+            locale_code=_custom_locale_code,
+            localedir=_custom_locales_dir,
+            export_locales=_custom_export_locale,
+        )
 
         tr_ = self._i18n.gettext
 

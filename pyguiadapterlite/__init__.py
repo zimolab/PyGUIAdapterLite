@@ -65,3 +65,9 @@ from pyguiadapterlite.windows.settingswindow import (
     SettingFields,
 )
 from pyguiadapterlite.utils import set_logging_enabled, is_logging_enabled
+from pyguiadapterlite._messages import (
+    set_locales_dir,
+    set_locale_code,
+    set_locale_domain,
+    set_export_locales_dir,
+)

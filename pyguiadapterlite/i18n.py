@@ -12,14 +12,8 @@ from typing import Optional
 
 from pyguiadapterlite.assets import LOCALES_DIR_NAME, copy_assets_tree, load_locale_file
 
-_DEFAULT_LOCALE_DIR = ""
-_DEFAULT_DOMAIN = "pyguiadapterlite"
-_DEFAULT_LOCALE = "en_US"
 
-ENV_AUTO_EXPORT = "PYGUIADAPTERLITE_EXPORT_LOCALES"
-ENV_LOCALE = "PYGUIADAPTERLITE_LOCALE"
-ENV_LOCALE_DIR = "PYGUIADAPTERLITE_LOCALE_DIR"
-ENV_DOMAIN = "PYGUIADAPTERLITE_DOMAIN"
+DEFAULT_LOCALE = "en_US"
 
 
 class SystemLocaleDetector(object):
@@ -29,7 +23,7 @@ class SystemLocaleDetector(object):
         raise NotImplementedError("This class is not intended to be instantiated")
 
     @classmethod
-    def detect(cls, default: str = _DEFAULT_LOCALE) -> str:
+    def detect(cls, default: str = DEFAULT_LOCALE) -> str:
         if cls._system == "linux":
             return cls._detect_linux() or default
         elif cls._system == "darwin":
@@ -41,7 +35,7 @@ class SystemLocaleDetector(object):
 
     @classmethod
     def detect_language_code(
-        cls, fallback_locale: str = _DEFAULT_LOCALE
+        cls, fallback_locale: str = DEFAULT_LOCALE
     ) -> Optional[str]:
         locale_str = cls.detect(fallback_locale).strip()
         if locale_str and "_" in locale_str:
@@ -50,7 +44,7 @@ class SystemLocaleDetector(object):
 
     @classmethod
     def detect_country_code(
-        cls, fallback_locale: str = _DEFAULT_LOCALE
+        cls, fallback_locale: str = DEFAULT_LOCALE
     ) -> Optional[str]:
         locale_str = cls.detect(fallback_locale)
         if locale_str and "_" in locale_str:
@@ -123,31 +117,33 @@ class SystemLocaleDetector(object):
             return None
 
 
-def detect_system_locale(fallback: str = _DEFAULT_LOCALE) -> str:
+def detect_system_locale(fallback: str = DEFAULT_LOCALE) -> str:
     return SystemLocaleDetector.detect(fallback)
 
 
 def detect_system_language_code(
-    fallback_locale: str = _DEFAULT_LOCALE,
+    fallback_locale: str = DEFAULT_LOCALE,
 ) -> Optional[str]:
     return SystemLocaleDetector.detect_language_code(fallback_locale)
 
 
-def detect_system_country_code(fallback_locale: str = _DEFAULT_LOCALE) -> Optional[str]:
+def detect_system_country_code(fallback_locale: str = DEFAULT_LOCALE) -> Optional[str]:
     return SystemLocaleDetector.detect_country_code(fallback_locale)
 
 
 class I18N:
     def __init__(
         self,
-        domain: Optional[str] = None,
-        localedir: Optional[str] = None,
-        locale_code: Optional[str] = None,
+        domain: Optional[str],
+        localedir: Optional[str],
+        locale_code: Optional[str],
+        export_locales: bool,
     ):
 
         self._domain: str = ""
         self._localedir: str = ""
         self._current_locale: str = ""
+        self._export_locales: bool = export_locales
         self._translation: Optional[gettext.NullTranslations] = None
 
         self.set_locale(locale_code, domain, localedir)
@@ -161,23 +157,16 @@ class I18N:
         domain: Optional[str] = None,
         localedir: Optional[str] = None,
     ) -> None:
-        domain = (domain or "").strip()
-        if not domain:
-            domain = self.get_domain_from_env().strip()
-        self._domain = domain
+        self._domain = (domain or "").strip()
         if not self._domain:
             raise ValueError("unable to determine domain")
 
         locale_code = (locale_code or "").strip()
-        if not locale_code:
-            locale_code = self.get_locale_code_from_env().strip()
         if locale_code.lower() == "auto" or locale_code == "":
             locale_code = detect_system_locale()
         self._current_locale = locale_code
 
         localedir = (localedir or "").strip()
-        if not localedir:
-            localedir = self.get_locales_dir_from_env().strip()
         locale_file = None
         if not localedir:
             # 如果没有指定locales目录，则使用内置的locales中查找匹配domain和locale_code的翻译文件
@@ -191,7 +180,7 @@ class I18N:
                 os.makedirs(localedir, exist_ok=True)
 
             # 如果locales目录不为空，且要求自动导出，则导出内置locales文件到该目录
-            export_locales = self.should_export_locales()
+            export_locales = self._export_locales
             if export_locales and not os.listdir(localedir):
                 self.export_builtin_locales(localedir, overwrite=True)
                 # print(f"exporting built-in locales to {localedir}")
@@ -234,40 +223,22 @@ class I18N:
             return self._translation.ngettext(singular, plural, n)
         return singular if n == 1 else plural
 
-    # noinspection PyMethodMayBeStatic
-    def load_builtin_locale_file(
-        self, domain: str, locale_code: str
-    ) -> Optional[io.BytesIO]:
+    @staticmethod
+    def load_builtin_locale_file(domain: str, locale_code: str) -> Optional[io.BytesIO]:
         """加载内部locale文件"""
         locale_file_data = load_locale_file(domain, locale_code)
         if not locale_file_data:
             return None
         return io.BytesIO(locale_file_data)
 
-    # noinspection PyMethodMayBeStatic
-    def export_builtin_locales(self, target_dir: str, overwrite: bool = False) -> None:
+    @staticmethod
+    def export_builtin_locales(target_dir: str, overwrite: bool = False) -> None:
         """导出locales文件到指定目录"""
         target_dir = Path(target_dir)
         if target_dir.is_dir() and not overwrite:
             return
         target_dir.mkdir(parents=True, exist_ok=True)
         copy_assets_tree(LOCALES_DIR_NAME, target_dir.as_posix(), dirs_exist_ok=True)
-
-    # noinspection PyMethodMayBeStatic
-    def get_domain_from_env(self, default: str = _DEFAULT_DOMAIN) -> str:
-        return os.environ.get(ENV_DOMAIN, default)
-
-    # noinspection PyMethodMayBeStatic
-    def get_locale_code_from_env(self, default: str = "") -> str:
-        return os.environ.get(ENV_LOCALE, default).strip()
-
-    # noinspection PyMethodMayBeStatic
-    def get_locales_dir_from_env(self, default: str = _DEFAULT_LOCALE_DIR) -> str:
-        return os.environ.get(ENV_LOCALE_DIR, default).strip()
-
-    # noinspection PyMethodMayBeStatic
-    def should_export_locales(self) -> bool:
-        return os.environ.get(ENV_AUTO_EXPORT, "false").lower() == "true"
 
     # 简化方法别名
     def _(self, message: str) -> str:
