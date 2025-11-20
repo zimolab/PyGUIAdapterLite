@@ -1,17 +1,10 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Tk, Toplevel, TclError
 from tkinter.ttk import Frame, PanedWindow, Label, Entry, Button
 from typing import Any, Union, Optional, cast, Dict, List
 
-from pyguiadapterlite._messages import (
-    MSG_FUNC_SEL_WIN_TITLE,
-    MSG_SEL_BUTTON_TEXT,
-    MSG_FUNC_DOC_TITLE,
-    MSG_FUNC_LIST_TITLE,
-    MSG_NO_FUNC_DOC_STATUS,
-    MSG_SEL_FUNC_FIRST,
-    MSG_CURRENT_FUNC_STATUS,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textview import TextView
@@ -23,16 +16,16 @@ from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindow
 
 @dataclasses.dataclass(frozen=True)
 class FnSelectWindowConfig(BaseWindowConfig):
-    title: str = MSG_FUNC_SEL_WIN_TITLE
+    title: str = field(default_factory=lambda: msgs().MSG_FUNC_SEL_WIN_TITLE)
     """窗口标题"""
 
-    select_button_text: str = MSG_SEL_BUTTON_TEXT
+    select_button_text: str = field(default_factory=lambda: msgs().MSG_SEL_BUTTON_TEXT)
     """选择按钮文本"""
 
-    function_list_title: str = MSG_FUNC_LIST_TITLE
+    function_list_title: str = field(default_factory=lambda: msgs().MSG_FUNC_LIST_TITLE)
     """函数列表标题"""
 
-    document_view_title: str = MSG_FUNC_DOC_TITLE
+    document_view_title: str = field(default_factory=lambda: msgs().MSG_FUNC_DOC_TITLE)
     """文档区域标题"""
 
     label_text_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
@@ -41,15 +34,17 @@ class FnSelectWindowConfig(BaseWindowConfig):
     document_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """文档字体"""
 
-    # no_match_status_text: str = "未找到匹配项"
-    # no_match_document_text: str = "未找到匹配项"
-    no_document_text: str = MSG_NO_FUNC_DOC_STATUS
+    no_document_text: str = field(default_factory=lambda: msgs().MSG_NO_FUNC_DOC_STATUS)
     """未提供文档时的提示消息"""
 
-    no_selection_status_text: str = MSG_SEL_FUNC_FIRST
+    no_selection_status_text: str = field(
+        default_factory=lambda: msgs().MSG_SEL_FUNC_FIRST
+    )
     """未选择函数时的提示消息"""
 
-    current_view_status_text: str = MSG_CURRENT_FUNC_STATUS
+    current_view_status_text: str = field(
+        default_factory=lambda: msgs().MSG_CURRENT_FUNC_STATUS
+    )
     """当前视图状态消息"""
 
 
@@ -192,7 +187,7 @@ class FnSelectWindow(BaseWindow):
     def _on_select_button_clicked(self):
         selection = self._listview.curselection()
         if not selection:
-            show_warning(MSG_SEL_FUNC_FIRST, parent=self._parent)
+            show_warning(self.config.no_selection_status_text, parent=self._parent)
             return
         index = selection[0]
         info = self._function_list.get(index)

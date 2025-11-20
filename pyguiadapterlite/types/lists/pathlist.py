@@ -1,27 +1,11 @@
 import dataclasses
 import os
+from dataclasses import field
 from tkinter import Widget
 from tkinter.ttk import Button
 from typing import Type, Optional, Literal, List, Tuple
 
-from pyguiadapterlite._messages import (
-    MSG_MULTIPLE_SELECTION_WARNING,
-    MSG_ADD_FILE_BUTTON_TEXT,
-    MSG_ADD_DIR_BUTTON_TEXT,
-    MSG_ADD_BUTTON_TEXT,
-    MSG_SELECT_DIR_DIALOG_TITLE,
-    MSG_SELECT_FILE_DIALOG_TITLE,
-    MSG_EDIT_PATH_DIALOG_TITLE,
-    MSG_EDIT_PATH_DIALOG_LABEL_TEXT,
-    MSG_ADD_PATH_DIALOG_TITLE,
-    MSG_ADD_PATH_DIALOG_LABEL_TEXT,
-    MSG_EMPTY_PATH_WARNING,
-    MSG_DUPLICATE_PATH_WARNING,
-    MSG_REMOVE_PATH_CONFIRMATION,
-    MSG_REMOVE_ALL_PATHS_CONFIRMATION,
-    MSG_NO_PATHS_WARNING,
-    MSG_NO_PATHS_SELECTED_WARNING,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.dialog import PathInputDialog
 from pyguiadapterlite.types.lists._common import (
     BaseStringListValue,
@@ -34,13 +18,17 @@ from pyguiadapterlite.utils import show_warning
 @dataclasses.dataclass(frozen=True)
 class PathListValue(BaseStringListValue):
 
-    add_button_text: str = MSG_ADD_BUTTON_TEXT
+    add_button_text: str = field(default_factory=lambda: msgs().MSG_ADD_BUTTON_TEXT)
     """添加按钮文本"""
 
-    add_file_button_text: Optional[str] = MSG_ADD_FILE_BUTTON_TEXT
+    add_file_button_text: Optional[str] = field(
+        default_factory=lambda: msgs().MSG_ADD_FILE_BUTTON_TEXT
+    )
     """添加文件按钮文本"""
 
-    add_dir_button_text: Optional[str] = MSG_ADD_DIR_BUTTON_TEXT
+    add_dir_button_text: Optional[str] = field(
+        default_factory=lambda: msgs().MSG_ADD_DIR_BUTTON_TEXT
+    )
     """添加目录按钮文本"""
 
     add_method: Literal["append", "prepend"] = "append"
@@ -61,10 +49,14 @@ class PathListValue(BaseStringListValue):
     file_dialog_action: Literal["open", "save"] = "open"
     """文件对话框的行为，open表示打开文件，save表示保存文件"""
 
-    file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE
+    file_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_SELECT_FILE_DIALOG_TITLE
+    )
     """文件对话框标题"""
 
-    dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE
+    dir_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_SELECT_DIR_DIALOG_TITLE
+    )
     """目录对话框标题"""
 
     strip: bool = True
@@ -73,40 +65,60 @@ class PathListValue(BaseStringListValue):
     accept_empty: bool = False
     """是否接受空路径"""
 
-    empty_path_message: str = MSG_EMPTY_PATH_WARNING
+    empty_path_message: str = field(
+        default_factory=lambda: msgs().MSG_EMPTY_PATH_WARNING
+    )
     """空路径警告信息"""
 
     accept_duplicates: bool = False
     """是否接受重复路径"""
 
-    duplicate_message: str = MSG_DUPLICATE_PATH_WARNING
+    duplicate_message: str = field(
+        default_factory=lambda: msgs().MSG_DUPLICATE_PATH_WARNING
+    )
     """重复路径警告信息"""
 
-    multi_selection_message: str = MSG_MULTIPLE_SELECTION_WARNING
+    multi_selection_message: str = field(
+        default_factory=lambda: msgs().MSG_MULTIPLE_SELECTION_WARNING
+    )
     """多选警告信息"""
 
-    add_path_dialog_title: str = MSG_ADD_PATH_DIALOG_TITLE
+    add_path_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_ADD_PATH_DIALOG_TITLE
+    )
     """添加路径对话框标题"""
 
-    add_path_dialog_label_text: str = MSG_ADD_PATH_DIALOG_LABEL_TEXT
+    add_path_dialog_label_text: str = field(
+        default_factory=lambda: msgs().MSG_ADD_PATH_DIALOG_LABEL_TEXT
+    )
     """添加路径对话框标签文本"""
 
-    edit_path_dialog_title: str = MSG_EDIT_PATH_DIALOG_TITLE
+    edit_path_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_EDIT_PATH_DIALOG_TITLE
+    )
     """编辑路径对话框标题"""
 
-    edit_path_dialog_label_text: str = MSG_EDIT_PATH_DIALOG_LABEL_TEXT
+    edit_path_dialog_label_text: str = field(
+        default_factory=lambda: msgs().MSG_EDIT_PATH_DIALOG_LABEL_TEXT
+    )
     """编辑路径对话框标签文本"""
 
-    no_item_message: str = MSG_NO_PATHS_WARNING
+    no_item_message: str = field(default_factory=lambda: msgs().MSG_NO_PATHS_WARNING)
     """未添加项警告信息"""
 
-    no_selection_message: str = MSG_NO_PATHS_SELECTED_WARNING
+    no_selection_message: str = field(
+        default_factory=lambda: msgs().MSG_NO_PATHS_SELECTED_WARNING
+    )
     """未选择项警告信息"""
 
-    remove_confirm_message: str = MSG_REMOVE_PATH_CONFIRMATION
+    remove_confirm_message: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_PATH_CONFIRMATION
+    )
     """移除路径确认信息"""
 
-    clear_confirm_message: str = MSG_REMOVE_ALL_PATHS_CONFIRMATION
+    clear_confirm_message: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_ALL_PATHS_CONFIRMATION
+    )
     """清空路径确认信息"""
 
     @classmethod
@@ -258,8 +270,7 @@ class FileListValueWidget(PathListValueWidget):
     ConfigClass = FileListValue
 
     def __init__(self, parent: Widget, parameter_name: str, config: FileListValue):
-        if config.add_dir_button_text:
-            config = dataclasses.replace(config, add_dir_button_text=None)
+        config = dataclasses.replace(config, add_dir_button_text=None)
         super().__init__(parent, parameter_name, config)
 
 
@@ -276,6 +287,5 @@ class DirectoryListValueWidget(PathListValueWidget):
     ConfigClass = DirectoryListValue
 
     def __init__(self, parent: Widget, parameter_name: str, config: DirectoryListValue):
-        if config.add_file_button_text:
-            config = dataclasses.replace(config, add_file_button_text=None)
+        config = dataclasses.replace(config, add_file_button_text=None)
         super().__init__(parent, parameter_name, config)

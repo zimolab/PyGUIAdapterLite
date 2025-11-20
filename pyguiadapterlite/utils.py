@@ -6,16 +6,11 @@ import re
 import traceback
 import warnings
 from tkinter import messagebox, Tk
-from typing import Any, Tuple, List, Set, Union
+from typing import Any, Tuple, List, Set
 
 _DISABLE_LOGGING_FLAG = os.getenv("PYGUIADAPTERLITE_LOGGING_MESSAGE", "1") == "0"
 
-from pyguiadapterlite._messages import (
-    MSG_INFO_TITLE,
-    MSG_WARNING_TITLE,
-    MSG_ERROR_TITLE,
-    MSG_QUESTION_TITLE,
-)
+from pyguiadapterlite._messages import messages as msgs
 
 from pyguiadapterlite.pathutils import *
 
@@ -65,8 +60,9 @@ def _exception(e: BaseException, msg: str = None):
 
 
 def show_information(
-    message: str, title: str = MSG_INFO_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> Any:
+    title = title or msgs().MSG_INFO_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -74,8 +70,9 @@ def show_information(
 
 
 def show_warning(
-    message: str, title: str = MSG_WARNING_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> Any:
+    title = title or msgs().MSG_WARNING_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -83,8 +80,9 @@ def show_warning(
 
 
 def show_error(
-    message: str, title: str = MSG_ERROR_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> Any:
+    title = title or msgs().MSG_ERROR_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -92,8 +90,9 @@ def show_error(
 
 
 def show_question(
-    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> str:
+    title = title or msgs().MSG_QUESTION_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -101,8 +100,9 @@ def show_question(
 
 
 def ask_yes_no(
-    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> bool:
+    title = title or msgs().MSG_QUESTION_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -110,8 +110,9 @@ def ask_yes_no(
 
 
 def ask_ok_cancel(
-    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> bool:
+    title = title or msgs().MSG_QUESTION_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -119,8 +120,9 @@ def ask_ok_cancel(
 
 
 def ask_retry_cancel(
-    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> bool:
+    title = title or msgs().MSG_QUESTION_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent
@@ -128,8 +130,9 @@ def ask_retry_cancel(
 
 
 def ask_yes_no_cancel(
-    message: str, title: str = MSG_QUESTION_TITLE, parent=None, **options
+    message: str, title: Optional[str] = None, parent=None, **options
 ) -> Optional[bool]:
+    title = title or msgs().MSG_QUESTION_TITLE
     options = options or {}
     if parent:
         options["parent"] = parent

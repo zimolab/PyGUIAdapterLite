@@ -14,16 +14,7 @@ from tkinter import (
 from tkinter.ttk import Scrollbar, Frame
 from typing import Optional
 
-from pyguiadapterlite._messages import (
-    MSG_COPY,
-    MSG_SELECT_ALL,
-    MSG_CLEAR_OUTPUT,
-    MSG_SCROLL_TO_TOP,
-    MSG_SCROLL_TO_BOTTOM,
-    MSG_SAVE_TO_FILE,
-    MSG_FILE_FILTER_ALL,
-    MSG_FILE_FILTER_TEXT,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.utils import _warning
 
@@ -127,20 +118,28 @@ class TermView(Frame):
         """创建右键上下文菜单"""
         self.context_menu = Menu(self._text_widget, tearoff=0)
 
+        msgs_ = msgs()
+
         # 添加菜单项
-        self.context_menu.add_command(label=MSG_COPY, command=self.copy_selected_text)
-        self.context_menu.add_command(label=MSG_SELECT_ALL, command=self.select_all)
-        self.context_menu.add_separator()
-        self.context_menu.add_command(label=MSG_CLEAR_OUTPUT, command=self.clear)
-        self.context_menu.add_separator()
         self.context_menu.add_command(
-            label=MSG_SCROLL_TO_TOP, command=self.scroll_to_top
+            label=msgs_.MSG_COPY, command=self.copy_selected_text
         )
         self.context_menu.add_command(
-            label=MSG_SCROLL_TO_BOTTOM, command=self.scroll_to_bottom
+            label=msgs_.MSG_SELECT_ALL, command=self.select_all
         )
         self.context_menu.add_separator()
-        self.context_menu.add_command(label=MSG_SAVE_TO_FILE, command=self.save_to_file)
+        self.context_menu.add_command(label=msgs_.MSG_CLEAR_OUTPUT, command=self.clear)
+        self.context_menu.add_separator()
+        self.context_menu.add_command(
+            label=msgs_.MSG_SCROLL_TO_TOP, command=self.scroll_to_top
+        )
+        self.context_menu.add_command(
+            label=msgs_.MSG_SCROLL_TO_BOTTOM, command=self.scroll_to_bottom
+        )
+        self.context_menu.add_separator()
+        self.context_menu.add_command(
+            label=msgs_.MSG_SAVE_TO_FILE, command=self.save_to_file
+        )
 
     def _show_context_menu(self, event):
         """显示右键菜单"""
@@ -179,14 +178,19 @@ class TermView(Frame):
     def save_to_file(self):
         """保存控制台内容到文件"""
 
+        msgs_ = msgs()
+
         # 获取所有文本（去除ANSI转义序列）
         text_content = self._get_plain_text()
 
         # 选择保存文件
         file_path = filedialog.asksaveasfilename(
             defaultextension=".txt",
-            filetypes=[(MSG_FILE_FILTER_TEXT, "*.txt"), (MSG_FILE_FILTER_ALL, "*.*")],
-            title=MSG_SAVE_TO_FILE,
+            filetypes=[
+                (msgs_.MSG_FILE_FILTER_TEXT, "*.txt"),
+                (msgs_.MSG_FILE_FILTER_ALL, "*.*"),
+            ],
+            title=msgs_.MSG_SAVE_TO_FILE,
         )
 
         if file_path:

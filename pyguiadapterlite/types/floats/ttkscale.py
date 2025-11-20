@@ -162,6 +162,7 @@ class ScaleFloatValueWidget(BaseParameterWidget):
         format_str = f"{{:.{self.config.digits or 2}f}}"
         return format_str.format(value)
 
+    # noinspection PyUnusedLocal
     def on_value_changed(self, value: Optional[str]) -> None:
         """当滑块值变化时更新显示标签"""
         if self._value_label:

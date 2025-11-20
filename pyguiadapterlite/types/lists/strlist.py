@@ -1,18 +1,10 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Widget
 from tkinter.ttk import Button
 from typing import Type, Optional, Literal, List
 
-from pyguiadapterlite._messages import (
-    MSG_ADD_ITEM_DIALOG_TITLE,
-    MSG_EDIT_ITEM_DIALOG_TITLE,
-    MSG_ADD_ITEM_DIALOG_LABEL_TEXT,
-    MSG_EDIT_ITEM_DIALOG_LABEL_TEXT,
-    MSG_DUPLICATE_ITEMS_WARNING,
-    MSG_EMPTY_STRING_WARNING,
-    MSG_MULTIPLE_SELECTION_WARNING,
-    MSG_ADD_BUTTON_TEXT,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.dialog import StringInputDialog
 from pyguiadapterlite.types.lists._common import (
     BaseStringListValue,
@@ -28,7 +20,7 @@ class StringListValue(BaseStringListValue):
     add_button: bool = True
     """是否显示添加按钮"""
 
-    add_button_text: str = MSG_ADD_BUTTON_TEXT
+    add_button_text: str = field(default_factory=lambda: msgs().MSG_ADD_BUTTON_TEXT)
     """添加按钮文本"""
 
     add_method: Literal["append", "prepend"] = "append"
@@ -40,28 +32,42 @@ class StringListValue(BaseStringListValue):
     accept_empty: bool = True
     """是否接受空字符串"""
 
-    empty_string_message: str = MSG_EMPTY_STRING_WARNING
+    empty_string_message: str = field(
+        default_factory=lambda: msgs().MSG_EMPTY_STRING_WARNING
+    )
     """空字符串警告信息"""
 
     accept_duplicates: bool = True
     """是否接受重复项"""
 
-    duplicate_message: str = MSG_DUPLICATE_ITEMS_WARNING
+    duplicate_message: str = field(
+        default_factory=lambda: msgs().MSG_DUPLICATE_ITEMS_WARNING
+    )
     """重复项警告信息"""
 
-    multi_selection_message: str = MSG_MULTIPLE_SELECTION_WARNING
+    multi_selection_message: str = field(
+        default_factory=lambda: msgs().MSG_MULTIPLE_SELECTION_WARNING
+    )
     """多选警告信息"""
 
-    add_item_dialog_title: str = MSG_ADD_ITEM_DIALOG_TITLE
+    add_item_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_ADD_ITEM_DIALOG_TITLE
+    )
     """添加项对话框标题"""
 
-    add_item_dialog_label_text: str = MSG_ADD_ITEM_DIALOG_LABEL_TEXT
+    add_item_dialog_label_text: str = field(
+        default_factory=lambda: msgs().MSG_ADD_ITEM_DIALOG_LABEL_TEXT
+    )
     """添加项对话框标签文本"""
 
-    edit_item_dialog_title: str = MSG_EDIT_ITEM_DIALOG_TITLE
+    edit_item_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_EDIT_ITEM_DIALOG_TITLE
+    )
     """编辑项对话框标题"""
 
-    edit_item_dialog_label_text: str = MSG_EDIT_ITEM_DIALOG_LABEL_TEXT
+    edit_item_dialog_label_text: str = field(
+        default_factory=lambda: msgs().MSG_EDIT_ITEM_DIALOG_LABEL_TEXT
+    )
     """编辑项对话框标签文本"""
 
     @classmethod

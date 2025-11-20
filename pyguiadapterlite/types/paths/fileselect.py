@@ -1,14 +1,11 @@
 import dataclasses
 import os
+from dataclasses import field
 from tkinter import Widget, filedialog
 from tkinter.ttk import Entry, Button, Frame
 from typing import Type, Any, Optional, Union, List, Tuple
 
-from pyguiadapterlite._messages import (
-    MSG_BROWSE_BUTTON_TEXT,
-    MSG_SELECT_FILE_DIALOG_TITLE,
-    MSG_FILE_FILTER_ALL,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
@@ -30,13 +27,17 @@ class FileValue(BaseParameterWidgetConfig):
     start_dir: str = ""
     """起始目录"""
 
-    dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE
+    dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_SELECT_FILE_DIALOG_TITLE
+    )
     """文件选择对话框标题"""
 
     save_file: bool = False
     """是否为保存文件模式"""
 
-    select_button_text: str = MSG_BROWSE_BUTTON_TEXT
+    select_button_text: str = field(
+        default_factory=lambda: msgs().MSG_BROWSE_BUTTON_TEXT
+    )
     """浏览按钮文本"""
 
     normalize_path: bool = False
@@ -86,7 +87,7 @@ class FileSelectBox(Frame):
         config = self._parent.config
 
         if not config.filters:
-            filters = [(MSG_FILE_FILTER_ALL, "*")]
+            filters = [(msgs().MSG_FILE_FILTER_ALL, "*")]
         else:
             filters = config.filters
 

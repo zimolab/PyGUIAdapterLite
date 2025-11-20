@@ -277,17 +277,3 @@ class I18N:
     def _n(self, singular: str, plural: str, n: int) -> str:
         """ngettext 的简写形式"""
         return self.ngettext(singular, plural, n)
-
-
-# 创建全局实例
-_default_i18n = I18N()
-
-
-def tr_(message: str) -> str:
-    """翻译字符串"""
-    return _default_i18n.gettext(message)
-
-
-def ntr_(singular: str, plural: str, n: int) -> str:
-    """翻译单复数字符串"""
-    return _default_i18n.ngettext(singular, plural, n)

@@ -47,7 +47,7 @@ class IntEntry(Entry):
         try:
             int(value)
             return True
-        except BaseException as e:
+        except BaseException:
             return False
 
     def on_focus_out(self, event):

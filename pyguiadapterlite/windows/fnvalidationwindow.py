@@ -1,28 +1,31 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Toplevel
 from tkinter.ttk import LabelFrame, Label
 from typing import Any, Optional, cast, Dict, Tuple, Callable
 
-from pyguiadapterlite._messages import (
-    MSG_PARAM_VALIDATION_WIN_TITLE,
-    MSG_INVALID_PARAMS_LABEL_TEXT,
-    MSG_INVALID_PARAMS_GROUP_TITLE,
-    MSG_INVALID_PARAM_DETAIL_GROUP_TITLE,
-    MSG_INVALID_PARAM_DETAIL_TEMPLATE,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
-from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.textview import TextView
+from pyguiadapterlite.windows.basewindow import BaseWindow, BaseWindowConfig
 
 
 @dataclasses.dataclass(frozen=True)
 class ParameterValidationWindowConfig(BaseWindowConfig):
-    title: str = MSG_PARAM_VALIDATION_WIN_TITLE
-    invalid_params_group_title: str = MSG_INVALID_PARAMS_GROUP_TITLE
-    invalid_params_label_text: str = MSG_INVALID_PARAMS_LABEL_TEXT
-    description_group_title: str = MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
-    invalid_param_detail_template: str = MSG_INVALID_PARAM_DETAIL_TEMPLATE
+    title: str = field(default_factory=lambda: msgs().MSG_PARAM_VALIDATION_WIN_TITLE)
+    invalid_params_group_title: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_PARAMS_GROUP_TITLE
+    )
+    invalid_params_label_text: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_PARAMS_LABEL_TEXT
+    )
+    description_group_title: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_PARAM_DETAIL_GROUP_TITLE
+    )
+    invalid_param_detail_template: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_PARAM_DETAIL_TEMPLATE
+    )
     size: tuple = (400, 450)
     font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     bell: bool = True

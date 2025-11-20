@@ -1,31 +1,35 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Toplevel, Tk
 from tkinter.ttk import Button
 from typing import Dict, Union, Optional, Callable, cast
 
 from pyguiadapterlite import BaseParameterWidgetConfig
-from pyguiadapterlite._messages import (
-    MSG_SETTINGS_WIN_TITLE,
-    MSG_SETTINGS_WIN_CONTENT_TITLE,
-    MSG_SETTINGS_WIN_CONFIRM_BUTTON_TEXT,
-    MSG_SETTINGS_WIN_CANCEL_BUTTON_TEXT,
-    MSG_SETTINGS_WIN_RESTORE_DEFAULT_BUTTON_TEXT,
-    MSG_SETTINGS_WIN_RESTORE_DEFAULT_CONFIRM_MSG,
-)
+from pyguiadapterlite._messages import messages
 from pyguiadapterlite.components.settingsbase import SettingsBase
 from pyguiadapterlite.windows.objectwindow import ObjectWindowConfig, ObjectWindow
 
 
 @dataclasses.dataclass(frozen=True)
 class SettingsWindowConfig(ObjectWindowConfig):
-    title: str = MSG_SETTINGS_WIN_TITLE
-    content_title: Optional[str] = MSG_SETTINGS_WIN_CONTENT_TITLE
-    confirm_button_text: str = MSG_SETTINGS_WIN_CONFIRM_BUTTON_TEXT
-    cancel_button_text: str = MSG_SETTINGS_WIN_CANCEL_BUTTON_TEXT
+    title: str = field(default_factory=lambda: messages().MSG_SETTINGS_WIN_TITLE)
+    content_title: Optional[str] = field(
+        default_factory=lambda: messages().MSG_SETTINGS_WIN_CONTENT_TITLE
+    )
+    confirm_button_text: str = field(
+        default_factory=lambda: messages().MSG_SETTINGS_WIN_CONFIRM_BUTTON_TEXT
+    )
+    cancel_button_text: str = field(
+        default_factory=lambda: messages().MSG_SETTINGS_WIN_CANCEL_BUTTON_TEXT
+    )
 
     allow_restore_defaults: bool = True
-    restore_defaults_button_text: str = MSG_SETTINGS_WIN_RESTORE_DEFAULT_BUTTON_TEXT
-    restore_defaults_confirm_message: str = MSG_SETTINGS_WIN_RESTORE_DEFAULT_CONFIRM_MSG
+    restore_defaults_button_text: str = field(
+        default_factory=lambda: messages().MSG_SETTINGS_WIN_RESTORE_DEFAULT_BUTTON_TEXT
+    )
+    restore_defaults_confirm_message: str = field(
+        default_factory=lambda: messages().MSG_SETTINGS_WIN_RESTORE_DEFAULT_CONFIRM_MSG
+    )
 
     # don't need to set the following fields
     # they will not take effect in SettingsWindow
@@ -75,7 +79,7 @@ class SettingsWindow(ObjectWindow):
         if config.allow_restore_defaults:
             self._restore_defaults_button = Button(
                 self._bottom_area,
-                text=MSG_SETTINGS_WIN_RESTORE_DEFAULT_BUTTON_TEXT,
+                text=config.restore_defaults_button_text,
                 command=self.on_restore_defaults,
             )
             self._restore_defaults_button.pack(side="left")

@@ -3,16 +3,7 @@ from tkinter import Toplevel, Tk, Widget, filedialog
 from tkinter.ttk import Button, Entry, Label, Separator, Frame
 from typing import Union, Any, Optional, List, Tuple, Literal
 
-from pyguiadapterlite._messages import (
-    MSG_DIALOG_BUTTON_OK,
-    MSG_DIALOG_BUTTON_CANCEL,
-    MSG_DIALOG_INPUT_PROMPT,
-    MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
-    MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
-    MSG_FILE_FILTER_ALL,
-    MSG_SELECT_FILE_DIALOG_TITLE,
-    MSG_SELECT_DIR_DIALOG_TITLE,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.textview import TextView
 
@@ -100,11 +91,12 @@ class BaseSimpleDialog(BaseDialog):
         title: str,
         size: tuple = (300, 200),
         resizable: bool = False,
-        ok_text: str = MSG_DIALOG_BUTTON_OK,
-        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+        ok_text: Optional[str] = None,
+        cancel_text: Optional[str] = None,
     ):
-        self._ok_text = ok_text
-        self._cancel_text = cancel_text
+        msgs_ = msgs()
+        self._ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+        self._cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
         self._content_area: Optional[Frame] = None
         self._buttons_area: Optional[Frame] = None
         self._ok_button: Optional[Button] = None
@@ -138,13 +130,16 @@ class StringInputDialog(BaseSimpleDialog):
         title: str,
         size: tuple = (300, 100),
         resizable: bool = False,
-        ok_text: str = MSG_DIALOG_BUTTON_OK,
-        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-        label_text: str = MSG_DIALOG_INPUT_PROMPT,
+        ok_text: Optional[str] = None,
+        cancel_text: Optional[str] = None,
+        label_text: Optional[str] = None,
         initial_value: str = "",
         echo_char: Optional[str] = None,
     ):
-        self._label_text = label_text
+        msgs_ = msgs()
+        ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+        cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+        self._label_text = label_text or msgs_.MSG_DIALOG_INPUT_PROMPT
         self._initial_value = initial_value
         self._echo_char = echo_char
 
@@ -174,23 +169,31 @@ class PathInputDialog(BaseSimpleDialog):
         title: str,
         size: tuple = (420, 130),
         resizable: bool = False,
-        file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+        file_button_text: Optional[str] = None,
         file_types: List[Tuple[str, str]] = None,
-        file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
+        file_dialog_title: Optional[str] = None,
         file_dialog_action: Literal["open", "save"] = "open",
-        dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
-        dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+        dir_button_text: Optional[str] = None,
+        dir_dialog_title: Optional[str] = None,
         start_dir: str = "",
-        ok_text: str = MSG_DIALOG_BUTTON_OK,
-        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-        label_text: str = MSG_DIALOG_INPUT_PROMPT,
+        ok_text: Optional[str] = None,
+        cancel_text: Optional[str] = None,
+        label_text: Optional[str] = None,
         initial_value: str = "",
     ):
+
+        msgs_ = msgs()
+        file_dialog_title = file_dialog_title or msgs_.MSG_SELECT_FILE_DIALOG_TITLE
+        dir_dialog_title = dir_dialog_title or msgs_.MSG_SELECT_DIR_DIALOG_TITLE
+        ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+        cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+        label_text = label_text or msgs_.MSG_DIALOG_INPUT_PROMPT
+
         self._label_text = label_text
         self._initial_value = initial_value
 
         self._file_button_text = file_button_text or ""
-        self._file_types = file_types or [(MSG_FILE_FILTER_ALL, "*")]
+        self._file_types = file_types or [(msgs_.MSG_FILE_FILTER_ALL, "*")]
         self._file_dialog_title = file_dialog_title
         self._file_dialog_action = file_dialog_action
         self._dir_button_text = dir_button_text or ""
@@ -322,8 +325,8 @@ class TextViewDialog(BaseSimpleDialog):
         title: str = "",
         size: tuple = (500, 400),
         resizable: bool = True,
-        ok_text: str = MSG_DIALOG_BUTTON_OK,
-        cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
+        ok_text: Optional[str] = None,
+        cancel_text: Optional[str] = None,
         text: str = "",
         textview_height: int = 18,
         editable: bool = True,
@@ -332,6 +335,10 @@ class TextViewDialog(BaseSimpleDialog):
         font: tuple = get_default_widget_font(),
         label_text: str = "",
     ):
+        msgs_ = msgs()
+        ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+        cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+
         self._initial_text: str = text
         self._editable = editable
         self._default_menu = default_menu

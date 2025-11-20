@@ -1,19 +1,10 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Widget
 from tkinter.ttk import LabelFrame, Scrollbar, Frame, Button
 from typing import Type, Any, Optional, Union, List, Literal, TypeVar
 
-from pyguiadapterlite._messages import (
-    MSG_MOVE_UP_BUTTON_TEXT,
-    MSG_MOVE_DOWN_BUTTON_TEXT,
-    MSG_REMOVE_ALL_BUTTON_TEXT,
-    MSG_REMOVE_BUTTON_TEXT,
-    MSG_EDIT_BUTTON_TEXT,
-    MSG_REMOVE_CONFIRMATION,
-    MSG_REMOVE_ALL_CONFIRMATION,
-    MSG_NO_ITEMS_WARNING,
-    MSG_NO_SELECTION_WARNING,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.listview import ListView
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
@@ -50,46 +41,60 @@ class BaseStringListValue(BaseParameterWidgetConfig):
     move_buttons: bool = True
     """是否显示上下移动按钮"""
 
-    move_up_button_text: str = MSG_MOVE_UP_BUTTON_TEXT
+    move_up_button_text: str = field(
+        default_factory=lambda: msgs().MSG_MOVE_UP_BUTTON_TEXT
+    )
     """上移按钮文本"""
 
-    move_down_button_text: str = MSG_MOVE_DOWN_BUTTON_TEXT
+    move_down_button_text: str = field(
+        default_factory=lambda: msgs().MSG_MOVE_DOWN_BUTTON_TEXT
+    )
     """下移按钮文本"""
 
     clear_button: bool = True
     """是否显示清空按钮"""
 
-    cleat_button_text: str = MSG_REMOVE_ALL_BUTTON_TEXT
+    cleat_button_text: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_ALL_BUTTON_TEXT
+    )
     """清空按钮文本"""
 
     remove_button: bool = True
     """是否显示移除按钮"""
 
-    remove_button_text: str = MSG_REMOVE_BUTTON_TEXT
+    remove_button_text: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_BUTTON_TEXT
+    )
     """移除按钮文本"""
 
     edit_button: bool = True
     """是否显示编辑按钮"""
 
-    edit_button_text: str = MSG_EDIT_BUTTON_TEXT
+    edit_button_text: str = field(default_factory=lambda: msgs().MSG_EDIT_BUTTON_TEXT)
     """编辑按钮文本"""
 
     confirm_clear: bool = True
     """是否显示清空确认对话框"""
 
-    clear_confirm_message: str = MSG_REMOVE_ALL_CONFIRMATION
+    clear_confirm_message: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_ALL_CONFIRMATION
+    )
     """清空确认对话框信息"""
 
     confirm_remove: bool = True
     """是否显示移除确认对话框"""
 
-    remove_confirm_message: str = MSG_REMOVE_CONFIRMATION
+    remove_confirm_message: str = field(
+        default_factory=lambda: msgs().MSG_REMOVE_CONFIRMATION
+    )
     """移除确认对话框信息"""
 
-    no_selection_message: str = MSG_NO_SELECTION_WARNING
+    no_selection_message: str = field(
+        default_factory=lambda: msgs().MSG_NO_SELECTION_WARNING
+    )
     """无选中项提示信息"""
 
-    no_item_message: str = MSG_NO_ITEMS_WARNING
+    no_item_message: str = field(default_factory=lambda: msgs().MSG_NO_ITEMS_WARNING)
     """未添加项提示信息"""
 
     @classmethod

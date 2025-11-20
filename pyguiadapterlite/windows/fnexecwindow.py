@@ -1,39 +1,12 @@
 import dataclasses
 import json
+from dataclasses import field
 from pathlib import Path
-from tkinter import Tk, Toplevel, messagebox, BooleanVar, filedialog
+from tkinter import Tk, Toplevel, BooleanVar, filedialog
 from tkinter.ttk import Button, Checkbutton, Progressbar, Label, Frame
 from typing import Union, Optional, Any, cast, Dict, Literal, Callable
 
-from pyguiadapterlite._messages import (
-    MSG_WARNING_TITLE,
-    MSG_NO_FUNC_DOC,
-    MSG_FUNC_EXEC_WIN_TITLE,
-    MSG_FUNC_DOC_TAB_TITLE,
-    MSG_FUNC_OUTPUT_TAB_TITLE,
-    MSG_EXEC_BUTTON_TEXT,
-    MSG_CANCEL_BUTTON_TEXT,
-    MSG_CLEAR_BUTTON_TEXT,
-    MSG_CLEAR_CHECKBOX_TEXT,
-    MSG_FUNC_ERR_DIALOG_TITLE,
-    MSG_FUNC_RET_DIALOG_TITLE,
-    MSG_FUNC_EXECUTING,
-    MSG_FUNC_CANCELLABLE,
-    MSG_FUNC_NOT_EXECUTING,
-    MSG_EXCEPTION_DURING_EXEC,
-    MSG_FUNC_RET_MSG,
-    MSG_PARAMS_SERIALIZATION_FAILED,
-    MSG_SAVE_FILE_DIALOG_TITLE,
-    MSG_SAVE_PARAMS_FAILED,
-    MSG_SAVE_PARAMS_SUCCESS,
-    MSG_LOAD_FILE_DIALOG_TITLE,
-    MSG_LOAD_PARAMS_FAILED,
-    MSG_PARAMS_DESERIALIZATION_FAILED,
-    MSG_SET_PARAMS_FAILED,
-    MSG_LOAD_PARAMS_SUCCESS,
-    MSG_INVALID_PARAMS_NOT_APPLIED,
-    MSG_DEFAULT_PARAM_GROUP_NAME,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.paramtabview import ParameterGroupTabView
 from pyguiadapterlite.components.scrollarea import ParameterWidgetArea
@@ -63,22 +36,28 @@ from pyguiadapterlite.windows.fnvalidationwindow import (
 
 @dataclasses.dataclass(frozen=True)
 class FnExecuteWindowConfig(BaseWindowConfig):
-    title: str = MSG_FUNC_EXEC_WIN_TITLE
+    title: str = field(default_factory=lambda: msgs().MSG_FUNC_EXEC_WIN_TITLE)
     """窗口标题"""
 
-    execute_button_text: str = MSG_EXEC_BUTTON_TEXT
+    execute_button_text: str = field(
+        default_factory=lambda: msgs().MSG_EXEC_BUTTON_TEXT
+    )
     """执行按钮文本"""
 
-    cancel_button_text: str = MSG_CANCEL_BUTTON_TEXT
+    cancel_button_text: str = field(
+        default_factory=lambda: msgs().MSG_CANCEL_BUTTON_TEXT
+    )
     """取消按钮文本"""
 
-    clear_button_text: str = MSG_CLEAR_BUTTON_TEXT
+    clear_button_text: str = field(default_factory=lambda: msgs().MSG_CLEAR_BUTTON_TEXT)
     """清除按钮文本"""
 
     clear_button_visible: bool = True
     """是否显示清除按钮。"""
 
-    clear_checkbox_text: str = MSG_CLEAR_CHECKBOX_TEXT
+    clear_checkbox_text: str = field(
+        default_factory=lambda: msgs().MSG_CLEAR_CHECKBOX_TEXT
+    )
     """清除复选框文本"""
 
     clear_checkbox_visible: bool = True
@@ -87,19 +66,25 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     clear_checkbox_checked: bool = True
     """清除复选框默认是否选中。"""
 
-    default_parameter_group_name: str = MSG_DEFAULT_PARAM_GROUP_NAME
+    default_parameter_group_name: str = field(
+        default_factory=lambda: msgs().MSG_DEFAULT_PARAM_GROUP_NAME
+    )
     """默认参数分组名称"""
 
     document_tab: bool = True
     """是否显示函数文档"""
 
-    document_tab_title: str = MSG_FUNC_DOC_TAB_TITLE
+    document_tab_title: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_DOC_TAB_TITLE
+    )
     """函数文档Tab页标题"""
 
     document_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     """函数文档字体"""
 
-    output_tab_title: str = MSG_FUNC_OUTPUT_TAB_TITLE
+    output_tab_title: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_OUTPUT_TAB_TITLE
+    )
     """模拟终端区域所在Tab页标题"""
 
     output_font: tuple = dataclasses.field(default_factory=get_default_widget_font)
@@ -135,28 +120,40 @@ class FnExecuteWindowConfig(BaseWindowConfig):
     enable_progressbar: bool = False
     """是否显示进度条"""
 
-    error_dialog_title: str = MSG_FUNC_ERR_DIALOG_TITLE
+    error_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_ERR_DIALOG_TITLE
+    )
     """错误对话框标题"""
 
-    result_dialog_title: str = MSG_FUNC_RET_DIALOG_TITLE
+    result_dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_RET_DIALOG_TITLE
+    )
     """函数返回值对话框标题"""
 
     parameter_error_message: str = "{}: {}"
     """`ParameterError`类型异常的消息模板，模板第一个变量（`{}`）为`参数名称`，第二个变量(`{}`)为`异常的消息（message）`。"""
 
-    function_result_message: str = MSG_FUNC_RET_MSG
+    function_result_message: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_RET_MSG
+    )
     """函数调用结果的消息模板，在模板中可以使用模板变量（`{}`）来捕获函数的返回值。"""
 
     function_error_message: str = "{}: {}\n"
     """函数异常或错误的消息模板，模板第一个变量（`{}`）为`异常的类型`，第二个变量(`{}`)为`异常的消息（message）`。"""
 
-    function_executing_message: str = MSG_FUNC_EXECUTING
+    function_executing_message: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_EXECUTING
+    )
     """提示消息，用以提示“函数正在执行”。"""
 
-    uncancelable_function_message: str = MSG_FUNC_CANCELLABLE
+    uncancelable_function_message: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_NOT_CANCELLABLE
+    )
     """提示消息，用以提示“当前函数为不可取消的函数”。"""
 
-    function_not_executing_message: str = MSG_FUNC_NOT_EXECUTING
+    function_not_executing_message: str = field(
+        default_factory=lambda: msgs().MSG_FUNC_NOT_EXECUTING
+    )
     """提示消息，用以提示“当前函数未处于执行状态”。"""
 
     enable_progress_label: bool = False
@@ -462,8 +459,9 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
     def show_function_document(self):
         document = self._fn_info.document
         if not document:
-            _warning(MSG_NO_FUNC_DOC)
-            messagebox.showwarning(MSG_WARNING_TITLE, MSG_NO_FUNC_DOC)
+            msg = msgs().MSG_NO_FUNC_DOC
+            _warning(msg)
+            self.show_warning(msg)
             return
         doc_viewer = SimpleTextViewer(
             self.parent,
@@ -662,17 +660,18 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         current_values = self.get_parameter_values()
         if not self.validate_parameter_values(current_values):
             return
+        msgs_ = msgs()
         try:
             serializer = serializer or self._default_params_serializer
             serialized_text = serializer(current_values)
         except BaseException as e:
             _exception(e, "failed to serialize parameters")
-            show_error(MSG_PARAMS_SERIALIZATION_FAILED, parent=self.parent)
+            show_error(msgs_.MSG_PARAMS_SERIALIZATION_FAILED, parent=self.parent)
             return
         if not save_path:
             filedialog_args = filedialog_args or {}
             filedialog_args.pop("parent", None)
-            filedialog_args.setdefault("title", MSG_SAVE_FILE_DIALOG_TITLE)
+            filedialog_args.setdefault("title", msgs_.MSG_SAVE_FILE_DIALOG_TITLE)
             filedialog_args.setdefault("confirmoverwrite", True)
             filedialog_args.setdefault("initialdir", "./")
             save_path = filedialog.asksaveasfilename(
@@ -686,11 +685,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 f.write(serialized_text)
         except BaseException as e:
             _exception(e, "failed to save parameters to file")
-            show_error(MSG_SAVE_PARAMS_FAILED, parent=self.parent)
+            show_error(msgs_.MSG_SAVE_PARAMS_FAILED, parent=self.parent)
         else:
             _info(f"parameters saved to file: {save_path.absolute().as_posix()}")
             show_information(
-                MSG_SAVE_PARAMS_SUCCESS + f"\n{save_path.absolute().as_posix()}",
+                msgs_.MSG_SAVE_PARAMS_SUCCESS + f"\n{save_path.absolute().as_posix()}",
                 parent=self.parent,
             )
 
@@ -701,10 +700,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         deserializer: Optional[Callable[[str], Dict[str, Any]]] = None,
         **filedialog_args,
     ):
+        msgs_ = msgs()
         self.close_param_validation_win()
         if not load_path:
             filedialog_args.pop("parent", None)
-            filedialog_args.setdefault("title", MSG_LOAD_FILE_DIALOG_TITLE)
+            filedialog_args.setdefault("title", msgs_.MSG_LOAD_FILE_DIALOG_TITLE)
             filedialog_args.setdefault("initialdir", "./")
             load_path = filedialog.askopenfilename(
                 parent=self.parent, **filedialog_args
@@ -718,7 +718,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 serialized_text = f.read()
         except BaseException as e:
             _exception(e, "failed to load parameters from file")
-            show_error(MSG_LOAD_PARAMS_FAILED, parent=self.parent)
+            show_error(msgs_.MSG_LOAD_PARAMS_FAILED, parent=self.parent)
             return
 
         try:
@@ -726,7 +726,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             param_values = deserializer(serialized_text)
         except BaseException as e:
             _exception(e, "failed to deserialize parameters")
-            show_error(MSG_PARAMS_DESERIALIZATION_FAILED, parent=self.parent)
+            show_error(msgs_.MSG_PARAMS_DESERIALIZATION_FAILED, parent=self.parent)
             return
 
         try:
@@ -738,11 +738,11 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
                 return
         except BaseException as e:
             _exception(e, "failed to set parameter values")
-            show_error(MSG_SET_PARAMS_FAILED, parent=self.parent)
+            show_error(msgs_.MSG_SET_PARAMS_FAILED, parent=self.parent)
         else:
             _info(f"parameters loaded from file: {load_path.absolute().as_posix()}")
             show_information(
-                MSG_LOAD_PARAMS_SUCCESS + f"\n{load_path.absolute().as_posix()}",
+                msgs_.MSG_LOAD_PARAMS_SUCCESS + f"\n{load_path.absolute().as_posix()}",
                 parent=self.parent,
             )
 
@@ -758,7 +758,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
         validation_wind_config = ParameterValidationWindowConfig(
             font=self.config.document_font,
-            invalid_params_label_text=MSG_INVALID_PARAMS_NOT_APPLIED,
+            invalid_params_label_text=msgs().MSG_INVALID_PARAMS_NOT_APPLIED,
         )
 
         self.show_validation_window(invalid_params, validation_wind_config)
@@ -843,7 +843,7 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
         exc_output_msg = config.function_error_message.format(exc_type, exc_msg).strip()
         if config.print_function_error:
             self.print(
-                f"\033[1m\033[91m{MSG_EXCEPTION_DURING_EXEC}\n"
+                f"\033[1m\033[91m{msgs().MSG_EXCEPTION_DURING_EXEC}\n"
                 f"{exc_output_msg}\033[0m"
             )
             if config.function_error_traceback and exc_tb:

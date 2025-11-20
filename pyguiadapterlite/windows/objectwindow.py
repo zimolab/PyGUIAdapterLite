@@ -1,20 +1,11 @@
 import dataclasses
+from dataclasses import field
 from tkinter import Tk, Toplevel
 from tkinter.ttk import Button, Frame, LabelFrame
 from typing import Union, Optional, Any, cast, Dict, Callable
 
 from pyguiadapterlite import BaseParameterWidgetConfig
-from pyguiadapterlite._messages import (
-    MSG_OBJ_VALIDATION_WIN_TITLE,
-    MSG_INVALID_KEYS_GROUP_TITLE,
-    MSG_INVALID_KEY_LABEL_TEXT,
-    MSG_INVALID_KEY_DETAIL_GROUP_TITLE,
-    MSG_INVALID_KEY_DETAIL_TEMPLATE,
-    MSG_OBJ_WIN_CONFIRM_BUTTON_TEXT,
-    MSG_OBJ_WIN_CANCEL_BUTTON_TEXT,
-    MSG_OBJ_WIN_CONTENT_TITLE,
-    MSG_OBJ_WIN_TITLE,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.objectedit import ObjectFrame
 from pyguiadapterlite.components.valuewidget import InvalidValue
@@ -28,11 +19,19 @@ from pyguiadapterlite.windows.fnvalidationwindow import (
 
 @dataclasses.dataclass(frozen=True)
 class ObjectValidationWindowConfig(ParameterValidationWindowConfig):
-    title: str = MSG_OBJ_VALIDATION_WIN_TITLE
-    invalid_params_group_title: str = MSG_INVALID_KEYS_GROUP_TITLE
-    invalid_params_label_text: str = MSG_INVALID_KEY_LABEL_TEXT
-    description_group_title: str = MSG_INVALID_KEY_DETAIL_GROUP_TITLE
-    invalid_param_detail_template: str = MSG_INVALID_KEY_DETAIL_TEMPLATE
+    title: str = field(default_factory=lambda: msgs().MSG_OBJ_VALIDATION_WIN_TITLE)
+    invalid_params_group_title: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_KEYS_GROUP_TITLE
+    )
+    invalid_params_label_text: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_KEY_LABEL_TEXT
+    )
+    description_group_title: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_KEY_DETAIL_GROUP_TITLE
+    )
+    invalid_param_detail_template: str = field(
+        default_factory=lambda: msgs().MSG_INVALID_KEY_DETAIL_TEMPLATE
+    )
     size: tuple = (400, 450)
     font: tuple = dataclasses.field(default_factory=get_default_widget_font)
     bell: bool = True
@@ -40,7 +39,7 @@ class ObjectValidationWindowConfig(ParameterValidationWindowConfig):
 
 @dataclasses.dataclass(frozen=True)
 class ObjectWindowConfig(BaseWindowConfig):
-    title: str = MSG_OBJ_WIN_TITLE
+    title: str = field(default_factory=lambda: msgs().MSG_OBJ_WIN_TITLE)
 
     size: tuple = (500, 600)
 
@@ -52,11 +51,17 @@ class ObjectWindowConfig(BaseWindowConfig):
 
     check_initial_object: bool = True
 
-    content_title: Optional[str] = MSG_OBJ_WIN_CONTENT_TITLE
+    content_title: Optional[str] = field(
+        default_factory=lambda: msgs().MSG_OBJ_WIN_CONTENT_TITLE
+    )
 
-    confirm_button_text: str = MSG_OBJ_WIN_CONFIRM_BUTTON_TEXT
+    confirm_button_text: str = field(
+        default_factory=lambda: msgs().MSG_OBJ_WIN_CONFIRM_BUTTON_TEXT
+    )
 
-    cancel_button_text: str = MSG_OBJ_WIN_CANCEL_BUTTON_TEXT
+    cancel_button_text: str = field(
+        default_factory=lambda: msgs().MSG_OBJ_WIN_CANCEL_BUTTON_TEXT
+    )
 
     font: tuple = dataclasses.field(default_factory=get_default_widget_font)
 

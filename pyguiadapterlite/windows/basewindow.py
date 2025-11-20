@@ -4,16 +4,7 @@ from tkinter import Menu as TkMenu, BooleanVar, messagebox, filedialog
 from tkinter import Tk, Toplevel
 from typing import Tuple, Optional, Any, Union, List, Dict, Type
 
-from pyguiadapterlite._messages import (
-    MSG_INFO_TITLE,
-    MSG_WARNING_TITLE,
-    MSG_ERROR_TITLE,
-    MSG_QUESTION_TITLE,
-    MSG_OPEN_FILE_DIALOG_TITLE,
-    MSG_SAVE_FILE_DIALOG_TITLE,
-    MSG_SELECT_DIR_DIALOG_TITLE,
-    MSG_FILE_FILTER_ALL,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.dialog import BaseDialog
 from pyguiadapterlite.components.menus import Menu, Separator, Action
 from pyguiadapterlite.utils import _warning, _exception, _error
@@ -294,65 +285,73 @@ class BaseWindow(object):
             self._parent.wait_window(window._parent)
             return
 
-    def show_information(self, message: str, title: str = MSG_INFO_TITLE, **options):
+    def show_information(self, message: str, title: Optional[str] = None, **options):
+        title = title or msgs().MSG_INFO_TITLE
         options = options or {}
         options["parent"] = self.parent
         messagebox.showinfo(title=title, message=message, **options)
 
-    def show_warning(self, message: str, title: str = MSG_WARNING_TITLE, **options):
+    def show_warning(self, message: str, title: Optional[str] = None, **options):
+        title = title or msgs().MSG_WARNING_TITLE
         options = options or {}
         options["parent"] = self.parent
         messagebox.showwarning(title=title, message=message, **options)
 
-    def show_error(self, message: str, title: str = MSG_ERROR_TITLE, **options):
+    def show_error(self, message: str, title: Optional[str] = None, **options):
+        title = title or msgs().MSG_ERROR_TITLE
         options = options or {}
         options["parent"] = self.parent
         messagebox.showerror(title=title, message=message, **options)
 
     def show_question(
-        self, message: str, title: str = MSG_QUESTION_TITLE, **options
+        self, message: str, title: Optional[str] = None, **options
     ) -> str:
+        title = title or msgs().MSG_QUESTION_TITLE
         options = options or {}
         options["parent"] = self.parent
         return messagebox.askquestion(title=title, message=message, **options)
 
-    def ask_yes_no(
-        self, message: str, title: str = MSG_QUESTION_TITLE, **options
-    ) -> bool:
+    def ask_yes_no(self, message: str, title: Optional[str] = None, **options) -> bool:
+        title = title or msgs().MSG_QUESTION_TITLE
         options = options or {}
         options["parent"] = self.parent
         return messagebox.askyesno(title=title, message=message, **options)
 
     def ask_ok_cancel(
-        self, message: str, title: str = MSG_QUESTION_TITLE, **options
+        self, message: str, title: Optional[str] = None, **options
     ) -> bool:
+        title = title or msgs().MSG_QUESTION_TITLE
         options = options or {}
         options["parent"] = self.parent
         return messagebox.askokcancel(title=title, message=message, **options)
 
     def ask_retry_cancel(
-        self, message: str, title: str = MSG_QUESTION_TITLE, **options
+        self, message: str, title: Optional[str] = None, **options
     ) -> bool:
+        title = title or msgs().MSG_QUESTION_TITLE
         options = options or {}
         options["parent"] = self.parent
         return messagebox.askretrycancel(title=title, message=message, **options)
 
     def ask_yes_no_cancel(
-        self, message: str, title: str = MSG_QUESTION_TITLE, **options
+        self, message: str, title: Optional[str] = None, **options
     ) -> Optional[str]:
+        title = title or msgs().MSG_QUESTION_TITLE
         options = options or {}
         options["parent"] = self.parent
         return messagebox.askyesnocancel(title=title, message=message, **options)
 
     def select_open_file(
         self,
-        title: str = MSG_OPEN_FILE_DIALOG_TITLE,
+        title: Optional[str] = None,
         filetypes: Optional[list] = None,
         initialdir: Optional[str] = None,
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
     ) -> Optional[str]:
-        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
+        msgs_ = msgs()
+        title = title or msgs_.MSG_OPEN_FILE_DIALOG_TITLE
+        filetypes = filetypes or [(msgs_.MSG_FILE_FILTER_ALL, "*.*")]
         path = filedialog.askopenfilename(
             parent=self.parent,
             title=title,
@@ -367,14 +366,16 @@ class BaseWindow(object):
 
     def select_save_file(
         self,
-        title: str = MSG_SAVE_FILE_DIALOG_TITLE,
+        title: Optional[str] = None,
         filetypes: Optional[list] = None,
         initialdir: Optional[str] = None,
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
         confirmoverwrite: bool = True,
     ) -> Optional[str]:
-        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
+        msgs_ = msgs()
+        title = title or msgs_.MSG_SAVE_FILE_DIALOG_TITLE
+        filetypes = filetypes or [(msgs_.MSG_FILE_FILTER_ALL, "*.*")]
         path = filedialog.asksaveasfilename(
             parent=self.parent,
             title=title,
@@ -390,13 +391,15 @@ class BaseWindow(object):
 
     def select_open_files(
         self,
-        title: str = MSG_OPEN_FILE_DIALOG_TITLE,
+        title: Optional[str] = None,
         filetypes: List[str] = None,
         initialdir: Optional[str] = None,
         initialfile: Optional[str] = None,
         defaultextension: Optional[str] = None,
     ) -> Tuple[str, ...]:
-        filetypes = filetypes or [(MSG_FILE_FILTER_ALL, "*.*")]
+        msgs_ = msgs()
+        title = title or msgs_.MSG_OPEN_FILE_DIALOG_TITLE
+        filetypes = filetypes or [(msgs_.MSG_FILE_FILTER_ALL, "*.*")]
 
         paths = filedialog.askopenfilenames(
             parent=self.parent,
@@ -412,10 +415,11 @@ class BaseWindow(object):
 
     def select_directory(
         self,
-        title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+        title: Optional[str] = None,
         initialdir: Optional[str] = None,
         mustexist: Optional[bool] = None,
     ) -> Optional[str]:
+        title = title or msgs().MSG_SELECT_DIR_DIALOG_TITLE
         path = filedialog.askdirectory(
             parent=self.parent, title=title, initialdir=initialdir, mustexist=mustexist
         )

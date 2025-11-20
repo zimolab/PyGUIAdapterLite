@@ -1,13 +1,12 @@
 import dataclasses
 import os
+
+from dataclasses import field
 from tkinter import Widget, filedialog
 from tkinter.ttk import Entry, Button, Frame
 from typing import Type, Any, Optional, Union, List
 
-from pyguiadapterlite._messages import (
-    MSG_BROWSE_BUTTON_TEXT,
-    MSG_SELECT_DIR_DIALOG_TITLE,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidget,
     BaseParameterWidgetConfig,
@@ -26,10 +25,14 @@ class DirectoryValue(BaseParameterWidgetConfig):
     start_dir: str = ""
     """起始目录"""
 
-    dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE
+    dialog_title: str = field(
+        default_factory=lambda: msgs().MSG_SELECT_DIR_DIALOG_TITLE
+    )
     """目录选择对话框标题"""
 
-    select_button_text: str = MSG_BROWSE_BUTTON_TEXT
+    select_button_text: str = field(
+        default_factory=lambda: msgs().MSG_BROWSE_BUTTON_TEXT
+    )
     """浏览按钮文本"""
 
     normalize_path: bool = False

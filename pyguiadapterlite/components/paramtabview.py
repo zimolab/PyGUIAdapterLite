@@ -1,7 +1,7 @@
 from tkinter import Widget, Tk, Toplevel
 from typing import Union, Generator, Tuple, Optional, Any, Dict
 
-from pyguiadapterlite._messages import MSG_DEFAULT_PARAM_GROUP_NAME
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.scrollarea import (
     ParameterWidgetArea,
     ParameterNotFound,
@@ -18,11 +18,13 @@ class ParameterGroupTabView(TabView):
     def __init__(
         self,
         parent: Union[Widget, Tk, Toplevel],
-        default_group_name: str = MSG_DEFAULT_PARAM_GROUP_NAME,
+        default_group_name: str = None,
         window: Optional["FnExecuteWindow"] = None,
         **kwargs,
     ):
-        self._default_group_name = default_group_name
+        self._default_group_name = (
+            default_group_name or msgs().MSG_DEFAULT_PARAM_GROUP_NAME
+        )
         self._current_window = window
         super().__init__(parent, **kwargs)
 

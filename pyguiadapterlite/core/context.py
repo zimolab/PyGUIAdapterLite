@@ -2,23 +2,7 @@ from concurrent.futures import Future
 from tkinter import messagebox, simpledialog
 from typing import Any, Callable, Literal, Optional, Type, Tuple, List
 
-from pyguiadapterlite._messages import (
-    MSG_INFO_TITLE,
-    MSG_WARNING_TITLE,
-    MSG_CRITICAL_TITLE,
-    MSG_QUESTION_TITLE,
-    MSG_INPUT_DIALOG_TITLE,
-    MSG_DIALOG_BUTTON_OK,
-    MSG_DIALOG_BUTTON_CANCEL,
-    MSG_DIALOG_INPUT_PROMPT,
-    MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
-    MSG_SELECT_FILE_DIALOG_TITLE,
-    MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
-    MSG_SELECT_DIR_DIALOG_TITLE,
-    MSG_INPUT_PATH_PROMPT,
-    MSG_INPUT_FILE_PROMPT,
-    MSG_INPUT_DIR_PROMPT,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components import toast
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.components.dialog import (
@@ -175,8 +159,10 @@ def show_toast(
 
 
 def show_info_messagebox(
-    message: str, title: str = MSG_INFO_TITLE, **messagebox_kwargs
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> str:
+    title = title or msgs().MSG_INFO_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.showinfo(
@@ -188,8 +174,10 @@ def show_info_messagebox(
 
 
 def show_warning_messagebox(
-    message: str, title: str = MSG_WARNING_TITLE, **messagebox_kwargs
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> str:
+    title = title or msgs().MSG_WARNING_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.showwarning(
@@ -204,8 +192,10 @@ def show_warning_messagebox(
 
 
 def show_critical_messagebox(
-    message: str, title: str = MSG_CRITICAL_TITLE, **messagebox_kwargs
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> str:
+    title = title or msgs().MSG_CRITICAL_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.showerror(
@@ -223,10 +213,10 @@ show_error_messagebox = show_critical_messagebox
 
 
 def show_question_messagebox(
-    message: str,
-    title: str = MSG_QUESTION_TITLE,
-    **messagebox_kwargs,
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> str:
+    title = title or msgs().MSG_QUESTION_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         return messagebox.askquestion(
@@ -237,10 +227,10 @@ def show_question_messagebox(
 
 
 def show_ok_cancel_messagebox(
-    message: str,
-    title: str = MSG_QUESTION_TITLE,
-    **messagebox_kwargs,
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> bool:
+    title = title or msgs().MSG_QUESTION_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.askokcancel(
@@ -252,10 +242,10 @@ def show_ok_cancel_messagebox(
 
 
 def show_retry_cancel_messagebox(
-    message: str,
-    title: str = MSG_QUESTION_TITLE,
-    **messagebox_kwargs,
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> Literal["ok", "retry", "cancel"]:
+    title = title or msgs().MSG_QUESTION_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.askretrycancel(
@@ -267,10 +257,10 @@ def show_retry_cancel_messagebox(
 
 
 def show_yes_no_cancel_messagebox(
-    message: str,
-    title: str = MSG_QUESTION_TITLE,
-    **messagebox_kwargs,
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> Optional[bool]:
+    title = title or msgs().MSG_QUESTION_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.askyesnocancel(
@@ -282,10 +272,10 @@ def show_yes_no_cancel_messagebox(
 
 
 def show_yes_no_messagebox(
-    message: str,
-    title: str = MSG_QUESTION_TITLE,
-    **messagebox_kwargs,
+    message: str, title: Optional[str] = None, **messagebox_kwargs
 ) -> bool:
+    title = title or msgs().MSG_QUESTION_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         ret = messagebox.askyesno(
@@ -297,8 +287,10 @@ def show_yes_no_messagebox(
 
 
 def get_string_input(
-    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+    prompt: str, title: Optional[str] = None, **dialog_kwargs
 ) -> Optional[str]:
+    title = title or msgs().MSG_INPUT_DIALOG_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         return simpledialog.askstring(
@@ -309,8 +301,10 @@ def get_string_input(
 
 
 def get_int_input(
-    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+    prompt: str, title: Optional[str] = None, **dialog_kwargs
 ) -> Optional[int]:
+    title = title or msgs().MSG_INPUT_DIALOG_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         return simpledialog.askinteger(
@@ -321,8 +315,10 @@ def get_int_input(
 
 
 def get_float_input(
-    prompt: str, title: str = MSG_INPUT_DIALOG_TITLE, **dialog_kwargs
+    prompt: str, title: Optional[str] = None, **dialog_kwargs
 ) -> Optional[float]:
+    title = title or msgs().MSG_INPUT_DIALOG_TITLE
+
     def _call(window: FnExecuteWindow, *args, **kwargs):
         _ = args, kwargs  # unused
         return simpledialog.askfloat(
@@ -346,15 +342,20 @@ def show_custom_dialog(
 
 
 def get_string_input2(
-    title: str = MSG_INPUT_DIALOG_TITLE,
+    title: Optional[str] = None,
     size: tuple = (300, 100),
     resizable: bool = False,
-    ok_text: str = MSG_DIALOG_BUTTON_OK,
-    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-    label_text: str = MSG_DIALOG_INPUT_PROMPT,
+    ok_text: Optional[str] = None,
+    cancel_text: Optional[str] = None,
+    label_text: Optional[str] = None,
     initial_value: str = "",
     echo_char: Optional[str] = None,
 ):
+    msgs_ = msgs()
+    title = title or msgs_.MSG_INPUT_DIALOG_TITLE
+    ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+    cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+    label_text = label_text or msgs_.MSG_DIALOG_INPUT_PROMPT
     return show_custom_dialog(
         dialog_class=StringInputDialog,
         title=title,
@@ -369,21 +370,34 @@ def get_string_input2(
 
 
 def get_path_input(
-    title: str = MSG_INPUT_DIALOG_TITLE,
+    title: Optional[str] = None,
     size: tuple = (420, 130),
     resizable: bool = False,
-    file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    file_button_text: Optional[str] = None,
     file_types: List[Tuple[str, str]] = None,
-    file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
+    file_dialog_title: Optional[str] = None,
     file_dialog_action: Literal["open", "save"] = "open",
-    dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
-    dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+    dir_button_text: Optional[str] = None,
+    dir_dialog_title: Optional[str] = None,
     start_dir: str = "",
-    ok_text: str = MSG_DIALOG_BUTTON_OK,
-    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-    label_text: str = MSG_INPUT_PATH_PROMPT,
+    ok_text: Optional[str] = None,
+    cancel_text: Optional[str] = None,
+    label_text: Optional[str] = None,
     initial_value: str = "",
 ):
+    msgs_ = msgs()
+
+    if not (dir_button_text and file_button_text):
+        file_button_text = msgs_.MSG_PATH_DIALOG_FILE_BUTTON_TEXT
+        dir_button_text = msgs_.MSG_PATH_DIALOG_DIR_BUTTON_TEXT
+
+    title = title or msgs_.MSG_INPUT_DIALOG_TITLE
+    file_dialog_title = file_dialog_title or msgs_.MSG_SELECT_FILE_DIALOG_TITLE
+    dir_dialog_title = dir_dialog_title or msgs_.MSG_SELECT_DIR_DIALOG_TITLE
+    ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+    cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+    label_text = label_text or msgs_.MSG_INPUT_PATH_PROMPT
+
     return show_custom_dialog(
         dialog_class=PathInputDialog,
         title=title,
@@ -404,19 +418,27 @@ def get_path_input(
 
 
 def get_file_path_input(
-    title: str = MSG_INPUT_DIALOG_TITLE,
+    title: Optional[str] = None,
     size: tuple = (420, 130),
     resizable: bool = False,
-    file_button_text: Optional[str] = MSG_PATH_DIALOG_FILE_BUTTON_TEXT,
+    file_button_text: Optional[str] = None,
     file_types: List[Tuple[str, str]] = None,
-    file_dialog_title: str = MSG_SELECT_FILE_DIALOG_TITLE,
+    file_dialog_title: Optional[str] = None,
     file_dialog_action: Literal["open", "save"] = "open",
     start_dir: str = "",
-    ok_text: str = MSG_DIALOG_BUTTON_OK,
-    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-    label_text: str = MSG_INPUT_FILE_PROMPT,
+    ok_text: Optional[str] = None,
+    cancel_text: Optional[str] = None,
+    label_text: Optional[str] = None,
     initial_value: str = "",
 ):
+    msgs_ = msgs()
+    title = title or msgs_.MSG_INPUT_DIALOG_TITLE
+    file_button_text = file_button_text or msgs_.MSG_PATH_DIALOG_FILE_BUTTON_TEXT
+    file_dialog_title = file_dialog_title or msgs_.MSG_SELECT_FILE_DIALOG_TITLE
+    ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+    cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+    label_text = label_text or msgs_.MSG_INPUT_FILE_PROMPT
+
     return show_custom_dialog(
         dialog_class=PathInputDialog,
         title=title,
@@ -437,17 +459,25 @@ def get_file_path_input(
 
 
 def get_dir_path_input(
-    title: str = MSG_INPUT_DIALOG_TITLE,
+    title: Optional[str] = None,
     size: tuple = (420, 130),
     resizable: bool = False,
-    dir_button_text: Optional[str] = MSG_PATH_DIALOG_DIR_BUTTON_TEXT,
-    dir_dialog_title: str = MSG_SELECT_DIR_DIALOG_TITLE,
+    dir_button_text: Optional[str] = None,
+    dir_dialog_title: Optional[str] = None,
     start_dir: str = "",
-    ok_text: str = MSG_DIALOG_BUTTON_OK,
-    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-    label_text: str = MSG_INPUT_DIR_PROMPT,
+    ok_text: Optional[str] = None,
+    cancel_text: Optional[str] = None,
+    label_text: Optional[str] = None,
     initial_value: str = "",
 ):
+    msgs_ = msgs()
+    title = title or msgs_.MSG_INPUT_DIALOG_TITLE
+    dir_button_text = dir_button_text or msgs_.MSG_PATH_DIALOG_DIR_BUTTON_TEXT
+    dir_dialog_title = dir_dialog_title or msgs_.MSG_SELECT_DIR_DIALOG_TITLE
+    ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+    cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+    label_text = label_text or msgs_.MSG_INPUT_DIR_PROMPT
+
     return show_custom_dialog(
         dialog_class=PathInputDialog,
         title=title,
@@ -468,18 +498,24 @@ def get_dir_path_input(
 
 
 def get_text_input(
-    title: str = MSG_INPUT_DIALOG_TITLE,
-    size: tuple = (500, 400),
+    title: Optional[str] = None,
+    size: tuple = (500, 450),
     resizable: bool = True,
-    ok_text: str = MSG_DIALOG_BUTTON_OK,
-    cancel_text: str = MSG_DIALOG_BUTTON_CANCEL,
-    label_text: str = MSG_DIALOG_INPUT_PROMPT,
+    ok_text: Optional[str] = None,
+    cancel_text: Optional[str] = None,
+    label_text: Optional[str] = None,
     initial_value: str = "",
     textview_height: int = 20,
     default_menu: bool = True,
     wrap: Literal["none", "char", "word"] = "word",
     font: tuple = get_default_widget_font(),
 ):
+    msgs_ = msgs()
+    title = title or msgs_.MSG_INPUT_DIALOG_TITLE
+    ok_text = ok_text or msgs_.MSG_DIALOG_BUTTON_OK
+    cancel_text = cancel_text or msgs_.MSG_DIALOG_BUTTON_CANCEL
+    label_text = label_text or msgs_.MSG_DIALOG_INPUT_PROMPT
+
     return show_custom_dialog(
         TextViewDialog,
         title=title,

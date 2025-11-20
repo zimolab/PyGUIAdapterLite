@@ -3,24 +3,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Frame, Label, Button
 from typing import Union, Literal
 
-from pyguiadapterlite._messages import (
-    MSG_COPY,
-    MSG_SELECT_ALL,
-    MSG_ZOOM_IN,
-    MSG_ZOOM_OUT,
-    MSG_ZOOMING,
-    MSG_ZOOM_RESET,
-    MSG_NAVIGATION,
-    MSG_NAV_TOP,
-    MSG_NAV_BOTTOM,
-    MSG_NAV_HINT,
-    MSG_NAV_PAGE_UP,
-    MSG_NAV_PAGE_DOWN,
-    MSG_PASTE,
-    MSG_CUT,
-    MSG_UNDO,
-    MSG_REDO,
-)
+from pyguiadapterlite._messages import messages as msgs
 from pyguiadapterlite.components.common import get_default_widget_font
 from pyguiadapterlite.utils import _exception
 
@@ -51,6 +34,8 @@ class TextView(object):
         self._editable = editable
 
         self._text_widget = ScrolledText(self._parent, font=font, wrap=wrap, **kwargs)
+
+        self._msgs = msgs()
 
         self.set_font(font)
         self.set_background(background)
@@ -258,36 +243,48 @@ class TextView(object):
     def create_default_menu(self):
         """创建右键菜单"""
         self._context_menu = Menu(self._text_widget, tearoff=0)
-        self._context_menu.add_command(label=MSG_COPY, command=self.copy)
+        self._context_menu.add_command(label=self._msgs.MSG_COPY, command=self.copy)
         if self._editable:
             self._context_menu.add_command(
-                label=MSG_CUT, command=lambda e=None: self._on_ctrl_x(e)
+                label=self._msgs.MSG_CUT, command=lambda e=None: self._on_ctrl_x(e)
             )
             self._context_menu.add_command(
-                label=MSG_PASTE, command=lambda e=None: self._on_ctrl_v(e)
+                label=self._msgs.MSG_PASTE, command=lambda e=None: self._on_ctrl_v(e)
             )
             self._context_menu.add_separator()
             self._context_menu.add_command(
-                label=MSG_UNDO, command=lambda e=None: self._on_ctrl_z(e)
+                label=self._msgs.MSG_UNDO, command=lambda e=None: self._on_ctrl_z(e)
             )
             self._context_menu.add_command(
-                label=MSG_REDO, command=lambda e=None: self._on_ctrl_y(e)
+                label=self._msgs.MSG_REDO, command=lambda e=None: self._on_ctrl_y(e)
             )
 
         self._context_menu.add_separator()
-        self._context_menu.add_command(label=MSG_SELECT_ALL, command=self.select_all)
-        self._context_menu.add_separator()
-        self._context_menu.add_command(label=MSG_ZOOM_IN, command=self.zoom_in)
-        self._context_menu.add_command(label=MSG_ZOOM_OUT, command=self.zoom_out)
-        self._context_menu.add_command(label=MSG_ZOOM_RESET, command=self.zoom_reset)
-        self._context_menu.add_separator()
-        self._context_menu.add_command(label=MSG_NAV_TOP, command=self.scroll_to_top)
         self._context_menu.add_command(
-            label=MSG_NAV_BOTTOM, command=self.scroll_to_bottom
+            label=self._msgs.MSG_SELECT_ALL, command=self.select_all
         )
-        self._context_menu.add_command(label=MSG_NAV_PAGE_UP, command=self._on_page_up)
+        self._context_menu.add_separator()
         self._context_menu.add_command(
-            label=MSG_NAV_PAGE_DOWN, command=self._on_page_down
+            label=self._msgs.MSG_ZOOM_IN, command=self.zoom_in
+        )
+        self._context_menu.add_command(
+            label=self._msgs.MSG_ZOOM_OUT, command=self.zoom_out
+        )
+        self._context_menu.add_command(
+            label=self._msgs.MSG_ZOOM_RESET, command=self.zoom_reset
+        )
+        self._context_menu.add_separator()
+        self._context_menu.add_command(
+            label=self._msgs.MSG_NAV_TOP, command=self.scroll_to_top
+        )
+        self._context_menu.add_command(
+            label=self._msgs.MSG_NAV_BOTTOM, command=self.scroll_to_bottom
+        )
+        self._context_menu.add_command(
+            label=self._msgs.MSG_NAV_PAGE_UP, command=self._on_page_up
+        )
+        self._context_menu.add_command(
+            label=self._msgs.MSG_NAV_PAGE_DOWN, command=self._on_page_down
         )
 
         # 绑定右键事件
@@ -353,6 +350,7 @@ class SimpleTextViewer(Toplevel):
     ):
         super().__init__(parent)
 
+        self._msgs = msgs()
         self._parent = parent
         self.title(title)
         self.geometry(f"{width}x{height}")
@@ -393,38 +391,48 @@ class SimpleTextViewer(Toplevel):
         control_frame.pack(fill="x", padx=10, pady=5)
 
         # 缩放控制
-        Label(control_frame, text=MSG_ZOOMING).pack(side="left", padx=5)
+        Label(control_frame, text=self._msgs.MSG_ZOOMING).pack(side="left", padx=5)
 
         zoom_in_btn = Button(
-            control_frame, text=MSG_ZOOM_IN, command=self._text_view.zoom_in
+            control_frame, text=self._msgs.MSG_ZOOM_IN, command=self._text_view.zoom_in
         )
         zoom_in_btn.pack(side="left", padx=2)
 
         zoom_out_btn = Button(
-            control_frame, text=MSG_ZOOM_OUT, command=self._text_view.zoom_out
+            control_frame,
+            text=self._msgs.MSG_ZOOM_OUT,
+            command=self._text_view.zoom_out,
         )
         zoom_out_btn.pack(side="left", padx=2)
 
         zoom_reset_btn = Button(
-            control_frame, text=MSG_ZOOM_RESET, command=self._text_view.zoom_reset
+            control_frame,
+            text=self._msgs.MSG_ZOOM_RESET,
+            command=self._text_view.zoom_reset,
         )
         zoom_reset_btn.pack(side="left", padx=2)
 
         # 导航控制
-        Label(control_frame, text=MSG_NAVIGATION).pack(side="left", padx=(20, 5))
+        Label(control_frame, text=self._msgs.MSG_NAVIGATION).pack(
+            side="left", padx=(20, 5)
+        )
 
         top_btn = Button(
-            control_frame, text=MSG_NAV_TOP, command=self._text_view.scroll_to_top
+            control_frame,
+            text=self._msgs.MSG_NAV_TOP,
+            command=self._text_view.scroll_to_top,
         )
         top_btn.pack(side="left", padx=2)
 
         bottom_btn = Button(
-            control_frame, text=MSG_NAV_BOTTOM, command=self._text_view.scroll_to_bottom
+            control_frame,
+            text=self._msgs.MSG_NAV_BOTTOM,
+            command=self._text_view.scroll_to_bottom,
         )
         bottom_btn.pack(side="left", padx=2)
 
         # 状态信息
-        self.status_label = Label(control_frame, text=MSG_NAV_HINT)
+        self.status_label = Label(control_frame, text=self._msgs.MSG_NAV_HINT)
         self.status_label.pack(side="right", padx=10)
         self._control_panel = control_frame
 
