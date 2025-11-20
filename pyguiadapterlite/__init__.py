@@ -64,3 +64,4 @@ from pyguiadapterlite.windows.settingswindow import (
     SettingsWindowConfig,
     SettingFields,
 )
+from pyguiadapterlite.utils import set_logging_enabled, is_logging_enabled

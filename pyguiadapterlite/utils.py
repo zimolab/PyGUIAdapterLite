@@ -8,7 +8,7 @@ import warnings
 from tkinter import messagebox, Tk
 from typing import Any, Tuple, List, Set
 
-_DISABLE_LOGGING_FLAG = os.getenv("PYGUIADAPTERLITE_LOGGING_MESSAGE", "1") == "0"
+_DISABLE_LOGGING_FLAG = bool(int(os.getenv("PYGUIADAPTERLITE_LOGGING_MESSAGE", "1")))
 
 from pyguiadapterlite._messages import messages as msgs
 
@@ -23,6 +23,15 @@ logging.basicConfig(
 )
 
 _logger = logging.getLogger("__main__")
+
+
+def set_logging_enabled(enabled: bool):
+    global _DISABLE_LOGGING_FLAG
+    _DISABLE_LOGGING_FLAG = not enabled
+
+
+def is_logging_enabled() -> bool:
+    return not _DISABLE_LOGGING_FLAG
 
 
 def _info(msg: str):
