@@ -2896,37 +2896,36 @@ module. It has created a translation template file
 Chinese translation file [`pyguiadapterlite/_assets/locales/zh_CN.po`](pyguiadapterlite/_assets/locales/zh_CN.po) and the pre-compiled mo file of 
 it [`pyguiadapterlite/_assets/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo`](pyguiadapterlite/_assets/locales/zh_CN/LC_MESSAGES/pyguiadapterlite.mo).
 
-By default, `PyGUIAdapterLite` automatically detects the current `locale` of the system. If a corresponding translation file exists in the specified `localedir` for the `locale`, it will use that file. If not found, it falls back to the original strings (English). `PyGUIAdapterLite` allows developers to specify the `localedir` and current `locale`, enabling them to add or use custom `locales`.
-
-Environment variables related to i18n:
-
-- `PYGUIADAPTERLITE_LOCALE`: Used to specify the current `locale`. If not specified or set to `auto`, it will attempt to automatically detect the current system `locale`.
-- `PYGUIADAPTERLITE_LOCALE_DIR`: Used to specify a custom locales directory (i.e., the directory containing locale files). If not specified, it will look for translation files in `PyGUIAdapterLite`'s built-in locales directory.
-- `PYGUIADAPTERLITE_EXPORT_LOCALES`: This environment variable should be used in conjunction with `PYGUIADAPTERLITE_LOCALE_DIR`. If the developer specifies a locales directory via `PYGUIADAPTERLITE_LOCALE_DIR`, `PyGUIAdapterLite` will attempt to export the built-in locale files to that directory, provided the specified locales directory is empty or does not exist. If the custom locales directory already contains files, the built-in translation files will not be exported to avoid accidentally overwriting the developer's files. Through `PYGUIADAPTERLITE_EXPORT_LOCALES`, developers can obtain the built-in translation files, allowing them to modify existing translations or add new translations for other languages using the template file.
-
-We can set these three environment variables via `os.environ` in code. However, note that the statements setting these environment variables must be placed before importing the `pyguiadapter` package and its subpackages; otherwise, translations may not take effect. Therefore, it is recommended to place the relevant statements at the beginning of the main file, as shown below:
+By default, `PyGUIAdapterLite` automatically detects the current `locale` of the system. If a corresponding translation file exists in the specified `localedir` for the `locale`, it will use that file. If not found, it falls back to the original strings (English). `PyGUIAdapterLite` allows developers to specify the `localedir` and current `locale`.  Here are related APIs:
 
 ```python
-import os
-from pathlib import Path
+def set_locales_dir(dir_path: str) -> None:
+    """specify custom locale dir"""
+    ...
 
 
-# set current locale to "en_US"
-# if this environment variable is not set, the locale will be automatically detected
-os.environ["PYGUIADAPTERLITE_LOCALE"] = "en_US"
-# os.environ["PYGUIADAPTERLITE_LOCALE"] = "zh_CN"
-# os.environ["PYGUIADAPTERLITE_LOCALE"] = "auto"
+def set_export_locales_dir(enabled: bool) -> None:
+    """specify wheatear to export built-in locale files to custom locale dir"""
+    ...
+
+
+def set_locale_code(code: str) -> None:
+    """set locale to be used"""
+```
+
+A simple example:
+
+```python
+import pyguiadapterlite
+
+# set current locale, now support "en_US"/"zh_CN"/"auto"
+pyguiadapterlite.set_locale_code("auto")
 
 # set custom locale directory
-# if this environment variable is not set, the built-in locale directory will be used
-os.environ["PYGUIADAPTERLITE_LOCALE_DIR"] = (
-        Path(__file__).parent / "locales"
-).as_posix()
+# pyguiadapterlite.set_locales_dir((Path(__file__).parent / "locales").as_posix())
 
-# export built-in locale files to the custom locale directory specified by PYGUIADAPTERLITE_LOCALE_DIR,
-# the custom locale directory should be empty or non-existent, if not empty, nothing will be exported
-os.environ["PYGUIADAPTERLITE_EXPORT_LOCALES"] = "true"
-
+# export built-in locale files to the custom locale directory
+# pyguiadapterlite.set_export_locales_dir(True)
 
 from pyguiadapterlite import GUIAdapter
 
@@ -2939,10 +2938,7 @@ if __name__ == "__main__":
     adapter = GUIAdapter()
     adapter.add(foo)
     adapter.run()
-
 ```
-
-
 
 
 
