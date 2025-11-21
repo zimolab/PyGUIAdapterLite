@@ -84,6 +84,8 @@ class SettingsWindow(ObjectWindow):
             )
             self._restore_defaults_button.pack(side="left")
 
+            self.move_to_center()
+
     def on_restore_defaults(self):
         if not self.config.allow_restore_defaults:
             return
