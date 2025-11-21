@@ -38,30 +38,25 @@ class BaseDialog(object):
         if isinstance(parent, Widget):
             parent_window = parent.winfo_toplevel()
 
-        # 将dialog移动到当前鼠标附近
-        # x = parent_window.winfo_pointerx() - self._dialog.winfo_reqwidth() // 2
-        # y = parent_window.winfo_pointery() - self._dialog.winfo_reqheight() // 2
-        # dialog移动到父窗口中央
-        x = (
-            parent_window.winfo_rootx()
-            + parent_window.winfo_width() // 2
-            - self._dialog.winfo_reqwidth() // 2
-        )
-        y = (
-            parent_window.winfo_rooty()
-            + parent_window.winfo_height() // 2
-            - self._dialog.winfo_reqheight() // 2
-        )
-        toplevel = self._dialog.winfo_toplevel()
-        if hasattr(toplevel, "DPI_scaling"):
-            scaling = toplevel.DPI_scaling
-        else:
-            scaling = 1.0
-        x = x / scaling
-        y = y / scaling
+        self._dialog.update()
+        dpi_scaling = 1.0
+        if hasattr(parent_window, "DPI_scaling"):
+            dpi_scaling = parent_window.DPI_scaling
+
+        parent_x_physical = parent_window.winfo_x() / dpi_scaling
+        parent_y_physical = parent_window.winfo_y() / dpi_scaling
+        parent_width_physical = parent_window.winfo_width() / dpi_scaling
+        parent_height_physical = parent_window.winfo_height() / dpi_scaling
+
+        child_width_physical = self._dialog.winfo_reqwidth()
+        child_height_physical = self._dialog.winfo_reqheight()
+
+        x = parent_x_physical + (parent_width_physical - child_width_physical) // 2
+        y = parent_y_physical + (parent_height_physical - child_height_physical) // 2
+
         self._dialog.geometry(f"+{int(x)}+{int(y)}")
         self._dialog.deiconify()
-        self._dialog.transient(parent_window)
+        self._dialog.transient()
         self._dialog.grab_set()
         self._dialog.wait_window()
 

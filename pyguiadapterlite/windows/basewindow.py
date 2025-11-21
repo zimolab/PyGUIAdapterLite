@@ -227,31 +227,35 @@ class BaseWindow(object):
         将窗口居中显示（自动获取窗口尺寸）
         """
         self.hide()
+
         # 更新窗口以确保获取正确的尺寸
         self._parent.update()
 
         # 获取窗口尺寸
-        toplevel = self._parent.winfo_toplevel()
+        width = self._parent.winfo_width()
+        height = self._parent.winfo_height()
 
-        width = toplevel.winfo_width()
-        height = toplevel.winfo_height()
+        # 如果尺寸无效，使用请求尺寸
+        if width <= 1 or height <= 1:
+            width = self._parent.winfo_reqwidth()
+            height = self._parent.winfo_reqheight()
 
-        # 获取屏幕尺寸
-        screen_width = toplevel.winfo_screenwidth()
-        screen_height = toplevel.winfo_screenheight()
-
-        # 计算位置
-        x = (screen_width - width) // 2
-        y = (screen_height - height) // 2
-
-        if hasattr(toplevel, "DPI_scaling"):
-            scaling = toplevel.DPI_scaling
+        # 根据目标控件的位置设置提示框位置（对DPI缩放进行了适配）
+        if hasattr(self._parent, "DPI_scaling"):
+            scaling = self._parent.DPI_scaling
         else:
             scaling = 1.0
-        x = x / scaling
-        y = y / scaling
-        # 移动窗口
-        self._parent.geometry(f"+{int(x)}+{int(y)}")
+
+        width = int(width / scaling)
+        height = int(height / scaling)
+
+        # 使用Tkinter内置的窗口放置功能
+        x = (self._parent.winfo_screenwidth() // 2) - (width // 2)
+        y = (self._parent.winfo_screenheight() // 2) - (height // 2)
+
+        # 直接设置几何位置
+        self._parent.geometry(f"{width}x{height}+{x}+{y}")
+
         self.show()
 
     def hide(self):
