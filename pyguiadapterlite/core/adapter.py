@@ -1,45 +1,41 @@
 import dataclasses
-import platform
 from collections import OrderedDict
 from tkinter import Tk
 from typing import Callable, Optional, Dict, Union, Tuple, Type, List, Any
 
 from pyguiadapterlite.components.menus import Menu, Separator
-from pyguiadapterlite.core.fn import FnInfo, ParameterInfo, BaseFunctionExecutor
-from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindowConfig, FnExecuteWindow
-from pyguiadapterlite.core.fnparser import FnParser
-from pyguiadapterlite.windows.fnselectwindow import FnSelectWindowConfig, FnSelectWindow
-from pyguiadapterlite.core.registry import ParameterWidgetFactory
-from pyguiadapterlite.core.threaded import ThreadedExecutor
-from pyguiadapterlite.core.ucontext import UContext
-from pyguiadapterlite.utils import (
-    _error,
-    enable_dpi_awareness,
-    _warning,
-    _info,
-)
 from pyguiadapterlite.components.valuewidget import (
     BaseParameterWidgetConfig,
     BaseParameterWidget,
     is_parameter_widget_class,
 )
+from pyguiadapterlite.core.fn import FnInfo, ParameterInfo, BaseFunctionExecutor
+from pyguiadapterlite.core.fnparser import FnParser
+from pyguiadapterlite.core.registry import ParameterWidgetFactory
+from pyguiadapterlite.core.threaded import ThreadedExecutor
+from pyguiadapterlite.core.ucontext import UContext
+from pyguiadapterlite.utils import _error
+from pyguiadapterlite.windows.fnexecwindow import FnExecuteWindowConfig, FnExecuteWindow
+from pyguiadapterlite.windows.fnselectwindow import FnSelectWindowConfig, FnSelectWindow
 
 
 class GUIAdapter(object):
     def __init__(
         self,
         *,
-        hdpi_mode: bool = False,
-        scale_factor_divisor: int = 100,
+        dpi_aware: bool = False,
         before_mainloop_callback: Callable[[Tk], None] = None,
     ):
-        self._hdpi_mode = hdpi_mode
-        self._scale_factor_divisor = scale_factor_divisor
         self._functions: Dict[Callable, FnInfo] = {}
         self._fn_parser = FnParser()
         self._select_window: Optional[FnSelectWindow] = None
         self._execute_window: Optional[FnExecuteWindow] = None
         self._before_mainloop_callback = before_mainloop_callback
+
+        if dpi_aware:
+            from pyguiadapterlite.core.hdpi import set_dpi_aware
+
+            set_dpi_aware(dpi_aware)
 
     def add(
         self,
@@ -266,14 +262,6 @@ class GUIAdapter(object):
         UContext.reset()
         root = Tk()
         root.withdraw()
-        if self._hdpi_mode:
-            if platform.system() == "Windows":
-                _info(
-                    "try to enable dpi awareness of current process to support high-DPI mode on Windows."
-                )
-                enable_dpi_awareness(root, self._scale_factor_divisor)
-            else:
-                _warning("high-DPI mode is not supported on this platform.")
         UContext.app_started(root)
         if show_select_window:
             if select_window_config is None:

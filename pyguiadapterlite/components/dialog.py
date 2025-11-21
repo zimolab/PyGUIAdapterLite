@@ -52,7 +52,14 @@ class BaseDialog(object):
             + parent_window.winfo_height() // 2
             - self._dialog.winfo_reqheight() // 2
         )
-        self._dialog.geometry(f"+{x}+{y}")
+        toplevel = self._dialog.winfo_toplevel()
+        if hasattr(toplevel, "DPI_scaling"):
+            scaling = toplevel.DPI_scaling
+        else:
+            scaling = 1.0
+        x = x / scaling
+        y = y / scaling
+        self._dialog.geometry(f"+{int(x)}+{int(y)}")
         self._dialog.deiconify()
         self._dialog.transient(parent_window)
         self._dialog.grab_set()

@@ -79,10 +79,15 @@ class ToolTip(object):
         wind = Toplevel(self._target_widget)
         # 设置无边框
         wind.wm_overrideredirect(True)
-        # 根据目标控件的位置设置提示框位置
-        x = self._x + self._x_offset
-        y = self._y + self._y_offset
-        wind.geometry(f"+{x}+{y}")
+        # 根据目标控件的位置设置提示框位置（对DPI缩放进行了适配）
+        toplevel = self._target_widget.winfo_toplevel()
+        if hasattr(toplevel, "DPI_scaling"):
+            scaling = toplevel.DPI_scaling
+        else:
+            scaling = 1.0
+        x = (self._x + self._x_offset) / scaling
+        y = (self._y + self._y_offset) / scaling
+        wind.geometry(f"+{int(x)}+{int(y)}")
         # 设置样式
         wind.configure(background=self._background, relief=self._relief, borderwidth=1)
         wind.wm_attributes("-topmost", True)
@@ -227,10 +232,18 @@ class SimpleHtmlToolTip(ToolTip):
         wind = Toplevel(self._target_widget)
         # 设置无边框
         wind.wm_overrideredirect(True)
-        # 根据目标控件的位置设置提示框位置
-        x = self._x + self._x_offset
-        y = self._y + self._y_offset
-        wind.geometry(f"+{x}+{y}")
+        # 根据目标控件的位置设置提示框位置（对DPI缩放进行了适配）
+        # x = self._x + self._x_offset
+        # y = self._y + self._y_offset
+        # wind.geometry(f"+{x}+{y}")
+        toplevel = self._target_widget.winfo_toplevel()
+        if hasattr(toplevel, "DPI_scaling"):
+            scaling = toplevel.DPI_scaling
+        else:
+            scaling = 1.0
+        x = (self._x + self._x_offset) / scaling
+        y = (self._y + self._y_offset) / scaling
+        wind.geometry(f"+{int(x)}+{int(y)}")
         # 设置样式
         wind.configure(background="#ffffff", relief="solid", borderwidth=1)
         main_frame = Frame(wind, bg="#ffffff", padx=10, pady=8)

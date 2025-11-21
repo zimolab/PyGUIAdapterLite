@@ -231,19 +231,27 @@ class BaseWindow(object):
         self._parent.update()
 
         # 获取窗口尺寸
-        width = self._parent.winfo_width()
-        height = self._parent.winfo_height()
+        toplevel = self._parent.winfo_toplevel()
+
+        width = toplevel.winfo_width()
+        height = toplevel.winfo_height()
 
         # 获取屏幕尺寸
-        screen_width = self._parent.winfo_screenwidth()
-        screen_height = self._parent.winfo_screenheight()
+        screen_width = toplevel.winfo_screenwidth()
+        screen_height = toplevel.winfo_screenheight()
 
         # 计算位置
         x = (screen_width - width) // 2
         y = (screen_height - height) // 2
 
-        # 设置位置
-        self._parent.geometry(f"+{x}+{y}")
+        if hasattr(toplevel, "DPI_scaling"):
+            scaling = toplevel.DPI_scaling
+        else:
+            scaling = 1.0
+        x = x / scaling
+        y = y / scaling
+        # 移动窗口
+        self._parent.geometry(f"+{int(x)}+{int(y)}")
         self.show()
 
     def hide(self):

@@ -77,7 +77,15 @@ class Toast:
             x = parent_x + (parent_width - width) // 2
             y = parent_y + 50
 
-        window.geometry(f"+{x}+{y}")
+        toplevel = window.winfo_toplevel()
+        if hasattr(toplevel, "DPI_scaling"):
+            scaling = toplevel.DPI_scaling
+        else:
+            scaling = 1.0
+        x = x / scaling
+        y = y / scaling
+
+        window.geometry(f"+{int(x)}+{int(y)}")
 
     def _fade_in(self, window, duration):
         """淡入动画"""
