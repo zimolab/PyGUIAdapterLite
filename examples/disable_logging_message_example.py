@@ -1,8 +1,7 @@
-import os
+from pyguiadapterlite import GUIAdapter, set_logging_enabled
 
-os.environ["PYGUIADAPTERLITE_LOGGING_MESSAGE"] = "0"
-
-from pyguiadapterlite import GUIAdapter
+# Disable logging messages from pyguiadapterlite
+set_logging_enabled(False)
 
 
 def foo():
