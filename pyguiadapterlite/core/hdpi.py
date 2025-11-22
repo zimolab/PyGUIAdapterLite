@@ -20,6 +20,7 @@ _Toplevel_geometry = Toplevel.geometry
 _Widget_place = Widget.place
 
 
+# noinspection PyUnresolvedReferences,PyBroadException
 def Get_HWND_DPI(window_handle):
     """Get DPI information for a window handle."""
     if os.name == "nt":
@@ -48,6 +49,7 @@ def Get_HWND_DPI(window_handle):
         return None, None, 1
 
 
+# noinspection PyBroadException
 def TkGeometryScale(s, cvtfunc):
     """Scale geometry string based on DPI scaling."""
     try:
@@ -90,9 +92,11 @@ def fix_scaling(root):
                 font["size"] = round(-0.75 * size)
 
 
+# noinspection PyUnresolvedReferences,PyBroadException
 def fix_HiDPI(root):
     """Adjust scaling for HiDPI displays on Windows."""
     if os.name == "nt":
+        scale_factor = 1.0
         try:
             # For Windows 8.1 and later
             windll.shcore.SetProcessDpiAwareness(2)
@@ -192,14 +196,12 @@ def set_dpi_aware(enabled):
     global _dpi_aware_enabled
     _dpi_aware_enabled = enabled
     if _dpi_aware_enabled:
-        print("DPI-aware mode enabled.")
         Tk.geometry = _dpi_aware_Tk_geometry
         Toplevel.geometry = _dpi_aware_Toplevel_geometry
         Tk.__init__ = _dpi_aware_TK_init
         Toplevel.__init__ = _dpi_aware_Toplevel_init
         Widget.place = _dpi_aware_Widget_place
     else:
-        print("DPI-aware mode disabled.")
         Tk.geometry = _TK_geometry
         Toplevel.geometry = _Toplevel_geometry
         Tk.__init__ = _TK_init
