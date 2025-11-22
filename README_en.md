@@ -3065,7 +3065,7 @@ file_menu = Menu(
 )
 ```
 
-#### 3. Accessing Configuration Item Fields
+**3. Accessing Configuration Item Fields**
 
 ```python
 def my_app_function(request: str):
