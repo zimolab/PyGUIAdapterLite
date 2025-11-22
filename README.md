@@ -69,6 +69,7 @@
     - [3.9 自定义参数控件](#39-自定义参数控件)
     - [3.10 拾遗](#310-拾遗)
       - [关于i18n](#关于i18n)
+      - [高分屏适配](#高分屏适配)
   - [示例](#示例)
   - [打包应用](#打包应用)
   - [许可证](#许可证)
@@ -2983,6 +2984,335 @@ if __name__ == "__main__":
 
 
 
+#### 高分屏适配
+
+对于Windows系统，在高分屏上，tkinter可能会出现界面模糊问题。为了解决该问题，PyGUIAdapter集成了一个Workaround，原始代码来自于[hidpi-tk](https://github.com/Wulian233/hidpi-tk)，PyGUIAdapter作了一些修改，该workaround的基本原理是为进程开启自动DPI感知，计算合理的缩放因子，并替换Tk/Toplevel类的相关方法，本质上是一个MonkeyPatch。以下代码演示了如何启用该workaround：
+
+```python
+from pyguiadapterlite import GUIAdapter
+
+
+def foo():
+    pass
+
+
+if __name__ == "__main__":
+    adapter = GUIAdapter(dpi_aware=True)
+    adapter.add(foo)
+    adapter.run()
+```
+
+> 目前该功能的实现处于初始阶段，需要更多测试，也可能存在一些问题。
+
+
+
+#### 设置窗口
+
+如果开发者希望在自己的应用中实现配置功能，并为用户提供设置修改界面。PyGUIAdapterLite内置了一套简单的机制来简化这一过程。
+
+<img src = "./docs/settings_example.gif" style="height:auto;width:75%"/>
+
+**1.定义配置对象**
+
+```python
+
+class AppSettings(SettingsBase):
+    # Define the fields of the settings as the class attributes of the SettingsBase subclass
+    url = StringValue(label="Remote URL", default_value="https://www.example.com")
+    port = IntValue(label="Port Number", default_value=8080)
+    username = StringValue(label="Username", default_value="admin")
+    password = StringValue(label="Password", default_value="", echo_char="*")
+    timeout = RangedIntValue(
+        label="Timeout", default_value=10, min_value=1, max_value=60
+    )
+
+    def __init__(self, **kwargs):
+        # Usually, you need to override __init__ method like this if we want to set the initial values of the fields
+        # in this form:
+        # AppSettings(url="https://www.example.com", host="localhost", port=8080, username="admin", password="")
+        super().__init__(**kwargs)
+
+    def serialize(self) -> Union[str, bytes]:
+        # This method is used to serialize the settings to a string or bytes object, which can be saved to file or
+        # sent over the network. Here we just return a json string of the settings fields.
+        import json
+
+        return json.dumps(
+            self.values(),  # SettingsBase.values() returns a dictionary of the settings fields and values
+            indent=4,
+            ensure_ascii=False,
+        )
+
+    @classmethod
+    def deserialize(cls, data: Union[str, bytes], **kwargs) -> "AppSettings":
+        # This method is used to deserialize the settings from a string or bytes object
+        try:
+            import json
+
+            values = json.loads(data, **kwargs)
+            return cls(**values)
+        except Exception as e:
+            print(f"Error deserializing settings: {e}", file=sys.stderr)
+            # If there is an error deserializing the settings,
+            # return a new instance of AppSettings with default values
+            return cls()
+
+```
+
+要点：
+
+1. 自定义设置类需要继承SettingsBase类。
+2. 配置项字段是通过类成员变量定义的，PyGUIAdapterLite会将非“_”开头且类型为`BaseParameterWidgetConfig`子类对象（如本例中的StringValue/IntValue/RangedIntValue等）的类成员变量都识别为配置项字段。
+3. 需要在自定义设置类中实现serialize()/deserialize()方法（注意deserialize()是一个classmethod），用于实现序列化/反序列化。
+4. 如果需要通过`AppSettings(url="https://www.example.com", port=8080)`这种形式来设置字段的初始值，则必须在自定义类中override构造函数。
+
+**2.显示设置界面**
+
+一般通过窗口菜单来调出设置界面。在调出设置界面前，必须先获得一个设置类实例，在真实的开发场景中，这个设置类实例可能来源于配置文件、数据库或者其他什么地方，在示例代码中，为了简单起见，我们直接实例化一个AppSettings对象。
+
+```python
+# Create an instance of AppSettings
+# In real application, the settings instance may be initialized with values from a settings file,
+# database or other sources. Here we just create a new instance of AppSettings for simplicity.
+settings = AppSettings(
+    url="https://www.anotherexample.com",
+    port=8080,
+    username="tom",
+    password="123456",
+    timeout=15,
+)
+
+...
+# Create a menu to show the settings window
+def on_action_show_settings(window: FnExecuteWindow, action: Action):
+    _ = action  # Unused
+    window.show_sub_window(
+        # The first argument is the class of the SettingsWindow
+        SettingsWindow,
+        # We must pass the settings instance to the SettingsWindow with the keyword argument "settings"
+        settings=settings,
+        # for SettingsWindow, modal=True is necessary
+        modal=True,
+        # Additionally, we can customize the appearance of the SettingsWindow, such as the title, the text of the
+        # buttons, etc., with a SettingsWindowConfig object
+        config=SettingsWindowConfig(
+            title="Application Settings",
+            content_title="Connection Options",
+            confirm_button_text="Save Changes",
+            cancel_button_text="Discard Changes",
+            allow_restore_defaults=True,
+            restore_defaults_button_text="Restore Defaults",
+        ),
+    )
+    # Once the SettingsWindow is closed, the changes will be automatically saved to the settings instance
+
+
+file_menu = Menu(
+    title="File",
+    actions=[Action(text="Settings", on_triggered=on_action_show_settings)],
+)
+```
+
+
+
+#### 3. 访问配置项字段
+
+```python
+def my_app_function(request: str):
+    # Here we can access the settings fields using dot notation
+    uprint(f"Remote URL: {settings.url}")
+    uprint(f"Port Number: {settings.port}")
+    uprint(f"Username: {settings.username}")
+    uprint(f"Password: {settings.password}")
+    uprint(f"Timeout: {settings.timeout}")
+    ...
+```
+
+
+
+完整代码：
+
+```python
+import sys
+from typing import Union
+
+import pyguiadapterlite
+from pyguiadapterlite import (
+    SettingsBase,
+    FnExecuteWindow,
+    Action,
+    SettingsWindow,
+    SettingsWindowConfig,
+    Menu,
+    GUIAdapter,
+    uprint,
+    FnExecuteWindowConfig,
+)
+from pyguiadapterlite.types import StringValue, IntValue, RangedIntValue
+
+
+class AppSettings(SettingsBase):
+    # Define the fields of the settings as the class attributes of the SettingsBase subclass
+    url = StringValue(label="Remote URL", default_value="https://www.example.com")
+    port = IntValue(label="Port Number", default_value=8080)
+    username = StringValue(label="Username", default_value="admin")
+    password = StringValue(label="Password", default_value="", echo_char="*")
+    timeout = RangedIntValue(
+        label="Timeout", default_value=10, min_value=1, max_value=60
+    )
+
+    def __init__(self, **kwargs):
+        # Usually, you need to override __init__ method like this if we want to set the initial values of the fields
+        # in this form:
+        # AppSettings(url="https://www.example.com", port=8080, username="admin", password="")
+        super().__init__(**kwargs)
+
+    def serialize(self) -> Union[str, bytes]:
+        # This method is used to serialize the settings to a string or bytes object, which can be saved to file or
+        # sent over the network. Here we just return a json string of the settings fields.
+        import json
+
+        return json.dumps(
+            self.values(),  # SettingsBase.values() returns a dictionary of the settings fields and values
+            indent=4,
+            ensure_ascii=False,
+        )
+
+    @classmethod
+    def deserialize(cls, data: Union[str, bytes], **kwargs) -> "AppSettings":
+        # This method is used to deserialize the settings from a string or bytes object
+        try:
+            import json
+
+            values = json.loads(data, **kwargs)
+            return cls(**values)
+        except Exception as e:
+            print(f"Error deserializing settings: {e}", file=sys.stderr)
+            # If there is an error deserializing the settings,
+            # return a new instance of AppSettings with default values
+            return cls()
+
+
+# Create an instance of AppSettings
+# In real application, the settings instance may be initialized with values from a settings file,
+# database or other sources. For example:
+
+# try:
+#     with open("settings.json", "r") as f:
+#         settings = AppSettings.deserialize(f.read())
+# except Exception as e:
+#     print(f"Error loading settings: {e}", file=sys.stderr)
+#     print("Using default settings.")
+#     settings = AppSettings()
+
+# Here we just create a new instance of AppSettings for simplicity.
+settings = AppSettings(
+    url="https://www.anotherexample.com",
+    port=8080,
+    username="tom",
+    password="123456",
+    timeout=15,
+)
+
+
+def my_app_function(request: str):
+    # Here we can access the settings fields using dot notation
+    uprint(f"Remote URL: {settings.url}")
+    uprint(f"Port Number: {settings.port}")
+    uprint(f"Username: {settings.username}")
+    uprint(f"Password: {settings.password}")
+    uprint(f"Timeout: {settings.timeout}")
+    uprint(f"Request: {request}")
+
+
+if __name__ == "__main__":
+
+    # Create a menu to show the settings window
+    def on_action_show_settings(window: FnExecuteWindow, action: Action):
+        _ = action  # Unused
+        window.show_sub_window(
+            # The first argument is the class of the SettingsWindow
+            SettingsWindow,
+            # We must pass the settings instance to the SettingsWindow with the keyword argument "settings"
+            settings=settings,
+            # for SettingsWindow, modal=True is necessary
+            modal=True,
+            # Additionally, we can customize the appearance of the SettingsWindow, such as the title, the text of the
+            # buttons, etc., with a SettingsWindowConfig object
+            config=SettingsWindowConfig(
+                title="Application Settings",
+                content_title="Connection Options",
+                confirm_button_text="Save Changes",
+                cancel_button_text="Discard Changes",
+                allow_restore_defaults=True,
+                restore_defaults_button_text="Restore Defaults",
+            ),
+        )
+        # Once the SettingsWindow is closed, the changes will be automatically saved to the settings instance
+        # Here we can save the modified settings. For example save them to a file:
+
+        # with open("settings.json", "w") as f:
+        #     f.write(settings.serialize())
+
+    file_menu = Menu(
+        title="File",
+        actions=[Action(text="Settings", on_triggered=on_action_show_settings)],
+    )
+
+    pyguiadapterlite.set_locale_code("en_US")  # set language
+
+    adapter = GUIAdapter(dpi_aware=True)  # enable high DPI support
+    adapter.add(
+        my_app_function,
+        # add menus to the window
+        window_menus=[file_menu],
+        # customize the appearance of the window
+        window_config=FnExecuteWindowConfig(
+            title="My App",  # set the title of the window
+            print_function_result=False,  # don't print the result of the function to the console of the window
+            show_function_result=False,  # don't show the result of the function in a message box
+        ),
+    )
+    adapter.run()
+    # app exited here
+    # we can save the settings here. For example:
+
+    # with open("settings.json", "w") as f:
+    #     f.write(settings.serialize())
+```
+
+如果开发者刚好使用json文件来保存设置项，那么PyGUIAdapterLite提供了一个更简单的基类：`JsonSettingsBase`。该类实现了`serialize()`和`deserialize()`方法，并且增加了`load()`和`save()`方法，用于从json文件读取配置或将配置保存到配置文件。
+
+基于`JsonSettingsBase`定义`AppSettings`：
+
+```python
+class AppSettings(JsonSettingsBase):
+    url = StringValue(label="Remote URL", default_value="https://www.example.com")
+    port = IntValue(label="Port Number", default_value=8080)
+    username = StringValue(label="Username", default_value="admin")
+    password = StringValue(label="Password", default_value="", echo_char="*")
+    timeout = RangedIntValue(
+        label="Timeout", default_value=10, min_value=1, max_value=60
+    )
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+```
+
+从文件中读取设置：
+
+```python
+settings = AppSettings.load(file_path="/path/to/setting.json", encoding="utf-8")
+```
+
+将配置保存到文件中：
+
+```python
+settings.save(file_path="/path/to/setting.json", encoding="utf-8")
+```
+
+一个完整的示例：[examples/settings_example_2.py](examples/settings_example_2.py)
+
 
 
 ## 打包应用
@@ -3077,15 +3407,23 @@ foo-app
   - 许可：Apache License 2.0
   - 许可证文件：`licenses/IconPark-LICENSE.txt`
   - 项目地址：https://github.com/bytedance/IconPark
+
 - **tomlkit**
 
   - 用途：解析和生成TOML格式的配置文件。
   - 许可：MIT License
   - 许可证文件：`licenses/tomlkit-LICENSE.txt`
   - 项目地址：https://github.com/python-poetry/tomlkit/
+
 - **docstring_parser**
 
   - 用途：解析Python文件的docstring。
   - 许可：MIT License
   - 许可证文件：`licenses/docstring_parser-LICENSE.md`
   - 项目地址：https://github.com/rr-/docstring_parser
+
+- **hidpi-tk**
+    - 用途：用于支持高DPI自动感知。
+    - 许可：Apache License 2.0
+    - 许可证文件：`licenses/hidpi-tk-LICENSE`
+    - 项目地址：https://github.com/Wulian233/hidpi-tk
