@@ -129,9 +129,7 @@ def read(
                 return p.read_bytes()
             else:
                 return p.read_text(encoding=encoding, errors=errors)
-        except FileNotFoundError as e:
-            raise e
-        except BaseException:
+        except ImportError:
             p = _dir_path(package, file_path)
             if not p:
                 raise RuntimeError(f"cannot find file {file_path} in package {package}")
@@ -139,6 +137,8 @@ def read(
                 return p.read_bytes()
             else:
                 return p.read_text(encoding=encoding, errors=errors)
+        except BaseException as e:
+            raise e
 
 
 def read_text(
@@ -164,20 +164,23 @@ def copytree(
     dst_path = Path(dst)
 
     try:
-        from importlib.resources import as_file, files
+        from importlib.resources import files
 
-        with as_file(files(package).joinpath(src)) as p:
-            src_path = Path(p)
-            shutil.copytree(
-                src=src_path,
-                dst=dst_path,
-                symlinks=symlinks,
-                ignore=ignore,
-                copy_function=copy_function,
-                ignore_dangling_symlinks=ignore_dangling_symlinks,
-                dirs_exist_ok=dirs_exist_ok,
-            )
+        def _copytree(src_, dst_: Path):
+            for res in src_.iterdir():
+                if res.is_file():
+                    file_content = res.read_bytes()
+                    dst_file = dst_ / res.name
+                    dst_file.write_bytes(file_content)
+                elif res.is_dir():
+                    dst_dir = dst_ / res.name
+                    dst_dir.mkdir(exist_ok=dirs_exist_ok)
+                    _copytree(res, dst_dir)
+                else:
+                    raise ValueError(f"unsupported resource type: {res}")
 
+        src_traversable = files(package).joinpath(src)
+        _copytree(src_traversable, dst_path)
     except ImportError:
         try:
             import pkg_resources
@@ -194,14 +197,12 @@ def copytree(
                 ignore_dangling_symlinks=ignore_dangling_symlinks,
                 dirs_exist_ok=dirs_exist_ok,
             )
-        except FileNotFoundError as e:
-            raise e
-        except BaseException:
-            src_path = _dir_path(package, src)
+        except ImportError:
+            p = _dir_path(package, src)
             if not p:
                 raise RuntimeError(f"cannot find file {p} in package {package}")
             shutil.copytree(
-                src=src_path,
+                src=p,
                 dst=dst_path,
                 symlinks=symlinks,
                 ignore=ignore,
@@ -209,3 +210,5 @@ def copytree(
                 ignore_dangling_symlinks=ignore_dangling_symlinks,
                 dirs_exist_ok=dirs_exist_ok,
             )
+        except BaseException as e:
+            raise e
