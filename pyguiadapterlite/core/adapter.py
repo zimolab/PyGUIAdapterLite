@@ -1,5 +1,6 @@
 import dataclasses
 from collections import OrderedDict
+from dataclasses import replace
 from tkinter import Tk
 from typing import Callable, Optional, Dict, Union, Tuple, Type, List, Any
 
@@ -10,7 +11,8 @@ from pyguiadapterlite.components.valuewidget import (
     is_parameter_widget_class,
 )
 from pyguiadapterlite.core.fn import FnInfo, ParameterInfo, BaseFunctionExecutor
-from pyguiadapterlite.core.fnparser import FnParser
+from pyguiadapterlite.core.fnparser import FnParser, UNSET
+from pyguiadapterlite.core.paramgroup import ParametersGroupBase, group_name_hash
 from pyguiadapterlite.core.registry import ParameterWidgetFactory
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
@@ -234,6 +236,128 @@ class GUIAdapter(object):
             parameter_infos=parameter_infos.copy(),
             before_execute_callback=before_execute_callback,
             after_execute_callback=after_execute_callback,
+        )
+        self._functions[fn] = fn_info
+
+    def add_parameters_grouped(
+        self,
+        fn: Callable,
+        *,
+        display_name: Optional[str] = None,
+        icon: Optional[str] = None,
+        document: Optional[str] = None,
+        cancelable: bool = False,
+        window_config: Optional[FnExecuteWindowConfig] = None,
+        window_menus: Optional[List[Union[Menu, Separator]]] = None,
+        parameters_validator: Optional[
+            Callable[[str, Dict[str, object]], Optional[Dict[str, str]]]
+        ] = None,
+        capture_system_exit_exception: bool = True,
+        function_executor_class: Type[BaseFunctionExecutor] = ThreadedExecutor,
+        enable_progressbar: bool = False,
+        enable_progress_label: bool = False,
+        before_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Dict[str, Any]], Optional[Dict[str, Any]]]
+        ] = None,
+        after_execute_callback: Optional[
+            Callable[["FnExecuteWindow", Any, Optional[Exception]], None]
+        ] = None,
+        after_window_create_callback: Optional[
+            Callable[[FnExecuteWindow], None]
+        ] = None,
+        before_window_close_callback: Optional[
+            Callable[[FnExecuteWindow], bool]
+        ] = None,
+    ):
+        doc, parameter_infos = self._fn_parser.parse(fn, ignore_self_param=True)
+
+        if window_config is None:
+            window_config = FnExecuteWindowConfig(
+                menus=window_menus or [],
+                enable_progressbar=enable_progressbar,
+                enable_progress_label=enable_progress_label,
+                icon=icon,
+                after_window_create_callback=after_window_create_callback,
+                before_window_close_callback=before_window_close_callback,
+            )
+        else:
+            if window_menus is not None:
+                window_config = dataclasses.replace(
+                    window_config, menus=window_menus or []
+                )
+            if window_config.icon is None and icon is not None:
+                window_config = dataclasses.replace(window_config, icon=icon)
+
+            if (
+                after_window_create_callback is not None
+                and window_config.after_window_create_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    after_window_create_callback=after_window_create_callback,
+                )
+
+            if (
+                before_window_close_callback is not None
+                and window_config.before_window_close_callback is None
+            ):
+                window_config = dataclasses.replace(
+                    window_config,
+                    before_window_close_callback=before_window_close_callback,
+                )
+
+        parameter_infos = parameter_infos or {}
+        param_configs = {}
+
+        for param_name, param_info in parameter_infos.items():
+            param_type = param_info.type
+            if not issubclass(param_type, ParametersGroupBase):
+                raise TypeError(
+                    "the type of the function's parameter must be a ParametersGroupBase"
+                )
+            if (
+                not isinstance(param_info.default_value, param_type)
+                and param_info.default_value is not None
+                and param_info.default_value is not UNSET
+            ):
+                raise ValueError(
+                    f"the default value of `{param_name}` must be an instance of the ParameterGroupBase class"
+                )
+            group_name = param_type.GROUP_NAME or param_type.__name__
+            for field_name, param_config in param_type.fields().items():
+                field_name_with_group_hash = (
+                    f"{group_name_hash(group_name)}::{field_name}"
+                )
+                if field_name_with_group_hash in param_configs:
+                    raise ValueError(
+                        f"parameter '{param_name}' has already been defined in other group."
+                    )
+                if not isinstance(param_config, BaseParameterWidgetConfig):
+                    continue
+
+                if param_config.group != group_name:
+                    param_config = replace(param_config, group=group_name)
+                # the param_configs dict will be:
+                #   key: field name with group hash
+                #   value: BaseParameterWidgetConfig
+                param_configs[field_name_with_group_hash] = param_config
+
+        fn_info = FnInfo(
+            fn=fn,
+            parameter_configs=param_configs.copy(),
+            fn_name=fn.__name__,
+            display_name=display_name or fn.__name__,
+            icon=icon,
+            document=document or doc,
+            cancelable=cancelable,
+            capture_system_exit_exception=capture_system_exit_exception,
+            window_config=window_config,
+            executor=function_executor_class,
+            parameters_validator=parameters_validator,
+            parameter_infos=parameter_infos.copy(),
+            before_execute_callback=before_execute_callback,
+            after_execute_callback=after_execute_callback,
+            parameters_grouped=True,
         )
         self._functions[fn] = fn_info
 

@@ -85,6 +85,7 @@ class FnInfo(object):
     after_execute_callback: Optional[
         Callable[[BaseWindow, Any, Optional[Exception]], None]
     ] = None
+    parameters_grouped: bool = False
 
     def get_function_name(self) -> str:
         if self.fn_name:

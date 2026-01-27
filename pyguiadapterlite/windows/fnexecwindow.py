@@ -15,6 +15,7 @@ from pyguiadapterlite.components.textview import TextView, SimpleTextViewer
 from pyguiadapterlite.components.valuewidget import InvalidValue
 from pyguiadapterlite.core.fn import FnInfo, BaseFunctionExecutor, ExecuteStateListener
 from pyguiadapterlite.core.fn import ParameterError
+from pyguiadapterlite.core.paramgroup import ParametersGroupBase, group_name_hash
 from pyguiadapterlite.core.threaded import ThreadedExecutor
 from pyguiadapterlite.core.ucontext import UContext
 from pyguiadapterlite.utils import (
@@ -598,7 +599,10 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
             show_warning(self.config.function_executing_message, parent=self.parent)
             return
         self.close_param_validation_win()
-        parameter_values = self.get_parameter_values()
+        if self._fn_info.parameters_grouped:
+            parameter_values = self.get_grouped_parameter_values()
+        else:
+            parameter_values = self.get_parameter_values()
 
         try:
             if self._fn_info.before_execute_callback:
@@ -636,6 +640,54 @@ class FnExecuteWindow(BaseWindow, ExecuteStateListener):
 
     def get_parameter_values(self) -> Dict[str, Union[Any, InvalidValue]]:
         return self._main_area.get_parameter_values()
+
+    def get_grouped_parameter_values(self) -> Dict[str, ParametersGroupBase]:
+        if not self._fn_info.parameters_grouped:
+            return {}
+        raw_values = self.get_parameter_values()
+        result: Dict[str, ParametersGroupBase] = {}
+        groups: Dict[str, ParametersGroupBase] = {}
+        for g_param_name, param_info in self._fn_info.parameter_infos.items():
+            param_group_ins: ParametersGroupBase = param_info.type()
+            group_name = param_group_ins.GROUP_NAME or param_info.type.__name__
+            result[g_param_name] = param_group_ins
+            groups[group_name_hash(group_name)] = param_group_ins
+
+        # after loop above, we got two dicts:
+        # result:
+        #  key: parameter name of the function
+        #  value: the corresponding ParametersGroupBase instance
+        # groups:
+        #  key: group name hash
+        #  value: the corresponding ParametersGroupBase instance
+
+        # as we use add_parameter_grouped() function
+        # the parameter_configs dict will be:
+        #  key: field name with group name hash
+        #  value: the corresponding ParameterConfig instance of the field
+        for field_name_with_group_hash, field_value in raw_values.items():
+            # get the corresponding ParameterConfig instance of the field
+            param_config = self._fn_info.parameter_configs.get(
+                field_name_with_group_hash, None
+            )
+            if not param_config:
+                continue
+            # get the group name hash part
+            group_hash = field_name_with_group_hash.split("::")[0]
+            # get the field name part
+            field_name = field_name_with_group_hash.split("::")[1]
+            # get the corresponding ParametersGroupBase instance via group name hash from groups dict
+            param_group_ins: ParametersGroupBase = groups.get(group_hash, None)
+            if not param_group_ins:
+                continue
+            # set the field of the ParametersGroupBase instance with the field name and the field value
+            setattr(
+                param_group_ins,
+                field_name,
+                field_value,
+            )
+
+        return result
 
     def set_parameter_values(
         self,
