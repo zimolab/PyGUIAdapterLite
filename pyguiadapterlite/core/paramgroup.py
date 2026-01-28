@@ -1,9 +1,12 @@
+import hashlib
+
 from pyguiadapterlite.core.fn import ParameterError
 from pyguiadapterlite.components.settingsbase import SettingsBase
 
 
 def group_name_hash(group_name: str) -> str:
-    return hex(hash(group_name))[2:]
+    obj = hashlib.md5(group_name.encode("utf-8"))
+    return obj.hexdigest()
 
 
 class ParametersGroupBase(SettingsBase):
