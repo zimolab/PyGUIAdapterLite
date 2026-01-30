@@ -337,6 +337,10 @@ class GUIAdapter(object):
 
                 if param_config.group != group_name:
                     param_config = replace(param_config, group=group_name)
+
+                if not (param_config.label or "").strip():
+                    param_config = replace(param_config, label=field_name)
+
                 # the param_configs dict will be:
                 #   key: field name with group hash
                 #   value: BaseParameterWidgetConfig
